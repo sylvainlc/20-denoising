@@ -1,0 +1,265 @@
+% This version of CVPR template is provided by Ming-Ming Cheng.
+% Please leave an issue if you found a bug:
+% https://github.com/MCG-NKU/CVPR_Template.
+
+\documentclass[review]{cvpr}
+%\documentclass[final]{cvpr}
+
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\confYear{CVPR 2021}
+%\setcounter{page}{4321} % For final version only
+
+
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Joint self-supervised blind denoising and noise estimation}
+
+\author{First Author\\
+Institution1\\
+Institution1 address\\
+{\tt\small firstauthor@i1.org}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
+}
+
+\maketitle
+
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+Self-supervised deep neural networks trained for denoising such as Noise2Self or Noise2Void have recently emerged and outperformed supervised networks. Using the assumption that the signal has local correlation and that the noise components are independent, such networks are able to predict an estimate of the clean signal without clean training data. Therefore they are particularly relevant for biomedical image denoising where the noise process is difficult to model precisely and clean training data are usually unavailable. However they suffer from a low training efficiency and produce visual artifacts or blurry images, which strongly limits the denoising performances.
+In this work we describe a model that enables to estimate the clean signal prior and the noise distribution jointly with very few assumptions on the noise. This model is implemented through two neural networks trained simultaneously, in which careful architecture choices enable us to significantly improve the quality of denoising as well as providing an accurate noise distribution. Our framework also introduces significant improvements of the training efficiency while being simple to implement and lightweight in terms of parameters and operations.
+
+Our method improves the quality of current state-of-the-art self-supervised blind denoising networks both visually and quantitatively according to classical metrics, on two publicly available biomedical image datasets. We also show empirically on synthetic noisy data that we are able to capture the noise distribution efficiently. We also introduce a simple metric to estimate the sharpness of denoised images and show that our method produces sharper images than previous methods.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+
+\section{Related work}
+\label{sec:related}
+
+
+Supervised: RCAN / PAN etc.. for natural images + CARE \cite{weigert2017content} networks for microscopy images. In most real-world cases: no ground truth is available.
+N2N \cite{lehtinen2018noise2noise} -> denoising without "clean" ground truth but pairs of noisy images / require less "acquisition units"
+BUT still in many cases only one noise realisation of the sample is available
+
+Self-supervised:
+
+1) N2S\cite{batson2019noise2self} et N2V \cite{krull2018noise2void}
+\begin{itemize}
+\item self-supervised loss ("blind spot") [describe flows of N2V over N2S]
+\item checkerboard artefact
+\item PN2V\cite{krull2019probabilistic} et PPN2V -> bayesian predict a distribution (with / without calibration) better performances but checkerboard artefact is still there
+\end{itemize}
+
+2) \cite{laine2019high} "true" blind spot network using directional kernels $\rightarrow$ prior in a Bayesian framework network predicting a Gaussian distribution of noise. This method performs very well on Gaussian synthetic noise, achieving the same performance as the supervised method N2N. Not suitable for real noise.
+
+3) Noise-tolerant deconvolution \cite{kobayashi2020image}
+
+\section{Model}
+\label{sec:model}
+In the following, let $X$ be the hidden signal at a given pixel, $Y$ be the corresponding observation corrupted with noise and $\Omega_Y$ be the noisy observations of the surrounding pixels in a given neighborhood of the pixel. Following \cite{laine2019high}, assume that conditionally on $\Omega_Y$, $X$ has a Gaussian distribution with mean $\mu_p$ and variance $\sigma_p^2$. Then, conditionally on $(\Omega_Y,X)$, assume that the noise has a Gaussian distribution with mean $0$ and variance $\sigma_n^2(X)$. In this case, the probability density of $Y$ conditionally on $\Omega_Y$ is
+$$
+p(y|\Omega_y) = \int \varphi_{\mu_p,\sigma_p^2}(u)\varphi_{0,\sigma_n^2(u)}(y-u)\mathrm{d}u\,,
+$$
+where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with mean $\mu$ and variance $\sigma^2$.
+%To obtain this density, as $p(x,\varepsilon|\Omega_y) =p(x|\Omega_y)p(\varepsilon|\Omega_y,x)$, write for any function $h$
+%\begin{align*}
+% \mathbb{E}[h(Y)|\Omega_y] =   \mathbb{E}[h(X+\varepsilon)|\Omega_y] &= \int h(x+u)  \varphi_{\mu_p,\sigma_p^2}(x)\varphi_{0,\sigma_n^2(x)}(u)\mathrm{d}u\mathrm{d}x\,,\\
+% &= \int \varphi_{\mu_p,\sigma_p^2}(x) \left(\int h(x+u)  \varphi_{0,\sigma_n^2(x)}(u)\mathrm{d}u\right)\mathrm{d}x\,,\\
+% &= \int \varphi_{\mu_p,\sigma_p^2}(x) \left(\int h(y)  \varphi_{0,\sigma_n^2(x)}(y-x)\mathrm{d}y\right)\mathrm{d}x\,,\\
+%  &= \int h(y)\left(\int \varphi_{\mu_p,\sigma_p^2}(x)   \varphi_{0,\sigma_n^2(x)}(y-x)\mathrm{d}x\right)\mathrm{d}y\,.
+%\end{align*}
+As $\sigma_n^2$ depends on $u$ this integral cannot be computed explicitly. In this paper, a Monte Carlo approximation of this likelihood is used to train the model.
+%\begin{enumerate}
+%    \item Compute $\nabla_u\sigma_n^2(u)$ and replace $\sigma_n^2$ by its first order Taylor expansion to obtain a linear function and then compute the integral. \textcolor{red}{More complex than expected...}
+%    \item Replace the integral by a Monte Carlo estimate.
+%\end{enumerate}
+\subsection{Training with an approximation of the score}
+A more appealing training algorithm aims at approximating directly the score function $\theta\mapsto \nabla_{\theta} \log p(y|\Omega_y)$. Write
+\begin{align*}
+\log p(y|\Omega_y) &= \mathbb{E}[\log p(y|\Omega_y)|y,\Omega_y]\,,\\
+&= \mathbb{E}\left[\log \frac{p(X,y|\Omega_y)}{p(X|y,\Omega_y)}\middle |y,\Omega_y\right]\;
+\end{align*}
+%and
+%\begin{align*}
+%\nabla_{\theta}\log p(y|\Omega_y) = \mathbb{E}\left[\nabla_{\theta}\log p(X,y|\Omega_y)\middle |y,\Omega_y\right] - \mathbb{E}\left[\nabla_{\theta}\log p(X|y,\Omega_y)\middle |y,\Omega_y\right]\,.
+%\end{align*}
+Using that
+\begin{align*}
+\mathbb{E}&\left[\nabla_{\theta}\log p(X|y,\Omega_y)\middle |y,\Omega_y\right] \\
+&\hspace{1.5cm}= \int \frac{ \nabla_{\theta} p(x|y,\Omega_y)}{p(x|y,\Omega_y)}p(x|y,\Omega_y)\mathrm{d}x\,,\\
+&\hspace{1.5cm} = \nabla_{\theta} \int  p(x|y,\Omega_y)\mathrm{d}x = 0\,,
+\end{align*}
+yields
+$$
+\nabla_{\theta}\log p(y|\Omega_y) = \mathbb{E}\left[\nabla_{\theta}\log p(X,y|\Omega_y)\middle |y,\Omega_y\right]\,.
+$$
+The first option is then to sample $(X_i)_{1\leqslant i \leqslant N}$ with distribution $p(x|y,\Omega_y)$ and approximate $\nabla_{\theta}\log p(y|\Omega_y)$ by 
+$$
+\frac{1}{N}\sum_{i=1}^N \nabla_{\theta}\log p(X_i,y|\Omega_y)
+$$
+which boils down to choosing the cost function $y \mapsto \frac{1}{N}\sum_{i=1}^N \log p(X_i,y|\Omega_y)$, where
+\begin{multline*}
+\log p(X_i,y|\Omega_y) = \frac{1}{2}\log(\sigma_p^2) + \frac{1}{2\sigma_p^2}(X_i-\mu_p)^2 \\ + \frac{1}{2}\log(\sigma_n(X_i)^2) + \frac{1}{2\sigma_n(X_i)^2}(y-X_i)^2 \,. 
+\end{multline*}
+This approach which seems appealing suffers from a major drawback as it is usually cumbersome to produce samples from $p(x|y,\Omega_y)$ as $p(x|y,\Omega_y)\propto \varphi_{\mu_p,\sigma_p^2}(x)\varphi_{0,\sigma_n^2(x)}(y-x)$.
+
+\subsubsection{Naive importance sampling}
+This cost function may be hard to compute as sampling $(X_i)_{1\leqslant i \leqslant N}$ with distribution $p(x|y,\Omega_y)$ is challenging (see above). An alternative is to sample $(X_i)_{1\leqslant i \leqslant N}$ with distribution $p(x|\Omega_y)$ and associate an importance weight to each sample. As
+\begin{align*}
+p(x|\Omega_y,y) \propto p(x,\Omega_y,y) &\propto p(x|\Omega_y)p(y|x,\Omega_y)\,\\
+&\propto \varphi_{\mu_p,\sigma_p^2}(x)   \varphi_{0,\sigma_n^2(x)}(y-x)\,,
+\end{align*}
+if $X_i = \mu_p + \sigma_p \zeta_i$, then write $\omega_i = \varphi_{0,\sigma_n^2(X_i)}(y-X_i)$ and consider the cost function
+$$
+y \mapsto \sum_{i=1}^N\frac{\omega_i}{\sum_{j=1}^N\omega_j} \log p(X_i,y|\Omega_y)\,,
+$$
+with a stop gradient on the $\omega_i$ and on the $X_i$ as the gradient must only affect $ \log p(X_i,y|\Omega_y)$. 
+
+\subsubsection{Improved importance sampling}
+The previous importance sampling estimator is not efficient as all samples are obtained without considering $y$ nor $\sigma_n^2$. An alternative is to sample $X_i$ from the proposal distribution:
+$$
+q(x|\Omega_y,y)\propto \varphi_{\mu_p,\sigma_p^2}(x)   \varphi_{0,\sigma_n^2(\mu_p)}(y-x)\,.
+$$
+The samples $X_i$ are then Gaussian with mean and variance 
+$$
+\sigma^2(y) = \frac{\sigma_p^2\sigma_n^2(\mu_p)}{\sigma_n^2(\mu_p)+\sigma_p^2} \quad\mbox{and}\quad \mu(y) = \sigma^2(y)\left(\frac{\mu_p}{\sigma_p^2} + \frac{y}{\sigma_n^2(\mu_p)}\right)\,.$$
+The importance weight associated with $X_i$ is $\omega_i = \varphi_{0,\sigma_n^2(X_i)}(y-X_i)/\varphi_{0,\sigma_n^2(\mu_p)}(y-X_i)$. Consider the cost function
+$$
+y \mapsto \sum_{i=1}^N\frac{\omega_i}{\sum_{j=1}^N\omega_j}  \log p(X_i,y|\Omega_y)\,,
+$$
+with a stop gradient on the $\omega_i$ and on the $X_i$ as the gradient must only affect $ \log p(X_i,y|\Omega_y)$.
+
+%\paragraph{Training.} The first option seems to be the most promising as the only approximation is a linear approximation of the N-net producing $\sigma_n^2$ to compute the integral. The second option seems more closely related to what is being processed with the ongoing simulations. The simplest version of the second option is to write the following approximation of $p(y|\Omega_y)$:
+%$$
+%\hat p(y|\Omega_y) = \varphi_{0,\sigma_n^2(\mu_p + \sigma_p\zeta)}(y-\mu_p - \sigma_p\zeta)\,,
+%$$
+%with $\zeta \sim \mathcal{N}(0,1)$. In this estimator, $\sigma_n^2(\mu_p + \sigma_p\zeta)$ is the output of the N-Net when fed with $\mu_p + \sigma_p\zeta$, i.e. when fed with a sample from the distribution $p(x|\Omega_y)$. The training loss function is then
+%$$
+%y\mapsto \frac{1}{2}\log(\sigma_n^2(\mu_p + \sigma_p\zeta)) + \frac{1}{2\sigma_n^2(\mu_p + \sigma_p\zeta)}(y-\mu_p - \sigma_p\zeta)^2\,.
+%$$
+
+%\paragraph{Inference.} The inference process requires to draw samples from $p(x|\Omega_y,y)$ (or to compute its mean). Note that
+%$$
+%p(x|\Omega_y,y) \propto p(x,\Omega_y,y) \propto p(x|\Omega_y)p(y|x,\Omega_y)\propto \varphi_{\mu_p,\sigma_p^2}(x)   \varphi_{0,\sigma_n^2(x)}(y-x)\,.
+%$$
+%Assume that there exists $\varepsilon>0$ such that for all $x$, $\sigma_n^2(x)>\varepsilon$. Then, 
+%$$
+%\varphi_{\mu_p,\sigma_p^2}(x)   \varphi_{0,\sigma_n^2(x)}(y-x)\leqslant (2\pi \varepsilon )^{-1/2}\varphi_{\mu_p,\sigma_p^2}(x)\,.  
+%$$
+%An acceptance-rejection method may then be used to sample from $p(x|\Omega_y,y)$. To obtain one sample the algorithm proceeds as follows. Sample $X$ with Gaussian distribution with mean $\mu_p$ and variance $\sigma_p^2$ and U uniform in $(0,1)$. If $U \leqslant (2\pi \varepsilon )^{1/2}\varphi_{0,\sigma_n^2(X)}(y-X)$ then accept $X$. Otherwise sample again $(X,U)$ until acceptance.
+
+
+
+
+
+%\bigskip
+
+%\textcolor{red}{The following will not be used... I guess}.
+
+%\bigskip
+
+%\textcolor{red}{En cours (la c'est une version gaussienne multivariee), on devrait pouvoir en tirer une version portant uniquement sur la loi du pixel manquant, plus proche de ce qui est deja implemente...} 
+%For any pixel $X_i$, let $Y_{\mathcal{V}_i}$ be the corrupted signal in a neighborhood of $X_i$. In the following $X_{-i}$ stands for the pixel values in the neighborhood except $X_i$.
+%The posterior distribution of the signal in a given position $i$ is therefore given by
+%$$
+%p(X_i|Y) = p(X_i|Y_{\mathcal{V}_i}) = \frac{p(X_i;Y_{\mathcal{V}_i})}{p(Y_{\mathcal{V}_i})} \propto p(X_i;Y_{\mathcal{V}_i}) =p(X_i) p(Y_{i}|X_i)\int p(x_{-i}|X_i)p(Y_{-i}|x_{-i})d x_{-i} 
+%$$
+%Assume that the prior distribution of $X$ is a Gaussian distribution with mean $\mu$ and covariance matrix $\Sigma$. Then, conditionally on $X_i$, $X_{-i}$ has a Gaussian distribution with mean $\tilde \mu_i = \mu_{-i} + \Sigma_{-i;i}\sigma^{-2}_{i}(X_{i}-\mu_{i})$ and variance $\tilde \Sigma_i = \Sigma_{-i;-i} - \Sigma_{-i;i}\Sigma_{i;-i}\sigma_i^{-2}$.
+%\begin{align*}
+%\log p(X_i) &= \frac{1}{2}\log \sigma_i^2 - \frac{1}{2\sigma_i^2}(X_i-\mu_i)^2\eqsp,\\
+%\log p(Y_i|X_i) &=  - \frac{1}{2}\log \sigma_n^2 - \frac{1}{2\sigma_n^2}(Y_i-X_i)^2\eqsp,\\
+%\log \int p(x_{-i}|X_i)p(Y_{-i}|x_{-i})d x_{-i} &= - \frac{1}{2}\log \mathrm{det}(2\pi (\tilde \Sigma_i +\sigma_n^2I)) - \frac{1}{2}(Y_{-i}-\tilde \mu_i)^\top(\tilde \Sigma_i +\sigma_n^2I)^{-1}(Y_{-i}-\tilde \mu_i)\eqsp.
+%\end{align*}
+%Therefore
+%\begin{multline*}
+%\log p(X_i;Y_{\mathcal{V}_i}) = \frac{1}{2}\log \sigma_i^2 - \frac{1}{2\sigma_i^2}(X_i-\mu_i)^2 - \frac{1}{2}\log \sigma_n^2 - \frac{1}{2\sigma_n^2}(Y_i-X_i)^2\\
+%- \frac{1}{2}\log \mathrm{det}(2\pi (\tilde \Sigma_i +\sigma_n^2I)) - \frac{1}{2}(Y_{-i}-\tilde \mu_i)^\top(\tilde \Sigma_i +\sigma_n^2I)^{-1}(Y_{-i}-\tilde \mu_i)\eqsp.
+%\end{multline*}
+%The EM algorithm updates iteratively the estimator $(\theta_p)_{p\geqslant 0}$ by maximizing
+%$$
+%Q(\theta;\theta_p) = \mathbb{E}_{\theta_p}[\log p(X_i;Y_{\mathcal{V}_i})|Y_{\mathcal{V}_i}]\eqsp.
+%$$
+%  An approximation of this quantity can be obtained by sampling $\zeta$ with the same law as the conditional distribution of $X_i$ given $Y_{\mathcal{V}_i}$ and replace this intermediate quantity by 
+%$$
+%\widehat Q(\theta;\theta_p) = \log p(\zeta;Y_{\mathcal{V}_i})\eqsp.
+%$$
+
+%\subsection{Base model}
+%\label{sec:basemodel}
+
+%
+%\begin{equation}
+%    c(\vh, \vt)_i = \vyh_i = \frac{\langle \vh, \vt_i \rangle}{\Vert \vh \Vert_2 \Vert \vt_i \Vert_2}\,.
+%    \label{eq:cosine-classifier}
+%\end{equation}
+
+\section{Implementation}
+\subsection{P-Net}
+The function $x\mapsto (\mu_p , \sigma_p)$ is implemented through a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture. 
+The network consists of a contracting path and an expansive path, which gives it the u-shaped architecture. The contracting path is a typical convolutional network that consists of repeated application of convolutions, each followed by a rectified linear unit (ReLU) and a max pooling operation. During the contraction, the spatial information is reduced while feature information is increased. The expansive pathway combines the feature and spatial information through a sequence of up-convolutions and concatenations with high-resolution features from the contracting path.
+We use 2 levels of contractions with 64 filters. 
+This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m)})$ depend on $x^{(l,m)}$ and its neighborhood.
+
+While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
+
+\subsection{N-Net}
+the function $x\mapsto \sigma_n$ describing the noise distribution is implemented through a fully convolutional network only composed of 1x1 convolutions followed a non-linear activation layer (alternatively tanh and relu). 
+We found that such networks could be trained in a supervised way with a clean image x as input and the following cost function, where y is a corrupted version of x: 
+$$
+y\mapsto \varphi_{0,\sigma_n^2}(y)
+$$
+An essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
+
+\subsection{Self-supervised loss}
+Following \cite{batson2019noise2self}, we used a self-supervised loss with pixel masking along a grid. The loss is computed only on the masked pixels. 
+We obtained the best results with a replacement by a 3x3 gaussian filter excluding the center pixel.
+We also optimized grid spacing as there is a trade-off between learning efficiency and denoising quality: the smaller the spacing, the more pixels are used for training, but the more masked pixel are present in the receptive field which perturbs the denoising. We obtained best results using a random dynamic spacing between 3 and 5 pixels and we also remove randomly 10\% of the grid. The value of the loss was normalized by the number of pixel in the grid.
+
+
+\section{Training and evaluation datasets}
+We evaluated our method on 3 publicly available datasets of microscopy images. To estimate a ground truth image, several observations of the same field-of-view (FOV) are acquired and averaged. 
+The first dataset is taken from FMD dataset (mice cells) published by. It is composed of 20 different fields of view (FOV), each one containing 50 independent observations of the same sample. We refer to this dataset as \emph{FMD-Confocal-Mice}. We used the same training and evaluation procedure as the authors, i.e. evaluation on the 19th FOV and training/validation on the 19 other FOVs. We only used raw images. Note that the PSNR of raw images from different FOVs vary in a range of ~2dB, thus it is essential to use the same FOVs to compare absolute PSNR values between different works. Image are encoded in 8-bit and 255 is used as data range for PSNR computation.
+
+The second dataset has been published along with the PPN2V method, and is composed of 3 different samples types and only one FOV per sample type. We refer to each sample type of this dataset as \emph{PPN2V-Convallaria}, \emph{PPN2V-Mouse-Actin} and \emph{PPN2V-Mouse-skull-nuclei}. We used the same training and evaluation procedure as the authors. For each sample type the whole dataset is used for training, and only a part of the FOV is used for PSNR computation. Images are encoded in 16-bit and actual data range of the ground truth is used for PSNR computation. 
+
+The third dataset is published W2S. We used the 16-bit raw images kindly provided by the authors. The dataset is composed of 120 FOV, the first 80 are used for training/validation and the last 40 for evaluation. Following the authors, for each FOV, only the raw image of index 249 is used for training/validation and for evaluation. As Images are encoded in 16-bit, actual data range of the ground truth is used for PSNR computation.  
+This dataset contains also super-resolution images (referred to as SIM-GT) which were used to evaluate the deconvolution procedure. In order to have the SIM-GT and wide-field (WF) images in the same intensity range, for each FOV, the average of all WF images was computed (referred to as WF-GT), and intensity values of SIM-GT were scaled linearly in order to minimize 
+$( \textrm{SIM-GT} - \textrm{WF-GT})^2$
+
+\section{Conclusion}
+
+
+
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{blind_denoising}
+}
+
+\end{document}
