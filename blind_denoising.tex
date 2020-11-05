@@ -83,9 +83,9 @@ Self-supervised:
 
 \section{Model}
 \label{sec:model}
-In the following, let $X$ be the hidden signal at a given pixel, $Y$ be the corresponding observation corrupted with noise and $\Omega_Y$ be the noisy observations of the surrounding pixels in a given neighborhood of the pixel. Following \cite{laine2019high}, assume that conditionally on $\Omega_Y$, $X$ has a Gaussian distribution with mean $\mu_p$ and variance $\sigma_p^2$. Then, conditionally on $(\Omega_Y,X)$, assume that the noise has a Gaussian distribution with mean $0$ and variance $\sigma_n^2(X)$. In this case, the probability density of $Y$ conditionally on $\Omega_Y$ is
+In the following, let $X$ be the hidden signal at a given pixel, $Y$ be the corresponding observation corrupted with noise and $\Omega_Y$ be the noisy observations of the surrounding pixels in a given neighborhood of the pixel. Following \cite{laine2019high}, assume that conditionally on $\Omega_Y$, $X$ has a Gaussian distribution with mean $\mu_{\theta_p}$ and variance $\sigma_{\theta_p}^2$. Then, conditionally on $(\Omega_Y,X)$, assume that the noise has a Gaussian distribution with mean $0$ and variance $\sigma_{\theta_n}^2(X)$. In this case, the probability density of $Y$ conditionally on $\Omega_Y$ is
 $$
-p(y|\Omega_y) = \int \varphi_{\mu_p,\sigma_p^2}(u)\varphi_{0,\sigma_n^2(u)}(y-u)\mathrm{d}u\,,
+p_{\theta}(y|\Omega_y) = \int \varphi_{\mu_{\theta_p},\sigma_{\theta_p}^2}(u)\varphi_{0,\sigma_{\theta_n}^2(u)}(y-u)\mathrm{d}u\,,
 $$
 where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with mean $\mu$ and variance $\sigma^2$.
 %To obtain this density, as $p(x,\varepsilon|\Omega_y) =p(x|\Omega_y)p(\varepsilon|\Omega_y,x)$, write for any function $h$
@@ -95,7 +95,45 @@ where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with
 % &= \int \varphi_{\mu_p,\sigma_p^2}(x) \left(\int h(y)  \varphi_{0,\sigma_n^2(x)}(y-x)\mathrm{d}y\right)\mathrm{d}x\,,\\
 %  &= \int h(y)\left(\int \varphi_{\mu_p,\sigma_p^2}(x)   \varphi_{0,\sigma_n^2(x)}(y-x)\mathrm{d}x\right)\mathrm{d}y\,.
 %\end{align*}
-As $\sigma_n^2$ depends on $u$ this integral cannot be computed explicitly. In this paper, a Monte Carlo approximation of this likelihood is used to train the model.
+As $\sigma_{\theta_n}^2$ depends on $u$ this integral cannot be computed explicitly. This model depends on the unknown parameter $\theta = (\theta_p,\theta_n)$. In the following, $(\mu_{\theta_p},\sigma^2_{\theta_p})$ and $\sigma^2_{\theta_n}$ are computed using deep neural networks and $\theta_p$ and $\theta_n$ are the weights and biases of these networks.
+
+\section{Training based on Variational Auto-Encoders}
+The aim of this paper is to estimate $p_{\theta}(x|Y,\Omega_Y)$ to obtain samples from the posterior distribution of the signal given the noisy observations obtained in its neighborhood. An appealing approch to appraoximate $p_{\theta}(x|Y,\Omega_Y)$  is to introduce a parametric family of candidate approximations $q_{\phi}(x|Y,\Omega_Y)$. In this case,
+\begin{align*}
+\log p_{\theta}(y|\Omega_y) &\\
+&\hspace{-1.3cm}= \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}[\log p_{\theta}(y|\Omega_y)]\,,\\
+&\hspace{-1.3cm}= \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}\left[\log \frac{p_\theta(X,y|\Omega_y)}{q_{\phi}(\cdot|y,\Omega_y)}\frac{q_{\phi}(\cdot|y,\Omega_y)}{p_\theta(X|y,\Omega_y)}\middle |y,\Omega_y\right]\,,\\
+&\hspace{-1.3cm}= \mathcal{L}_{\theta,\phi}(y,\Omega_y) + \mathrm{KL}\left(q_{\phi}(\cdot|y,\Omega_y)\| p_\theta(\cdot|y,\Omega_y)\right)\,,
+\end{align*}
+where $ \mathrm{KL}$ is the Kullback-Leibler divergence and where $\mathcal{L}_{\theta,\phi}(y,\Omega_y)$ is the evidence lower bound (ELBO):
+$$
+ \mathcal{L}_{\theta,\phi}(y,\Omega_y)  = \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}\left[\log \frac{p_\theta(X,y|\Omega_y)}{q_{\phi}(\cdot|y,\Omega_y)}\middle |y,\Omega_y\right]\,.
+$$
+Therefore, $ \mathcal{L}_{\theta,\phi}(y,\Omega_y) \leqslant \log p_{\theta}(y|\Omega_y)$ and $ \mathcal{L}_{\theta,\phi}(y,\Omega_y)$ is usually used as a surrogate for $ \log p_{\theta}(y|\Omega_y)$. The aim of auto-encoders approaches is then to obtain
+$$
+(\theta^*,\phi^*) \in \mathrm{argmax} \; \mathcal{L}_{\theta,\phi}(y,\Omega_y)\,.
+$$ 
+Consider the following model and variational family.
+\begin{itemize}
+\item $p_\theta(x|\Omega_y)$: Gaussian prior, P-Net with $\overline \Omega_y$ at central position.
+\item $p_\theta(y|x,\Omega_y)$: N-net.
+\item $q_{\phi}(\cdot|y,\Omega_y)$: Gaussian posterior, P-Net with $y$ at central position.
+\end{itemize}
+The loss function can also be written
+\begin{multline*}
+ \mathcal{L}_{\theta,\phi}(y,\Omega_y)  =   \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}\left[\log p_\theta(y|X,\Omega_y)\middle |y,\Omega_y\right] \\ - \mathrm{KL}\left(q_{\phi}(\cdot|y,\Omega_y)\| p_\theta(\cdot|\Omega_y)\right)\,.
+\end{multline*}
+For one sample $(y_i,\Omega_i)$, using the explicit computation of the  Kullback-Leibler divergence between Gaussian distributions, this yields:
+\begin{multline*}
+\widehat{\mathcal{L}}_{\theta,\phi}(y_i,\Omega_i)  =   -\frac{1}{2}\log(\sigma^2_{\theta_n}(X_i,\Omega_i)) - \frac{(Y_i-X_i)^2}{2\sigma^2_{\theta_n}(X_i,\Omega_i)} \\ - \log\frac{\sigma^2_{\theta_p}(\Omega_i)}{\sigma^2_{\phi}(Y_i,\Omega_i)} - \frac{\sigma^2_{\phi}(Y_i,\Omega_i) + \left(\mu_{\theta_p}(\Omega_i) - \mu_\phi(Y_i,\Omega_i)\right)^2}{2\sigma^2_{\theta_p}(\Omega_i)}\,,
+\end{multline*}
+where $X_i$ is a sample from $q_\phi(\cdot|y_i,\Omega_i)$ i.e. 
+$$
+X_i = \mu_\phi(Y_i,\Omega_i) + \sigma_\phi(Y_i,\Omega_i)\varepsilon_i
+$$
+with $\varepsilon_i$ a standard Gaussian random variable.
+
+%In this paper, a Monte Carlo approximation of this likelihood is used to train the model.
 %\begin{enumerate}
 %    \item Compute $\nabla_u\sigma_n^2(u)$ and replace $\sigma_n^2$ by its first order Taylor expansion to obtain a linear function and then compute the integral. \textcolor{red}{More complex than expected...}
 %    \item Replace the integral by a Monte Carlo estimate.
