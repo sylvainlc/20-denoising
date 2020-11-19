@@ -125,7 +125,7 @@ The loss function (to be minimized) can also be written
 \end{multline*}
 For one sample $(y_i,\Omega_i)$, using the explicit computation of the  Kullback-Leibler divergence between Gaussian distributions, this yields:
 \begin{multline*}
-\widehat{\mathcal{L}}_{\theta,\phi}(y_i,\Omega_i)  =   \frac{1}{2}\log(\sigma^2_{\theta_n}(X_i,\Omega_i)) + \frac{(Y_i-X_i)^2}{2\sigma^2_{\theta_n}(X_i,\Omega_i)} \\ + \log\frac{\sigma^2_{\theta_p}(\Omega_i)}{\sigma^2_{\phi}(Y_i,\Omega_i)} + \frac{\sigma^2_{\phi}(Y_i,\Omega_i) + \left(\mu_{\theta_p}(\Omega_i) - \mu_\phi(Y_i,\Omega_i)\right)^2}{2\sigma^2_{\theta_p}(\Omega_i)}\,,
+2\widehat{\mathcal{L}}_{\theta,\phi}(y_i,\Omega_i)  =   \log(\sigma^2_{\theta_n}(X_i,\Omega_i)) + \frac{(Y_i-X_i)^2}{\sigma^2_{\theta_n}(X_i,\Omega_i)} \\ + \log\frac{\sigma^2_{\theta_p}(\Omega_i)}{\sigma^2_{\phi}(Y_i,\Omega_i)} + \frac{\sigma^2_{\phi}(Y_i,\Omega_i) + \left(\mu_{\theta_p}(\Omega_i) - \mu_\phi(Y_i,\Omega_i)\right)^2}{\sigma^2_{\theta_p}(\Omega_i)}\,,
 \end{multline*}
 where $X_i$ is a sample from $q_\phi(\cdot|y_i,\Omega_i)$ i.e. 
 $$
