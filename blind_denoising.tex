@@ -151,17 +151,17 @@ where
 $$
 \omega_{\theta,\phi}(X_m) = \frac{p_\theta(X_m,y|\Omega_y)}{q_{\phi}(X_m|y,\Omega_y)}\,.
 $$
-[JEAN]
+
 Using that:
 $$
 p_\theta(X_m,y|\Omega_y) = p_\theta(X_m|\Omega_y) p_\theta(y|X_m)
 $$
-This yields:
+yields:
 \begin{multline*}
 2\log(\omega_{\theta,\phi}(X_m)) = \\
-- \frac{( \mu_{\theta_{p}} - X_m )^2}{\sigma_{\theta_{p}}^2} - \log(\sigma_{\theta_{p}}^2) \\
-- \frac{( y - X_m )^2}{\sigma_{\theta_{n}}^2} - \log(\sigma_{\theta_{n}}^2) \\
-+ \frac{( \mu_{\phi} - X_m )^2}{\sigma_{\phi}^2} + \log(\sigma_{\phi}^2)
+- \frac{( \mu_{\theta_p}(\Omega_i) - X_m )^2}{\sigma^2_{\theta_p}(\Omega_i)} - \log(\sigma^2_{\theta_p}(\Omega_i)) \\
+- \frac{( Y_i - X_m )^2}{\sigma^2_{\theta_n}(X_i,\Omega_i)} - \log(\sigma^2_{\theta_n}(X_i,\Omega_i)) \\
++ \frac{( \mu_\phi(Y_i,\Omega_i) - X_m )^2}{\sigma^2_{\phi}(Y_i,\Omega_i)} + \log(\sigma^2_{\phi}(Y_i,\Omega_i))
 \end{multline*}
 %In this paper, a Monte Carlo approximation of this likelihood is used to train the model.
 %\begin{enumerate}
