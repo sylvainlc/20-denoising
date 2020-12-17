@@ -97,12 +97,30 @@ where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with
 %\end{align*}
 As $\sigma_{\theta_n}^2$ depends on $u$ this integral cannot be computed explicitly. This model depends on the unknown parameter $\theta = (\theta_p,\theta_n)$. In the following, $(\mu_{\theta_p},\sigma^2_{\theta_p})$ and $\sigma^2_{\theta_n}$ are computed using deep neural networks and $\theta_p$ and $\theta_n$ are the weights and biases of these networks.
 
-
+The approach proposed in this paper is decomposed into two steps:
+\begin{enumerate}
+\item First, $\mu_{\theta_p}$ and $\sigma_{\theta_p}^2$  are obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $x$.
+\item After a training procedure to estimate the parameters of these networks, the estimator of the unknow pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
+\end{enumerate}
+The loss function is defined by approximating the loglikelihood of the observations using samples from the P-net:
+$$
+\ell_{\theta}: y \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(X_i,Y_i|\Omega_{Y_i})\,,
+$$
+where
+\begin{multline*}
+\ell_{\theta}(X_i,Y_i|\Omega_{Y_i}) = \log(\sigma_{\theta_n}(X_i)^2) + \frac{(Y_i-X_i)^2}{\sigma_{\theta_n}(X_i)^2} \,,
+\end{multline*}
+with $X_i$ sampled as the output of a P-Net:
+$$
+X_ i = \mu_{\theta_p}(\Omega_{Y_i},\overline \Omega_{Y_i}) + \sigma_{\theta_p}(\Omega_{Y_i},\overline \Omega_{Y_i})\varepsilon_i
+$$
+and $\varepsilon_i$ a standard Gaussian random variable.
 %In this paper, a Monte Carlo approximation of this likelihood is used to train the model.
 %\begin{enumerate}
 %    \item Compute $\nabla_u\sigma_n^2(u)$ and replace $\sigma_n^2$ by its first order Taylor expansion to obtain a linear function and then compute the integral. \textcolor{red}{More complex than expected...}
 %    \item Replace the integral by a Monte Carlo estimate.
 %\end{enumerate}
+\section{Alternatives for baselines}
 \subsection{Training with an approximation of the score}
 An appealing training algorithm aims at approximating directly the score function $\theta\mapsto \nabla_{\theta} \log p_{\theta}(y|\Omega_y)$. Write
 \begin{align*}
