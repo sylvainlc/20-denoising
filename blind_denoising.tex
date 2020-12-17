@@ -170,7 +170,7 @@ The first option is then to sample $(X_i)_{1\leqslant i \leqslant N}$ with distr
 $$
 \frac{1}{N}\sum_{i=1}^N \nabla_{\theta}\log p_{\theta}(X_i,y|\Omega_y)
 $$
-which boils down to choosing the cost function 
+which boils down to choosing the cost function
 $$
 \ell_{\theta}: y \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(X_i,y|\Omega_y)\,,
 $$
@@ -194,9 +194,16 @@ with a stop gradient on the $\omega_i$ and on the $X_i$ as the gradient must onl
 $$
 \omega_i = \frac{\varphi_{\mu_p(\Omega_y),\sigma^2_p(\Omega_y)}(X_i)   \varphi_{0,\sigma_n^2(X_i)}(y-X_i)}{q(X_i|\Omega_y,y) \int \varphi_{\mu_p(\Omega_y),\sigma^2_p(\Omega_y)}(x)   \varphi_{0,\sigma_n^2(x)}(y-x) \mathrm{d} x}
 $$
-\paragraph{Solution 1.} Assume that $\omega_i$ is close to one (and then set it to 1) and choose for $q(\cdot|\Omega_y,y)$ the P-Net without a mask or with the mask i.e. sample $X_i$ with the P-Net with or without the mask. 
+\paragraph{Solution 1.} Assume that $\omega_i$ is close to one (and then set it to 1) and choose for $q(\cdot|\Omega_y,y)$ the P-Net without a mask or with the mask i.e. sample $X_i$ with the P-Net with or without the mask.
 
-\paragraph{Solution 2.} Sample $X_i$ with the P-Net with or without the mask and compute $\omega_i$ by replacing the integral by a numerical approximations. 
+\paragraph{Solution 2.} Sample $X_i$ with the P-Net with or without the mask and compute $\omega_i$ by replacing the integral by a numerical approximations.
+
+\paragraph{Solution 3.} Sample $X_i$ with the P-Net with (1) or without (2) the mask and compute the auto-normalized version of $\omega_i$.
+\begin{enumerate}
+\item $\omega_i = \varphi_{0,\sigma_n^2(X_i)}(y-X_i)$
+\item $\omega_i = \frac{ \varphi_{\mu_p(\Omega_y),\sigma^2_p(\Omega_y)}(X_i)   \varphi_{0,\sigma_n^2(X_i)}(y-X_i)}{\varphi_{\mu_p(\Omega_y,y),\sigma^2_p(\Omega_y,y)}}$
+\end{enumerate}
+
 \subsubsection{Improved importance sampling}
 The previous importance sampling estimator is not efficient as all samples are obtained without considering $y$ nor $\sigma_n^2$. An alternative is to sample $X_i$ from the proposal distribution:
 $$
