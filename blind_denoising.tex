@@ -97,7 +97,7 @@ where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with
 %\end{align*}
 As $\sigma_{\theta_n}^2$ depends on $u$ this integral cannot be computed explicitly. This model depends on the unknown parameter $\theta = (\theta_p,\theta_n)$. In the following, $(\mu_{\theta_p},\sigma^2_{\theta_p})$ and $\sigma^2_{\theta_n}$ are computed using deep neural networks and $\theta_p$ and $\theta_n$ are the weights and biases of these networks.
 
-The approach proposed in this paper is decomposed into two steps:
+The approach proposed in this paper is decomposed into two steps.
 \begin{enumerate}
 \item First, $\mu_{\theta_p}$ and $\sigma_{\theta_p}^2$  are obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $x$.
 \item After a training procedure to estimate the parameters of these networks, the estimator of the unknow pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
