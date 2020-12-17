@@ -193,12 +193,6 @@ y \mapsto \sum_{i=1}^N\frac{\omega_i}{\sum_{j=1}^N\omega_j}  \log p(X_i,y|\Omega
 $$
 with a stop gradient on the $\omega_i$ and on the $X_i$ as the gradient must only affect $ \log p(X_i,y|\Omega_y)$.
 
-\subsubsection{Model 41}
-
-$\log p_\theta(y) = \log\int p_\theta(x)p_\theta(y|x)dx$
-Replcing the integral by an $X_i$ sampled with the P-Net.
-
-$\sigma_p^2 \to 0$ so it is equivalent to use simply $X_i = \mu_p$
 %\paragraph{Training.} The first option seems to be the most promising as the only approximation is a linear approximation of the N-net producing $\sigma_n^2$ to compute the integral. The second option seems more closely related to what is being processed with the ongoing simulations. The simplest version of the second option is to write the following approximation of $p(y|\Omega_y)$:
 %$$
 %\hat p(y|\Omega_y) = \varphi_{0,\sigma_n^2(\mu_p + \sigma_p\zeta)}(y-\mu_p - \sigma_p\zeta)\,,
