@@ -179,3 +179,75 @@ with a stop gradient on the $\omega_i$ and on the $X_i$ as the gradient must onl
 %    c(\vh, \vt)_i = \vyh_i = \frac{\langle \vh, \vt_i \rangle}{\Vert \vh \Vert_2 \Vert \vt_i \Vert_2}\,.
 %    \label{eq:cosine-classifier}
 %\end{equation}
+
+
+\clearpage
+\newpage
+
+\section{Thoughts for future research}
+\subsection{Training based on Variational Auto-Encoders}
+The aim of this paper is to estimate $p_{\theta}(x|Y,\Omega_Y)$ to obtain samples from the posterior distribution of the signal given the noisy observations obtained in its neighborhood. An appealing approch to appraoximate $p_{\theta}(x|Y,\Omega_Y)$  is to introduce a parametric family of candidate approximations $q_{\phi}(x|Y,\Omega_Y)$. In this case,
+\begin{align*}
+\log p_{\theta}(y|\Omega_y) &\\
+&\hspace{-1.3cm}= \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}[\log p_{\theta}(y|\Omega_y)]\,,\\
+&\hspace{-1.3cm}= \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}\left[\log \frac{p_\theta(X,y|\Omega_y)}{q_{\phi}(\cdot|y,\Omega_y)}\frac{q_{\phi}(\cdot|y,\Omega_y)}{p_\theta(X|y,\Omega_y)}\middle |y,\Omega_y\right]\,,\\
+&\hspace{-1.3cm}= \mathcal{L}_{\theta,\phi}(y,\Omega_y) + \mathrm{KL}\left(q_{\phi}(\cdot|y,\Omega_y)\| p_\theta(\cdot|y,\Omega_y)\right)\,,
+\end{align*}
+where $ \mathrm{KL}$ is the Kullback-Leibler divergence and where $\mathcal{L}_{\theta,\phi}(y,\Omega_y)$ is the evidence lower bound (ELBO):
+$$
+ \mathcal{L}_{\theta,\phi}(y,\Omega_y)  = \mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}\left[\log \frac{p_\theta(X,y|\Omega_y)}{q_{\phi}(X|y,\Omega_y)}\middle |y,\Omega_y\right]\,.
+$$
+Therefore, $ \mathcal{L}_{\theta,\phi}(y,\Omega_y) \leqslant \log p_{\theta}(y|\Omega_y)$ and $ \mathcal{L}_{\theta,\phi}(y,\Omega_y)$ is usually used as a surrogate for $ \log p_{\theta}(y|\Omega_y)$. The aim of auto-encoders approaches is then to obtain
+$$
+(\theta^*,\phi^*) \in \mathrm{argmax} \; \mathcal{L}_{\theta,\phi}(y,\Omega_y)\,.
+$$
+Consider the following model and variational family.
+\begin{itemize}
+\item $p_\theta(x|\Omega_y)$: Gaussian prior, P-Net with $\overline \Omega_y$ at central position.
+\item $p_\theta(y|x,\Omega_y)$: N-net.
+\item $q_{\phi}(\cdot|y,\Omega_y)$: Gaussian posterior, P-Net with $y$ at central position.
+\end{itemize}
+The loss function (to be minimized) can also be written
+\begin{multline*}
+ \mathcal{L}_{\theta,\phi}(y,\Omega_y)  =   -\mathbb{E}_{q_{\phi}(\cdot|y,\Omega_y)}\left[\log p_\theta(y|X,\Omega_y)\middle |y,\Omega_y\right] \\ + \mathrm{KL}\left(q_{\phi}(\cdot|y,\Omega_y)\| p_\theta(\cdot|\Omega_y)\right)\,.
+\end{multline*}
+For one sample $(y_i,\Omega_i)$, using the explicit computation of the  Kullback-Leibler divergence between Gaussian distributions, this yields:
+\begin{multline*}
+2\widehat{\mathcal{L}}_{\theta,\phi}(y_i,\Omega_i)  =   \log(\sigma^2_{\theta_n}(X_i,\Omega_i)) + \frac{(Y_i-X_i)^2}{\sigma^2_{\theta_n}(X_i,\Omega_i)} \\ + \log\frac{\sigma^2_{\theta_p}(\Omega_i)}{\sigma^2_{\phi}(Y_i,\Omega_i)} + \frac{\sigma^2_{\phi}(Y_i,\Omega_i) + \left(\mu_{\theta_p}(\Omega_i) - \mu_\phi(Y_i,\Omega_i)\right)^2}{\sigma^2_{\theta_p}(\Omega_i)}\,,
+\end{multline*}
+where $X_i$ is a sample from $q_\phi(\cdot|y_i,\Omega_i)$ i.e.
+$$
+X_i = \mu_\phi(Y_i,\Omega_i) + \sigma_\phi(Y_i,\Omega_i)\varepsilon_i
+$$
+with $\varepsilon_i$ a standard Gaussian random variable.
+
+The importance weigthed bound is a variational lower bound of the loglikelihood based on importance sampling which can be applied to variational autoencoders. This bound is given by:
+\begin{multline*}
+ \mathcal{L}^{\mathsf{IWAE}}_{\theta,\phi}(y,\Omega_y)  \\
+= \mathbb{E}_{q^{\otimes M}_{\phi}(\cdot|y,\Omega_y)}\left[\log \left(\frac{1}{M}\sum_{m=1}^M\frac{p_\theta(X_m,y|\Omega_y)}{q_{\phi}(X_m|y,\Omega_y)}\right)\middle |y,\Omega_y\right]\,,
+\end{multline*}
+where $\mathbb{E}_{q^{\otimes M}_{\phi}(\cdot|y,\Omega_y)}$ means that the $(X_m)_{1\leqslant m \leqslant M}$ are independent with distribution $q_{\phi}(\cdot|y,\Omega_y)$. This loss is approximated with $M$ samples from $q_{\phi}(\cdot|y,\Omega_y)$:
+$$
+ \widehat{\mathcal{L}}^{\mathsf{IWAE}}_{\theta,\phi}(y,\Omega_y)
+= \log \left(\frac{1}{M}\sum_{m=1}^M\frac{p_\theta(X_m,y|\Omega_y)}{q_{\phi}(X_m|y,\Omega_y)}\right)\,.
+$$
+Note that the gradient (using the reparametrization trick for $\phi$)  can be written:
+$$
+\sum_{m=1}^M \frac{\omega_{\theta,\phi}(X_m)}{\sum_{\ell=1}^M\omega_{\theta,\phi}(X_\ell)} \nabla\log \omega_{\theta,\phi}(X_m)\,,
+$$
+where
+$$
+\omega_{\theta,\phi}(X_m) = \frac{p_\theta(X_m,y|\Omega_y)}{q_{\phi}(X_m|y,\Omega_y)}\,.
+$$
+
+Using that:
+$$
+p_\theta(X_m,y|\Omega_y) = p_\theta(X_m|\Omega_y) p_\theta(y|X_m)
+$$
+yields:
+\begin{multline*}
+2\log(\omega_{\theta,\phi}(X_m)) = \\
+- \frac{( \mu_{\theta_p}(\Omega_i) - X_m )^2}{\sigma^2_{\theta_p}(\Omega_i)} - \log(\sigma^2_{\theta_p}(\Omega_i)) \\
+- \frac{( Y_i - X_m )^2}{\sigma^2_{\theta_n}(X_i,\Omega_i)} - \log(\sigma^2_{\theta_n}(X_i,\Omega_i)) \\
++ \frac{( \mu_\phi(Y_i,\Omega_i) - X_m )^2}{\sigma^2_{\phi}(Y_i,\Omega_i)} + \log(\sigma^2_{\phi}(Y_i,\Omega_i))
+\end{multline*}
