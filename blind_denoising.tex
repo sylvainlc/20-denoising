@@ -1,50 +1,86 @@
-% This version of CVPR template is provided by Ming-Ming Cheng.
-% Please leave an issue if you found a bug:
-% https://github.com/MCG-NKU/CVPR_Template.
+\documentclass{article}
 
-\documentclass[review]{cvpr}
-%\documentclass[final]{cvpr}
-
-\usepackage{times}
-\usepackage{epsfig}
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2021} with \usepackage[nohyperref]{icml2021} above.
+\usepackage{hyperref}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage{icml2021}
+
+% custom packages
 \usepackage{amsmath}
 \usepackage{amssymb}
+% \usepackage{times}
+% \usepackage{epsfig}
+% If accepted, instead use the following line for the camera-ready submission:
+%\usepackage[accepted]{icml2021}
 
-% Include other packages here, before hyperref.
-
-% If you comment hyperref and then uncomment it, you should delete
-% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
-% run, let it finish, and you should be clear).
-\usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
-
-\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
-\def\confYear{CVPR 2021}
-%\setcounter{page}{4321} % For final version only
-
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Submission and Formatting Instructions for ICML 2021}
 
 \begin{document}
 
-%%%%%%%%% TITLE
-\title{Joint self-supervised blind denoising and noise estimation}
+\twocolumn[
+\icmltitle{Joint self-supervised blind denoising and noise estimation}
 
-\author{First Author\\
-Institution1\\
-Institution1 address\\
-{\tt\small firstauthor@i1.org}
-% For a paper whose authors are all at the same institution,
-% omit the following lines up until the closing ``}''.
-% Additional authors and addresses can be added with ``\and'',
-% just like the second author.
-% To save space, use either the email address or home page, not both
-\and
-Second Author\\
-Institution2\\
-First line of institution2 address\\
-{\tt\small secondauthor@i2.org}
-}
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2021
+% package.
 
-\maketitle
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Jean Ollion}{sabilab}
+\icmlauthor{Charles Ollion}{cmap}
+\icmlauthor{Sylvain Le Corff}{cmap}
+\end{icmlauthorlist}
+
+\icmlaffiliation{sabilab}{SABILab, Die, France}
+\icmlaffiliation{cmap}{CMAP, Ecole Polytechnique, Université Paris-Saclay, France}
+
+
+\icmlcorrespondingauthor{Cieua Vvvvv}{c.vvvvv@googol.com}
+\icmlcorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{Blind Denoising, Self-supervised, Bio-image, Machine Learning}
+
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+% \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 
 
 %%%%%%%%% ABSTRACT
@@ -178,8 +214,8 @@ We compared our method to 2 baselines the current state-of-the-art blind self-su
 
 
 {\small
-\bibliographystyle{ieee_fullname}
 \bibliography{blind_denoising}
+\bibliographystyle{icml2021}
 }
 
 \clearpage
