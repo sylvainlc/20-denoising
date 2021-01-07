@@ -121,14 +121,14 @@ where
 \section{Implementation}
 \subsection{P-Net}
 The function $x\mapsto (\mu_p , \sigma_p)$ is implemented through a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture.
-The network consists of a contracting path and an expansive path, which gives it the u-shaped architecture. The contracting path is a typical convolutional network that consists of repeated application of convolutions, each followed by a rectified linear unit (ReLU) and a max pooling operation. During the contraction, the spatial information is reduced while feature information is increased. The expansive pathway combines the feature and spatial information through a sequence of up-convolutions and concatenations with high-resolution features from the contracting path.
-We use 2 levels of contractions with 64 filters.
-This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m)})$ depend on $x^{(l,m)}$ and its neighborhood.
+We made a few changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation (followed by 2x2 convolution?), we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, there is no activation function at the output layer.
 
+% cette section ne devrait-elle pas aller ailleurs ?
+This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m)})$ depend on $x^{(l,m)}$ and its neighborhood.
 While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
 
 \subsection{N-Net}
-the function $x\mapsto \sigma_n$ describing the noise distribution is implemented through a fully convolutional network only composed of 1x1 convolutions followed a non-linear activation layer (alternatively tanh and relu).
+the function $x\mapsto \sigma_n$ describing the noise distribution is implemented through a fully convolutional network only composed of six 1x1 convolutions of 64 filters followed a non-linear activation layer (alternatively tanh and relu).
 We found that such networks could be trained in a supervised way with a clean image x as input and the following cost function, where y is a corrupted version of x:
 $$
 y\mapsto \varphi_{0,\sigma_n^2}(y)
@@ -137,19 +137,34 @@ An essential aspect of the architecture is that the network contain no spatial c
 
 \subsection{Self-supervised loss}
 Following \cite{batson2019noise2self}, we used a self-supervised loss with pixel masking along a grid. The loss is computed only on the masked pixels.
-We obtained the best results with a replacement by a 3x3 gaussian filter excluding the center pixel.
-We also optimized grid spacing as there is a trade-off between learning efficiency and denoising quality: the smaller the spacing, the more pixels are used for training, but the more masked pixel are present in the receptive field which perturbs the denoising. We obtained best results using a random dynamic spacing between 3 and 5 pixels and we also remove randomly 10\% of the grid. The value of the loss was normalized by the number of pixel in the grid.
+We obtained the best results with a replacement by a 3x3 gaussian filter with $\sigma=1$ with a weight equal to zero at the center position.
+The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturbs the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
+In order to push the limits of this trade-off between learning efficiency and denoising quality, we introduced two modifications on the original approach: we used a random dynamic spacing between 3 and 5 pixels and we also dropped out randomly 10\% of the grid points. Both modifications allow to have relative positions of masked pixels that change randomly, and thus reduce considerably the grid spacing without drop of performances. The value of the loss was normalized by the number of points in the grid.
 
+Fluorescence-microscopy dataset usually display a high signal frequency imbalance, where background is overrepresented. To cope with this issue, we introduced a weight map to give more relative importance to rare signal during training. Let $p(x)$ the observed probability of a value within the training dataset and G the masking grid for a given mini-batch, the associated weight is $\frac{1 - p(x)}{\sum_{G}(1 - p(x))}$
 
-\section{Training and evaluation datasets}
-We evaluated our method on 3 publicly available datasets of microscopy images. To estimate a ground truth image, several observations of the same field-of-view (FOV) are acquired and averaged.
-The first dataset is taken from FMD dataset (mice cells) published by. It is composed of 20 different fields of view (FOV), each one containing 50 independent observations of the same sample. We refer to this dataset as \emph{FMD-Confocal-Mice}. We used the same training and evaluation procedure as the authors, i.e. evaluation on the 19th FOV and training/validation on the 19 other FOVs. We only used raw images. Note that the PSNR of raw images from different FOVs vary in a range of ~2dB, thus it is essential to use the same FOVs to compare absolute PSNR values between different works. Image are encoded in 8-bit and 255 is used as data range for PSNR computation.
+\section{Training and evaluation}
+\subsection{Datasets}
+We trained and evaluated our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
 
-The second dataset has been published along with the PPN2V method, and is composed of 3 different samples types and only one FOV per sample type. We refer to each sample type of this dataset as \emph{PPN2V-Convallaria}, \emph{PPN2V-Mouse-Actin} and \emph{PPN2V-Mouse-skull-nuclei}. We used the same training and evaluation procedure as the authors. For each sample type the whole dataset is used for training, and only a part of the FOV is used for PSNR computation. Images are encoded in 16-bit and actual data range of the ground truth is used for PSNR computation.
+The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of a single FOV. \emph{Convallaria} dataset is refered to as \emph{PN2V-C}, \emph{Mouse skull nuclei} as \emph{PN2V-MN} and \emph{Mouse Actin} as \emph{PN2V-MA}. We used the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
 
-The third dataset is published W2S. We used the 16-bit raw images kindly provided by the authors. The dataset is composed of 120 FOV, the first 80 are used for training/validation and the last 40 for evaluation. Following the authors, for each FOV, only the raw image of index 249 is used for training/validation and for evaluation. As Images are encoded in 16-bit, actual data range of the ground truth is used for PSNR computation.
-This dataset contains also super-resolution images (referred to as SIM-GT) which were used to evaluate the deconvolution procedure. In order to have the SIM-GT and wide-field (WF) images in the same intensity range, for each FOV, the average of all WF images was computed (referred to as WF-GT), and intensity values of SIM-GT were scaled linearly in order to minimize
-$( \textrm{SIM-GT} - \textrm{WF-GT})^2$
+The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}. We used the 16-bit raw images kindly provided by the authors. The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation. Following the authors, for each FOV, only the raw image of index 249 is used for training and for evaluation.
+
+This dataset contains also alinged super-resolution images (referred to as SIM-GT) which were used to evaluate the deconvolution procedure. We downscaled the SIM-GT image using average pooling in order to have a pixel-to-pixel correspondance. In order to have the SIM-GT and wide-field (WF) images in the same intensity range, for each FOV, we scaled linearily the SIM-GT image in order to have the modal values and the 95\% percentile correspond between the WF ground truth and the SIM-GT images.
+
+\subsection{Training}
+We used Adam optimizer with start learning rate $10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 15 epochs. We trained networks for 300 steps of 100 epochs. We obtained better and more reproductible results by using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. Thus we removed the validation step and used the weights of trained model at the end of training.
+\begin{itemize}
+\item average flip
+\item alternate procedure ? 
+\end{itemize}
+\subsection{Evaluation}
+For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR computation.
+Structural similarity (SSIM) was computed as in \cite{wang2004image}.
+To compute PSNR of gradient images (GPSNR), we transformed both ground truth and sample images with gaussian gradient magnitude with $\sigma=1$, and computed the PSNR of the two images using the range of the gradient magnitude transform of the ground truth image.
+
+To further
 
 \section{Conclusion}
 
