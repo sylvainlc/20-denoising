@@ -155,9 +155,13 @@ where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been
 
 Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this paper where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
-The blind denoising framework introduced in this paper can be written as a regression problem where the observations conditionally on the neighborhood $\Omega_Y$ of $Y$ the observation is given by
+The signal $X$ is then modeled as 
 $$
-Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
+X =  \mu_{\theta_p}(\Omega_X,U)\,,
+$$
+where $\Omega_X$ are the signal values in a neighborhood of $X$ and $U$ is a random variable $\Omega_X$-measurable. The observation $Y$  is given by
+$$
+Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 $$
 %which means that
 %$$
@@ -167,21 +171,21 @@ $$
 %$$
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
-where $\varepsilon$ is centered noise and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$. 
+where $\varepsilon$ is centered noise. % and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$. 
 %The approach proposed in this paper is decomposed into two steps.
 %\begin{enumerate}
 %\item First, $\mu_{\theta_p}$ is obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $\mu_{\theta_p}$.
 %\item After a training procedure to estimate the parameters of these networks, the estimator of the unknow pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
 %\end{enumerate}
-The signal $X$ is then modeled as $X =  \mu_{\theta_p}(\Omega_Y;Y)$ so that 
-$$
-Y = X + \Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
-$$
-where 
-\begin{align*}
-\Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y)  &=  \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})  -\mu_{\theta_p}(\Omega_Y;Y) \,,\\
-&\sim \partial_2\mu_{\theta_p}(\Omega_Y;Y)[\overline{\Omega_Y}-Y]
-\end{align*}
+%The signal $X$ is then modeled as $X =  \mu_{\theta_p}(\Omega_Y;Y)$ so that 
+%$$
+%Y = X + \Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
+%$$
+%where 
+%\begin{align*}
+%\Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y)  &=  \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})  -\mu_{\theta_p}(\Omega_Y;Y) \,,\\
+%&\sim \partial_2\mu_{\theta_p}(\Omega_Y;Y)[\overline{\Omega_Y}-Y]
+%\end{align*}
 The loss function is defined by approximating the loglikelihood of the observations using samples from the P-net:
 $$
 \ell_{\theta}: (Y_1,\ldots,Y_N) \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
