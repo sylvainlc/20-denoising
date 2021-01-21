@@ -156,13 +156,15 @@ where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been
 Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this paper where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
 The signal $X$ is then modeled as 
-$$
+\begin{equation}
+\label{eq:def:X}
 X =  \mu_{\theta_p}(\Omega_X,U)\,,
-$$
+\end{equation}
 where $\Omega_X$ are the signal values in a neighborhood of $X$ and $U$ is a random variable $\Omega_X$-measurable. The observation $Y$  is given by
-$$
+\begin{equation}
+\label{eq:def:Y}
 Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
-$$
+\end{equation}
 %which means that
 %$$
 %Y = X + (\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})-\mu_{\theta_p}(\Omega_Y;Y)) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon
@@ -171,7 +173,25 @@ $$
 %$$
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
-where $\varepsilon$ is centered noise. % and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$. 
+where $\varepsilon$ is centered noise independent of $(X,\Omega_X)$ with probability density function $\varphi$ with respect to the Lebesgue measure. The random variable $U$ being  $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$. This approach, combined with the additive model  \eqref{eq:def:Y}, allows us to consider the following loss function associated with $N$observations $(Y_1,\ldots,Y_N)$:
+$$
+\ell_{\theta}: (Y_1,\ldots,Y_N) \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
+$$
+where $\theta = (\theta_n,\theta_p)$ and
+\begin{multline*}
+\ell_{\theta}(Y_i|\Omega_{Y_i}) = \frac{1}{2}\log(\sigma_{\theta_n}( \mu_{\theta_p}(\Omega_{Y_i},g(\Omega_{Y_i})))^2) \\
+-\log \varphi\left(\frac{Y_i-\mu_{\theta_p}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)\,, %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
+\end{multline*}
+where $\Omega_{Y_i}$ are the observed values in the neighborhood of $Y_i$. This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $X$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}. In Section~\ref{sec:experiments} we propose several distributions $\varphi$ to account for positive skewness which cannot be modeled with Gaussian distributions. We also provide empirical evaluations that choosing $g$ as the empirical mean of its entries is a robust and appealing solution while other choices can be made straightforwardly.
+
+After a training phase to estimate $\theta$, the signal values cannot be predicted as the random variable $U$ is not observed. Several predictors of $X$ can be designed.
+
+
+
+%uses the fact that by \eqref{eq:def:X} $Y_i$ is a natural linear predictor of $X_i$ and then 
+%instead of introducing an explicit noise  distribution in the definition of $U$ and  therefore in \eqref{eq:def:X} and then to estimate the posterior distribution of $X$ given $Y$ we propose to introduce a loss function which 
+
+% and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$. 
 %The approach proposed in this paper is decomposed into two steps.
 %\begin{enumerate}
 %\item First, $\mu_{\theta_p}$ is obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $\mu_{\theta_p}$.
@@ -186,15 +206,7 @@ where $\varepsilon$ is centered noise. % and $\overline{\Omega_Y}$ is the empiri
 %\Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y)  &=  \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})  -\mu_{\theta_p}(\Omega_Y;Y) \,,\\
 %&\sim \partial_2\mu_{\theta_p}(\Omega_Y;Y)[\overline{\Omega_Y}-Y]
 %\end{align*}
-The loss function is defined by approximating the loglikelihood of the observations using samples from the P-net:
-$$
-\ell_{\theta}: (Y_1,\ldots,Y_N) \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
-$$
-where
-\begin{multline*}
-\ell_{\theta}(Y_i|\Omega_{Y_i}) = \log(\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2) \\
-+ \frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,.
-\end{multline*}
+
 
 \section{Experiments}
 \subsection{Model Architecture}
