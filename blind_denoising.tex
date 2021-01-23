@@ -85,7 +85,7 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Self-supervised deep neural networks trained for blind denoising have recently emerged and outperformed supervised networks. Using the assumption that the signal has local correlation and that the noise components are independent, such networks are able to predict an estimate of the clean signal without clean training data. Therefore they are particularly relevant for biomedical image denoising where the noise process is difficult to model precisely and clean training data are usually unavailable. However they suffer from a low training efficiency and produce visual artifacts, which strongly limits the denoising performances.
+Self-supervised deep neural networks trained for blind denoising have recently emerged and outperformed supervised networks. Using the assumption that the signal has local correlation and that the noise components are independent, such networks are able to predict an estimate of the clean signal without clean training data. Therefore they are particularly relevant for biomedical image denoising where the noise process is difficult to model precisely and clean training data are usually unavailable. However they suffer from a low training efficiency and produce visual artifacts, which strongly limits the denoising performances.other
 In this work we describe a model that enables to estimate the clean signal prior and the noise distribution jointly with very few assumptions on the noise. This model is implemented through two neural networks trained simultaneously, in which careful architecture choices enable us to significantly improve the quality of denoising as well as providing an accurate noise distribution. Our framework also introduces significant improvements of the training efficiency while being simple to implement and lightweight in terms of parameters and operations.
 
 Our method improves significantly the performance of current state-of-the-art self-supervised blind denoising networks both visually and quantitatively according to classical metrics, on six publicly available biomedical image datasets. We also show empirically on synthetic noisy data that we are able to capture the noise distribution efficiently. We also introduce a simple metric to estimate the sharpness of denoised images and show that our method produces sharper images than previous methods.
@@ -93,23 +93,15 @@ Our method improves significantly the performance of current state-of-the-art se
 
 \section{Introduction}
 \label{sec:introduction}
-[D'abord un blabla sur l'importance du denoising. + particulier dans le contexte bio-image ]
-Classical denoising methods, are model-driven methods in the sense that they rely on assumptions on the noise process or on the structure of the signal but are limited by the relevance of these assumptions.
-Recently, efficient data-driven methods have emerged. Most of them are using pairs of noisy and clean measurements of the same signal in a supervised learning problem \cite{weigert2017content}. Lethinen et al. have demonstrated that it is possible to train an efficient denoising method using pairs of independent noisy measurements instead of a clean measurement of the same signal\cite{lehtinen2018noise2noise}. However clean measurements or pairs of independent noisy measurements of the siganl are often unavailable in practice.
-Recent self-supervised methods overcome this limitation\cite{batson2019noise2self,krull2018noise2void}. The main idea of those methods is that a neural network learns to predict a clean pixel only using its surroundings. We refer to those methods as blind-denoising methods because they make no assumption on the nature of the corrupting process other than [0-mean + statistical independance].
+Classical denoising methods are model-driven methods in the sense that they rely on assumptions on the noise process or on the structure of the signal but are limited by the relevance of these assumptions.
+Recently, efficient data-driven methods have emerged. Most of them are using pairs of noisy and clean measurements of the same signal in a supervised learning problem \cite{weigert2017content}. Lethinen et al. have demonstrated that it is possible to train an efficient denoising method using pairs of independent noisy measurements instead of a clean measurement of the same signal \cite{lehtinen2018noise2noise}. However clean measurements or pairs of independent noisy measurements of the siganl are often unavailable in practice.
+Recent self-supervised methods overcome this limitation \cite{batson2019noise2self,krull2018noise2void}. The main idea of those methods is that a neural network learns to predict a clean pixel without having access to the value of this pixel but only using its surroundings. We refer to those methods as blind-denoising methods because they make no assumption on the nature of the corrupting process except that it is centered and that its components are independent.
 The previously cited methods as well as their improved versions all display a high-frequency artefact refered to as \textit{checkerboard pattern} that limit their denoising capabilities.
 
-The contribution of this work is two-fold: \textit{Charles: change this section}
-\begin{itemize}
-\item We solve the \textit{checkerboard pattern} limitation through modifications of the network architecture as well as optimization of the training procedure
-\item We further improve the denoising performances by introducing a modelisation of the noise process that is learnt with a second neural network
-\end{itemize}
+In this work we improve the denoising performance of blind denoising networks through the introduction of an auxiliary network that is able to capture the distribution of the noise.
 
 \section{Related work}
 \label{sec:related}
-\begin{itemize}
-\item Introduce notion of J-invariant function
-\end{itemize}
 
 Two types of self-supervised methods:
 \paragraph{Masked training}
@@ -131,17 +123,18 @@ in the picture. This usually translates in $f$ being a convolutional function wh
 Additionally, \cite{batson2019noise2self} also show theoretical guarantees that the J-invariant function may seperate noise from signal and produce near-optimal denoisers.
 However in practice, Neither \cite{krull2018noise2void} nor \cite{batson2019noise2self} use strictly J-invariant functions, as they remove the masks at inference time,
 effectively using all the pixels, resulting in significantly better performance. By having this difference between train and test time, it is not well understood what the unmasked function actually models.
-Few other works have true J-invariant functions which are kept J-invariant at test time, however this is not trivially achieved in convolutional neural networks. \cite{laine2019high} achieves this by introducing directional convlution kernels, which only depend on pixels in a specific directions, ensuring that the value does not depend on pixels on the opposite direction. The function is therefore J-invariant, where J is a partition of the picture, excluding the central pixel, depending on the direction chosen. One drawback is that the inference has to be performed four times, in each direction. More recently \cite{lee2020noise2kernel} introduces a combination of specific convolutions operators with dilation and strides, ensuring that the function is independant of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as they do not require a tuned masking procedure. However this constrains strongly the network architecture, and the reported results are less competitive than other methods.
+Few other works have true J-invariant functions which are kept J-invariant at test time, however this is not trivially achieved in convolutional neural networks. \cite{laine2019high} achieves this by introducing directional convlution kernels, which only depend on pixels in a specific directions, ensuring that the value does not depend on pixels on the opposite direction. The function is therefore J-invariant, where J is a partition of the image, excluding the central pixel, depending on the direction chosen. One drawback is that the inference has to be performed four times, in each direction. More recently \cite{lee2020noise2kernel} introduces a combination of specific convolutions operators with dilation and strides, ensuring that the function is independant of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as they do not require a tuned masking procedure. However this constrains strongly the network architecture, and the reported results are less competitive than other methods.
 
-Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train time, which results in better empirical performances, and the ability to tune the masking to match structured noise (see section X). We provide a few directions to explain why relaxing the J-invariance might be beneficial.
+Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train time, which results in better empirical performances\textit{non verifié}, and the ability to tune the masking to match structured noise (see section X)(\cite{broaddus2020removing} \textit{Séparer en 2 phrases pour bien introduire l'avantage de prendre en compte des bruits structurés et insiter sur le fait qu'on a pas cette souplesse dans les vrai J-invariant networks}) . We provide a few directions to explain why relaxing the J-invariance might be beneficial.
 
-\textit{Charles: remove the following list}
+\textit{Faire une section related work sur l'apport d'un model de bruit}
+\paragraph{Benefits of a noise model}
 \begin{itemize}
-\item explain that the previous architectures are not J-invariant (can be turned into J-invariant functions by masking pixels before predicting their denoised value).
-\item Existing J-invariant architecture: \cite{laine2019high} using directional kernels. Introduction of a noise model $\rightarrow$ allows to improve performances on synthetic noise, but not suitable for real noise. Intuition that J-invariant functions can be improved by adding the information of the central pixel.
-\item advantage over masked training : higher training efficiency : the whole image is used for training.
-\item Other J-invariant architectures: \cite{lee2020noise2kernel}, strong limitation on network architecture: only one layer of convolution with center excluded followed by strided convolutions.
-\item Structured noise cannot be removed.
+\item what do we call a noise model: p(y|x) scalar
+\item \cite{laine2019high} : Introduction of a noise model $\rightarrow$ allows to improve performances on synthetic noise, but not suitable for real noise. Intuition that J-invariant functions can be improved by adding the information of the central pixel.
+\item Two methods derived from N2V are using a noise noise model that approximate observed real noise to improve denoising performances: PN2V \cite{krull2019probabilistic} and PPN2V \cite{prakash2020fully}. The former require additional information on the noise and the latter uses a firts trained network to estimate the noise. The denoising networks are trained to predict 800 images with the previously fitted ditribution\textit{mieux expliquer, et dire que c'est pas efficace}.
+Both methods can improve performances but still display a checkerboard pattern and sometimes display numeric instabilities during training \cite{2020DivNoising}.
+
 \end{itemize}
 
 \section{Model}
@@ -151,7 +144,7 @@ Estimating a signal corrupted by additive noise  is a challenging statistical pr
 \begin{equation*}
 Y = X + \varepsilon\,,
 \end{equation*}
-where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. 
+where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}.
 
 Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this paper where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
@@ -172,13 +165,13 @@ where $\varepsilon$ is centered noise independent of $(X,\Omega_X)$ with probabi
 
 In this paper $\mu_{\theta_p}$ is modeled as a convolutional neural network, see Section~\ref{} for more details, and during training this predictor $\widehat X$ cannot be used to estimate $\theta_p$ and $\theta_n$ as  a standard mean squared error loss would recover the prediction of $Y$ instead of $X$ (\textcolor{red}{A reprendre plus precisement}). This is the reason why we adopt a blind spot denoising approach and assume during training that $\mu_{\theta_p}$ cannot use $Y$ as an input which must be replaced by an estimator. In this framework, we  consider that an appealing prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_p}(\Omega_Y,g(\Omega_Y))$ where $g$ ((\textcolor{red}{Autre chose que la moyenne empirique ?}).
 
-%The signal $X$ is then modeled as 
+%The signal $X$ is then modeled as
 %\begin{equation}
 %\label{eq:def:X}
 %X =  \mu_{\theta_p}(\Omega_X,U)\,,
 %\end{equation}
-%where $\Omega_X$ are the signal values in a neighborhood of $X$ and $U$ is a random variable on $\mathbb{R}$. % $\Omega_X$-measurable. 
-% In the case where the random variable $U$ is $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$. 
+%where $\Omega_X$ are the signal values in a neighborhood of $X$ and $U$ is a random variable on $\mathbb{R}$. % $\Omega_X$-measurable.
+% In the case where the random variable $U$ is $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$.
 Combining this with the additive model  \eqref{eq:def:Y} yields the following loss function associated with $N$observations $(Y_1,\ldots,Y_N)$:
 $$
 \ell_{\theta}: (Y_1,\ldots,Y_N) \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
@@ -188,28 +181,28 @@ where $\theta = (\theta_n,\theta_p)$ and
 \ell_{\theta}(Y_i|\Omega_{Y_i}) = \frac{1}{2}\log(\sigma_{\theta_n}( \mu_{\theta_p}(\Omega_{Y_i},g(\Omega_{Y_i})))^2) \\
 -\log \varphi\left(\frac{Y_i-\mu_{\theta_p}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)\,. %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
 \end{multline*}
-%This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}. 
-In Section~\ref{sec:experiments} we propose several distributions $\varphi$ to account for positive skewness which cannot be modeled with Gaussian distributions. We also provide empirical evaluations that choosing $g$ as the empirical mean of its entries is a robust and appealing solution while other choices can be made straightforwardly. 
+%This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}.
+In Section~\ref{sec:experiments} we propose several distributions $\varphi$ to account for positive skewness which cannot be modeled with Gaussian distributions. We also provide empirical evaluations that choosing $g$ as the empirical mean of its entries is a robust and appealing solution while other choices can be made straightforwardly.
 %The random variable $U$ being  $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$
 
 %After a training phase to estimate $\theta$, the signal values cannot be predicted as the random variable $U$ is not observed. Several predictors of $X$ can be designed.
 
 
 
-%uses the fact that by \eqref{eq:def:X} $Y_i$ is a natural linear predictor of $X_i$ and then 
-%instead of introducing an explicit noise  distribution in the definition of $U$ and  therefore in \eqref{eq:def:X} and then to estimate the posterior distribution of $X$ given $Y$ we propose to introduce a loss function which 
+%uses the fact that by \eqref{eq:def:X} $Y_i$ is a natural linear predictor of $X_i$ and then
+%instead of introducing an explicit noise  distribution in the definition of $U$ and  therefore in \eqref{eq:def:X} and then to estimate the posterior distribution of $X$ given $Y$ we propose to introduce a loss function which
 
-% and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$. 
+% and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$.
 %The approach proposed in this paper is decomposed into two steps.
 %\begin{enumerate}
 %\item First, $\mu_{\theta_p}$ is obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $\mu_{\theta_p}$.
 %\item After a training procedure to estimate the parameters of these networks, the estimator of the unknow pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
 %\end{enumerate}
-%The signal $X$ is then modeled as $X =  \mu_{\theta_p}(\Omega_Y;Y)$ so that 
+%The signal $X$ is then modeled as $X =  \mu_{\theta_p}(\Omega_Y;Y)$ so that
 %$$
 %Y = X + \Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
-%where 
+%where
 %\begin{align*}
 %\Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y)  &=  \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})  -\mu_{\theta_p}(\Omega_Y;Y) \,,\\
 %&\sim \partial_2\mu_{\theta_p}(\Omega_Y;Y)[\overline{\Omega_Y}-Y]
