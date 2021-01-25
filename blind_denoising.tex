@@ -96,7 +96,14 @@ Our method improves significantly the performance of current state-of-the-art se
 Classical denoising methods are model-driven methods in the sense that they rely on assumptions on the noise process or on the structure of the signal but are limited by the relevance of these assumptions.
 Recently, efficient data-driven methods have emerged. Most of them are using pairs of noisy and clean measurements of the same signal in a supervised learning problem \cite{weigert2017content}. Lethinen et al. have demonstrated that it is possible to train an efficient denoising method using pairs of independent noisy measurements instead of a clean measurement of the same signal \cite{lehtinen2018noise2noise}. However clean measurements or pairs of independent noisy measurements of the siganl are often unavailable in practice.
 Recent self-supervised methods overcome this limitation \cite{batson2019noise2self,krull2018noise2void}. The main idea of those methods is that a neural network learns to predict a clean pixel without having access to the value of this pixel but only using its surroundings. We refer to those methods as blind-denoising methods because they make no assumption on the nature of the corrupting process except that it is centered and that its components are independent.
-The previously cited methods as well as their improved versions all display a high-frequency artefact refered to as \textit{checkerboard pattern} that limit their denoising capabilities.
+
+\textit{Notes Charles: How to articulate Intro vs Related work? Goal here is to present the current advances and limitations of blind spot, and the problematic we consider, and the general idea of our method. We'll detail the related work mostly using this problematic. Here are a few problematics:}
+\begin{itemize}
+  \item \textbf{Noise Assumptions} Assumptions on noise are often wrong in the case of real images; many models assume a gaussian noise distribution (very wrong in the case of microscopy). Some people proposed methods adapting to different standard noises, but real noises are more complex, sometimes combinations of distributions, not always symmetric, etc... We propose a much more general approach that fit many types of noise, and capture better real noise distribution.
+  \item \textbf{Blind spot modelisation} Several approaches try to model the "blind spot" method, by masking pixels, introducing J-invariant Framework, defining specific convolution operators. However, this implies strong computation limitations in some works ; while other works rely on a different procedure at inference which is not well understood. We propose an alternate mathematical way to see blind spot denoising, hopefully leading to a better understanding on the inference procedure.
+  \item \textbf{Checkerboard pattern and weak denoising} A well known problem, present in several of previously cited methods is that they display to high-frequency artefacts refered to as \textit{checkerboard pattern} that limit their denoising capabilities. We will see how our method limit these aspects
+  \item \textbf{Evaluation problems} Several works that only report PSNR (peak signal to noise ratio) as a metric (as well a SSIM); however this metric alone is not sufficient to evaluate accurately the quality of denoising, because it does not correctly take into account the loss of high frequency signal details, overestimating the quality blurry results. We introduce a new metric based on the PSNR of the local gradients of the picture.
+\end{itemize}
 
 In this work we improve the denoising performance of blind denoising networks through the introduction of an auxiliary network that is able to capture the distribution of the noise.
 
@@ -113,6 +120,7 @@ Two types of self-supervised methods:
 \item deconoising:\cite{goncharova2020} add a gaussian conlolution after the NN output to simulate microscope PSF improves performances, however the deconvolved image (predicted image before the gaussian conlolution) has even stronger checkerboard pattern.
 \item In a related work, Kobayashi et al. show that self-supervised netwoks can perform efficiel noise-tolerant deconvolution, on sythetic data \cite{kobayashi2020image}.
 \item When noise processe displays local correlations that are known masking can be adapted to remove them \cite{broaddus2020removing}
+\item Compare to \cite{yue2019variational}, which explicitely uses 2 networks, efficiently seperating noise from signal, with very little assumption on the noise, but requires the ground truth for the estimation of the parameters, therefore not directly comparable to methods using only a self-supervision loss.
 \end{itemize}
 
 \paragraph{J-invariant networks}
