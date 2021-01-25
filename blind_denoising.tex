@@ -125,14 +125,14 @@ However in practice, Neither \cite{krull2018noise2void} nor \cite{batson2019nois
 effectively using all the pixels, resulting in significantly better performance. By having this difference between train and test time, it is not well understood what the unmasked function actually models.
 Few other works have true J-invariant functions which are kept J-invariant at test time, however this is not trivially achieved in convolutional neural networks. \cite{laine2019high} achieves this by introducing directional convlution kernels, which only depend on pixels in a specific directions, ensuring that the value does not depend on pixels on the opposite direction. The function is therefore J-invariant, where J is a partition of the image, excluding the central pixel, depending on the direction chosen. One drawback is that the inference has to be performed four times, in each direction. More recently \cite{lee2020noise2kernel} introduces a combination of specific convolutions operators with dilation and strides, ensuring that the function is independant of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as they do not require a tuned masking procedure. However this constrains strongly the network architecture, and the reported results are less competitive than other methods.
 
-Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train time, which results in better empirical performances\textit{non verifié}, and the ability to tune the masking to match structured noise (see section X)(\cite{broaddus2020removing} \textit{Séparer en 2 phrases pour bien introduire l'avantage de prendre en compte des bruits structurés et insiter sur le fait qu'on a pas cette souplesse dans les vrai J-invariant networks}) . We provide a few directions to explain why relaxing the J-invariance might be beneficial.
+Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train time, which results in better empirical performances\textit{[Jean] en est-on sûr ?}, and the ability to tune the masking to match structured noise (see section X)(\cite{broaddus2020removing} \textit{[Jean] suggestion: séparer en 2 phrases pour bien introduire l'avantage de prendre en compte des bruits structurés et insiter sur le fait qu'on a pas cette souplesse dans les vrai J-invariant networks}) . We provide a few directions to explain why relaxing the J-invariance might be beneficial.
 
-\textit{Faire une section related work sur l'apport d'un model de bruit}
+\textit{[Jean] Faire une section related work sur l'apport d'un model de bruit}
 \paragraph{Benefits of a noise model}
 \begin{itemize}
 \item what do we call a noise model: p(y|x) scalar
 \item \cite{laine2019high} : Introduction of a noise model $\rightarrow$ allows to improve performances on synthetic noise, but not suitable for real noise. Intuition that J-invariant functions can be improved by adding the information of the central pixel.
-\item Two methods derived from N2V are using a noise noise model that approximate observed real noise to improve denoising performances: PN2V \cite{krull2019probabilistic} and PPN2V \cite{prakash2020fully}. The former require additional information on the noise and the latter uses a firts trained network to estimate the noise. The denoising networks are trained to predict 800 images with the previously fitted ditribution\textit{mieux expliquer, et dire que c'est pas efficace}.
+\item Two methods derived from N2V are using a noise noise model that approximate observed real noise to improve denoising performances: PN2V \cite{krull2019probabilistic} and PPN2V \cite{prakash2020fully}. The former require additional information on the noise and the latter uses a previously trained network to estimate the noise. The denoising networks are trained to predict 800 images with the previously fitted ditribution\textit{[Jean] mieux expliquer, et dire que c'est pas efficace de prédire 800 channels}.
 Both methods can improve performances but still display a checkerboard pattern and sometimes display numeric instabilities during training \cite{2020DivNoising}.
 
 \end{itemize}
@@ -212,15 +212,18 @@ In Section~\ref{sec:experiments} we propose several distributions $\varphi$ to a
 \section{Experiments}
 \subsection{Model Architecture}
 \paragraph{P-Net}
-The function $x\mapsto (\mu_p , \sigma_p)$ is implemented through a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture.
-We made a few changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation (followed by 2x2 convolution?), we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, there is no activation function at the output layer.
+The function $x\mapsto \mu_p$ is implemented through a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture.
+We made a few changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
+The main difference with the networks used in N2S and N2N is that we use upsampling layer instead of transpose convolution, as we observed transpose convolution tend to increase the checkerboard artefact.
+The receptive field of this network is 35x35 pixels.
 For natural images, we used 3 levels of contractions/expansions and 128 filters.
-% cette section ne devrait-elle pas aller ailleurs ?
+
+\textit{[Jean] cette section ne devrait-elle pas aller ailleurs ? ou supprimée?}
 This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m)})$ depend on $x^{(l,m)}$ and its neighborhood.
 While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
 
 \paragraph{N-Net}
-The function $x\mapsto\sigma_n$ describing the noise distribution is implemented through a fully convolutional network composed of six 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and relu).
+The function describing the noise distribution is implemented through a fully convolutional network composed of six 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and relu).
 We found that such networks could be trained in a supervised way with a clean image x as input and the following cost function, where y is a corrupted version of x:
 $$
 y\mapsto\varphi_{0,\sigma_n^2}(x)
