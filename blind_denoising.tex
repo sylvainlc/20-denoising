@@ -93,61 +93,64 @@ Our method improves significantly the performance of current state-of-the-art se
 
 \section{Introduction}
 \label{sec:introduction}
+Image denoising is the process of seperating a noisy image $y = x + n$ into a signal $x$ and a corrupting noise $n$ to remove.
 Classical denoising methods are model-driven methods in the sense that they rely on assumptions on the noise process or on the structure of the signal but are limited by the relevance of these assumptions.
-Recently, efficient data-driven methods have emerged. Most of them are using pairs of noisy and clean measurements of the same signal in a supervised learning problem \cite{weigert2017content}. Lethinen et al. have demonstrated that it is possible to train an efficient denoising method using pairs of independent noisy measurements instead of a clean measurement of the same signal \cite{lehtinen2018noise2noise}. However clean measurements or pairs of independent noisy measurements of the siganl are often unavailable in practice.
-Recent self-supervised methods overcome this limitation \cite{batson2019noise2self,krull2018noise2void}. The main idea of those methods is that a neural network learns to predict a clean pixel without having access to the value of this pixel but only using its surroundings. We refer to those methods as blind-denoising methods because they make no assumption on the nature of the corrupting process except that it is centered and that its components are independent.
+Recently, efficient data-driven methods have emerged. Most of them are using pairs of noisy $y$ and clean measurements $x$ of the same signal in a supervised learning problem \cite{weigert2017content}. Lethinen et al. have demonstrated that it is possible to train an efficient denoising method using pairs of independent noisy measurements $(y^1, y^2)$ instead of a clean measurement of the same signal $x$ \cite{lehtinen2018noise2noise}. However clean measurements or pairs of independent noisy measurements of the signal are often unavailable in practice.
 
-\textit{Notes Charles: How to articulate Intro vs Related work? Goal here is to present the current advances and limitations of blind spot, and the problematic we consider, and the general idea of our method. We'll detail the related work mostly using this problematic. Here are a few problematics:}
-\begin{itemize}
-  \item \textbf{Noise Assumptions} Assumptions on noise are often wrong in the case of real images; many models assume a gaussian noise distribution (very wrong in the case of microscopy). Some people proposed methods adapting to different standard noises, but real noises are more complex, sometimes combinations of distributions, not always symmetric, etc... We propose a much more general approach that fit many types of noise, and capture better real noise distribution.
-  \item \textbf{Blind spot modelisation} Several approaches try to model the "blind spot" method, by masking pixels, introducing J-invariant Framework, defining specific convolution operators. However, this implies strong computation limitations in some works ; while other works rely on a different procedure at inference which is not well understood. We propose an alternate mathematical way to see blind spot denoising, hopefully leading to a better understanding on the inference procedure.
-  \item \textbf{Checkerboard pattern and weak denoising} A well known problem, present in several of previously cited methods is that they display to high-frequency artefacts refered to as \textit{checkerboard pattern} that limit their denoising capabilities. We will see how our method limit these aspects
-  \item \textbf{Evaluation problems} Several works that only report PSNR (peak signal to noise ratio) as a metric (as well a SSIM); however this metric alone is not sufficient to evaluate accurately the quality of denoising, because it does not correctly take into account the loss of high frequency signal details, overestimating the quality blurry results. We introduce a new metric based on the PSNR of the local gradients of the picture.
-\end{itemize}
+Recent self-supervised methods overcome this limitation \cite{batson2019noise2self,krull2018noise2void}. The main idea of those methods is to train a neural network to predict the value of a (corrupted) pixel $y_i$ only using its surroundings. The resulting network has extracted some local structure of the signal and therefore can be used as a denoiser. We refer to those methods as \textit{blind-denoising} methods because they make no assumption on the nature of the corrupting process, or light assumptions, such as a centered noise and the fact that the noise components are independent. This corresponds well to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
 
-In this work we improve the denoising performance of blind denoising networks through the introduction of an auxiliary network that is able to capture the distribution of the noise.
+Current denoising neural networks make use of convolutional layers, which have a receptive field, centered on a pixel $y_i$. Through self-supervision, the network predicts $y_i$ given its inputs. Indeed, if the parametrized network is able to use the information of the central pixel $y_i$ to predict it, it would simply learn the identity. A common approach is then to ensure the central pixel is not used in the computation, either by masking the central pixel or modifying the convolutional architecture.
+
+In this work we propose a method which is able to recover both the original signal and the noise distribution. Our only assumption is that the noise components are independent and centered. It introduces a simple mathematical framework, which we hope will lead to a better understanding on the inference procedure. Practically, our framework is simple, fast, flexible (standard neural network layers are used) and produces significantly better metrics over 6 standard microscopy datasets. We will release the code after the reviewing process.
 
 \section{Related work}
 \label{sec:related}
 
-Two types of self-supervised methods:
-\paragraph{Masked training}
-\begin{itemize}
-\item Introduced by Noise2Noise\cite{krull2018noise2void} (N2N) and Noise2Self \cite{batson2019noise2self} (N2S).
-\item describe self-supervised loss. only masked pixels are used for training, which represent a few percent per image.
-\item masking strategies. explain the differences and flaws: N2N: no minimal distance between masked pixels + a chance that a pixel is replaced by itself/ N2S: grid replacement: mask also other pixels of the receptive field + replace by donut average.
-\item PN2V\cite{krull2019probabilistic} and PPN2V\cite{prakash2020fully}: use a noise model, which slighlty improve performances without solving the checkerboard pattern.
-\item deconoising:\cite{goncharova2020} add a gaussian conlolution after the NN output to simulate microscope PSF improves performances, however the deconvolved image (predicted image before the gaussian conlolution) has even stronger checkerboard pattern.
-\item In a related work, Kobayashi et al. show that self-supervised netwoks can perform efficiel noise-tolerant deconvolution, on sythetic data \cite{kobayashi2020image}.
-\item When noise processe displays local correlations that are known masking can be adapted to remove them \cite{broaddus2020removing}
-\item Compare to \cite{yue2019variational}, which explicitely uses 2 networks, efficiently seperating noise from signal, with very little assumption on the noise, but requires the ground truth for the estimation of the parameters, therefore not directly comparable to methods using only a self-supervision loss.
-\end{itemize}
+Self-supervised denoising methods are introduced by Noise2Void (N2V) \cite{krull2018noise2void} and Noise2Self (N2S) \cite{batson2019noise2self}. They rely on training a function $f$ implemented as a convolutional neural network (usually a U-net), through masked self-supervision, minimizing the following objective:
+
+$$L = \sum_{i \in M} ||f_i(y^{masked}_i) - y_i||^2 $$
+
+Where $y^{masked}$ is the image in which the pixels on which we are computing the loss have been masked. In that way, the network cannot learn the identity, and must use the local structure of the signal to predict the masked values.
+
+In practice, the masking procedure can have a large impact on training, as only masked pixels are used for training (typically representing a few percent of the image). In N2V, $M$ is a random sampling of the pixels in the picture, and the masking consists on replacing the pixel by a random neighboring pixel (with a probability to replace a pixel by itself). In N2S, $M$ is a fixed grid, and the pixels are replaced by the average of neighboring pixels (excluding the central pixel).
+
+Even though the prediction of a noisy pixel conditionnally on its neighbors is an impossible task to learn perfectly, the resulting $f$ shows strong denoising properties. These methods however suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}.
+
+Finally, \cite{broaddus2020removing} show that when noise the process displays local correlations (for instance directional noise), the masking can be adapted (by masking adjacent pixel in the same direction as the noise spatial correlation for instance) to remove them.
+
+These works have been extended in DecoNoising \cite{goncharova2020} in which a gaussian conlvolution is added after the neural network output to simulate microscope Point Spread Function. This technique improves performances, however the deconvolved image (predicted image before the gaussian conlolution) has even stronger checkerboard pattern.
 
 \paragraph{J-invariant networks}
-Learning to predict a collection of held-out pixels of an image, from all the other pixels and mased versions (\cite{krull2018noise2void}) can fit in the
-J-invariant framework introduced by \cite{batson2019noise2self}. A J-invariant function $f$ does not depend on a few selected dimensions J ; typically a few masked pixels
-in the picture. This usually translates in $f$ being a convolutional function which does not depend on the central pixel, but rather on the neighboring ones. This independance guarantees that the function $f$, learnt through self supervision $||f(x) - x||$ is not the identity.
+Learning to predict a collection of held-out pixels of an image, from all the other pixels and masked versions (as in N2V, N2S) can fit in the J-invariant framework introduced by \cite{batson2019noise2self}.
+A J-invariant function $f$ does not depend on a few selected dimensions J; typically a few masked pixels
+in the picture.
+This usually translates in $f$ being a convolutional function which does not depend on the central pixel, but rather on the neighboring ones. Those functions are sometimes also called \textit{blind spot}.
+ This independance guarantees that the function $f$, learnt through self-supervision is not the identity.
+ Additionally, \cite{batson2019noise2self} also show theoretical guarantees that the J-invariant function may seperate noise from signal and produce near-optimal denoisers.
 
-Additionally, \cite{batson2019noise2self} also show theoretical guarantees that the J-invariant function may seperate noise from signal and produce near-optimal denoisers.
-However in practice, Neither \cite{krull2018noise2void} nor \cite{batson2019noise2self} use strictly J-invariant functions, as they remove the masks at inference time,
-effectively using all the pixels, resulting in significantly better performance. By having this difference between train and test time, it is not well understood what the unmasked function actually models.
-Few other works have true J-invariant functions which are kept J-invariant at test time, however this is not trivially achieved in convolutional neural networks. \cite{laine2019high} achieves this by introducing directional convlution kernels, which only depend on pixels in a specific directions, ensuring that the value does not depend on pixels on the opposite direction. The function is therefore J-invariant, where J is a partition of the image, excluding the central pixel, depending on the direction chosen. One drawback is that the inference has to be performed four times, in each direction. More recently \cite{lee2020noise2kernel} introduces a combination of specific convolutions operators with dilation and strides, ensuring that the function is independant of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as they do not require a tuned masking procedure. However this constrains strongly the network architecture, and the reported results are less competitive than other methods.
+However in practice, Neither N2V nor N2S use strictly J-invariant functions, as they remove the masks at inference time,
+effectively using all the pixels, resulting in significantly better performance. By having this difference between train and test time, it is not well understood how the denoiser uses the central pixel information, as it was not seen during training. The performance boost might be due to the convolutional architecture's inductive bias, but understanding further this dependency could lead to better performances.
+Few other works have true J-invariant functions which are kept J-invariant at test time, however this is not trivially achieved in convolutional neural networks. \cite{laine2019high} achieves this by introducing directional convlution kernels, which only depend on pixels in a specific directions, ensuring that the value does not depend on pixels on the opposite direction. The function is therefore J-invariant, where J is a partition of the image, excluding the central pixel, depending on the direction chosen. One drawback is that the inference has to be performed four times, in each direction.
+More recently \cite{lee2020noise2kernel} introduces a combination of specific convolutions operators with dilation and strides, ensuring that the function is independant of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as they do not require a tuned masking procedure. However this constrains strongly the network architecture, and the reported results are less competitive than other methods.
+
+\paragraph{Benefits of a noise model}
+Among the denoising community, a few works have explicitely modeled the noise process. \cite{laine2019high} for instance model noise process explicitely modeled as gaussian, poissonian or another type of known noise. They either fix the noise parameter(s), or estimate them with an auxiliary neural network. As they model the signal distribution and the noise distribution, they can include the central pixel's information explicitely at test time in order to improve performances. This is only possible because they have a truely J-invariant function at test time. Their approach is consistant and yields good performance, but is then restricted to known, synthetic noise and therefore falls under the category of \textit{non-blind denoising} methods.
+Intuitively, the test-time use of central pixel is also happening in other methods such as N2V or N2S, but the dependency on central pixel is not explicit and unknown.
+
+Both methods can improve performances but still display a checkerboard pattern and sometimes display numeric instabilities during training \cite{2020DivNoising}.
+
+\textit{charles: jean peux tu m'aider sur cette partie, je pense que c'est important de bien expliquer et je veux pas dire de bêtises, tu connais mieux ces travaux que moi}
+\cite{krull2019probabilistic,prakash2020fully,2020DivNoising} make use of a noise model, which is a more generic modelisation of noise depending on the signal intensity: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$. In practice, a noise function (or network)  models a noise which depends on the intensity of the signal, which can cover much more realistic noises, combination of gaussian, speckle, poisson, etc. This noise then better model approximates the real world noise. An interesting feature of these works is the possibility to introspect the noise model after training.
+Probabilistic N2V \cite{krull2019probabilistic} requires additional data to calibrate, and therefore is no longer a fully self-supervised blind denoising method. Moreover the network is trained to predict a whole histogram distribution of possible noisy values, resulting approximating the noise distribution at each pixel. However, this is inefficient as it requires to predict $800$ values instead of a single point estimate of each pixel. On the other hand, \cite{prakash2020fully} builds implements a carefully designed gaussian mixture model to predict the noise level depending on the signal, but requires a calibration or bootstraping phase to learn it. The definition of the noise network is not trivial and can lead to numerical instabilities during training.
+We build upon these works by proposing a fully jointly trainable and stable denoising network and noise network.
+Finally, \cite{2020DivNoising} uses the Variational Autoencoder formalism, adding a pre-calibrated noise model in their architecture.
+
+It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise model, such as \cite{zhang2017beyond,yue2019variational}, which explicitely uses large neural networks to model a complex noise, with even less assumption on the noise (noise can be slightly structured, not centered...). Even though \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting, which it does not apply in our setting.
 
 Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train time, which results in better empirical performances\textit{[Jean] en est-on sûr ?}, and the ability to tune the masking to match structured noise (see section X)(\cite{broaddus2020removing} \textit{[Jean] suggestion: séparer en 2 phrases pour bien introduire l'avantage de prendre en compte des bruits structurés et insiter sur le fait qu'on a pas cette souplesse dans les vrai J-invariant networks}) . We provide a few directions to explain why relaxing the J-invariance might be beneficial.
 
-\textit{[Jean] Faire une section related work sur l'apport d'un model de bruit}
-\paragraph{Benefits of a noise model}
-\begin{itemize}
-\item what do we call a noise model: p(y|x) scalar
-\item \cite{laine2019high} : Introduction of a noise model $\rightarrow$ allows to improve performances on synthetic noise, but not suitable for real noise. Intuition that J-invariant functions can be improved by adding the information of the central pixel.
-\item Two methods derived from N2V are using a noise noise model that approximate observed real noise to improve denoising performances: PN2V \cite{krull2019probabilistic} and PPN2V \cite{prakash2020fully}. The former require additional information on the noise and the latter uses a previously trained network to estimate the noise. The denoising networks are trained to predict 800 images with the previously fitted ditribution\textit{[Jean] mieux expliquer, et dire que c'est pas efficace de prédire 800 channels}.
-Both methods can improve performances but still display a checkerboard pattern and sometimes display numeric instabilities during training \cite{2020DivNoising}.
-
-\end{itemize}
-
 \section{Model}
 \label{sec:model}
-
 
 Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. 
 
