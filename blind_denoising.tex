@@ -53,12 +53,12 @@
 \begin{icmlauthorlist}
 \icmlauthor{Jean Ollion}{sabilab}
 \icmlauthor{Charles Ollion}{cmap}
-\icmlauthor{Sylvain Le Corff}{cmap}
+\icmlauthor{Sylvain Le Corff}{tsp,cmap}
 \end{icmlauthorlist}
 
 \icmlaffiliation{sabilab}{SABILab, Die, France}
-\icmlaffiliation{cmap}{CMAP, Ecole Polytechnique, Université Paris-Saclay, France}
-
+\icmlaffiliation{cmap}{CMAP, Ecole Polytechnique, Institut Polytechnique de Paris, France}
+\icmlaffiliation{tsp}{Samovar, T\'el\'ecom SudParis, D\'epartement CITI, Institut Polyechnique de Paris, France}
 
 \icmlcorrespondingauthor{Cieua Vvvvv}{c.vvvvv@googol.com}
 \icmlcorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
@@ -93,15 +93,14 @@ Our method significantly improves  the performance of current state-of-the-art s
 
 \section{Introduction}
 \label{sec:introduction}
-Image denoising is the process of seperating a noisy image $y = x + n$ into a signal $x$ and a corrupting noise $n$ to remove.
-Classical denoising methods are model-driven methods in the sense that they rely on assumptions on the noise process or on the structure of the signal but are limited by the relevance of these assumptions.
-Recently, efficient data-driven methods have emerged. Most of them are using pairs of noisy $y$ and clean measurements $x$ of the same signal in a supervised learning problem \cite{weigert2017content}. Lethinen et al. have demonstrated that it is possible to train an efficient denoising method using pairs of independent noisy measurements $(y^1, y^2)$ instead of a clean measurement of the same signal $x$ \cite{lehtinen2018noise2noise}. However clean measurements or pairs of independent noisy measurements of the signal are often unavailable in practice.
+Image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by a noise $\varepsilon$. Classical denoising approaches  are model-driven in the sense that they rely on assumptions on the noise process or on the structure of the signal but are limited by the relevance of these assumptions.
+Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problem with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining  independent observations of the same signal is often unrealistic in practice.
 
-Recent self-supervised methods overcome this limitation \cite{batson2019noise2self,krull2018noise2void}. The main idea of those methods is to train a neural network to predict the value of a (corrupted) pixel $y_i$ only using its surroundings. The resulting network has extracted some local structure of the signal and therefore can be used as a denoiser. We refer to those methods as \textit{blind-denoising} methods because they make no assumption on the nature of the corrupting process, or light assumptions, such as a centered noise and the fact that the noise components are independent. This corresponds well to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
+Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel value $Y$ only using the noisy observations of the surrounding pixels. The trained network has extracted some local structure in the signal and therefore can be used as a denoiser. Suc approaches are referred to as \textit{blind-denoising} methods because they make no assumption on the nature of the corrupting process, or light assumptions, such as a centered noise and the fact that the noise components are independent \textcolor{red}{C'est sur ca ? Car s'ils utilisent la loss L2 par exemple ca signifie qu'implicitement on suppose un bruit gaussian de variance fixe}. This corresponds well to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
 
-Current denoising neural networks make use of convolutional layers, which have a receptive field, centered on a pixel $y_i$. Through self-supervision, the network predicts $y_i$ given its inputs. Indeed, if the parametrized network is able to use the information of the central pixel $y_i$ to predict it, it would simply learn the identity. A common approach is then to ensure the central pixel is not used in the computation, either by masking the central pixel or modifying the convolutional architecture.
+Current denoising neural networks make use of convolutional layers, which have a receptive field, centered on a pixel $Y$. Through self-supervision, the network predicts $Y$ given the noisy observations of the surrounding pixels. It is pivotal that the network does not use $Y$ as an input as the learning task would boil down to recovering one of the input data. A common approach is then to ensure that $Y$ is not used in the computation, either by masking it or by modifying the convolutional architecture.
 
-In this work we propose a method which is able to recover both the original signal and the noise distribution. Our only assumption is that the noise components are independent and centered. It introduces a simple mathematical framework, which we hope will lead to a better understanding on the inference procedure. Practically, our framework is simple, fast, flexible (standard neural network layers are used) and produces significantly better metrics over 6 standard microscopy datasets. We will release the code after the reviewing process.
+In this work, we propose a method which is able to recover both the original signal and the noise distribution. Our only assumption is that the noise components are independent \textcolor{red}{On fait un modele pixel a pixel, de quelle independance on veut parler ? Car la loi du bruit depend de $X$.} and centered. It introduces a simple mathematical framework, which we hope will lead to a better understanding on the inference procedure. Practically, our framework is simple, fast, flexible as it is based on standard neural network layers, and produces significantly better metrics over 6 standard microscopy datasets. We will release the code after the reviewing process.
 
 \section{Related work}
 \label{sec:related}
@@ -170,15 +169,8 @@ Y = X + \varepsilon\,,
 %$$
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
-where $\varepsilon$ is centered noise which depends on $(X,\Omega_X)$. The assumption that the noise is state-dependent is crucial in the experiments as detailed in Section~\ref{}. In standard approaches \cite{},  $\varepsilon$ is assumed to be a centered Gaussian random variable with known variance $\sigma^2$. In this paper, we propose several genrealizations of such models by considering the following noise distributions.
-\begin{enumerate}
-\item Conditionally to $X$, $\varepsilon$ has a Poisson-Gaussian distribution, i.e. $\varepsilon$ is a centered Gaussian random variable with variance $\alpha X + \eta^2$.
-\item Conditionally to $X$, $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, see Section~\ref{}.
-\item Conditionally to $X$,the distribution of  $\varepsilon$ is a centered mixture of Gaussian distributions whose variance are parameterized by convolutional neural networks.
-\end{enumerate}
-
-
- with probability density function $\varphi$ with respect to the Lebesgue measure. 
+where $\varepsilon$ is centered noise which depends on $(X,\Omega_X)$. The assumption that the noise is state-dependent is crucial in the experiments as detailed in Section~\ref{}. In standard approaches \cite{},  $\varepsilon$ is assumed to be a centered Gaussian random variable with known variance $\sigma^2$ \cite{} or $\varepsilon$ has a Poisson-Gaussian distribution, i.e. it  is a centered Gaussian random variable with variance $\alpha X + \eta^2$ \cite{}.
+Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, see Section~\ref{}. We also propose an extension of this setting in which $\varepsilon$ is a mixture of Gaussian random variables with state-dependent variances to account for skewness.
 
 In this paper, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function, the {\em P-net} denoted by $\mu_{\theta_p}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_p}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. Therefore, a natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_p}(\Omega_Y,Y)$.
 
@@ -191,7 +183,7 @@ In this paper, $\mu_{\theta_p}$ is modeled as a convolutional neural network, se
 %\end{equation}
 %where $\Omega_X$ are the signal values in a neighborhood of $X$ and $U$ is a random variable on $\mathbb{R}$. % $\Omega_X$-measurable.
 % In the case where the random variable $U$ is $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$.
-Combining this with the additive model  \eqref{eq:def:Y} yields the following loss function associated with $N$observations $(Y_1,\ldots,Y_N)$:
+Combining this with the additive model  \eqref{eq:def:Y} yields the following loss function associated with $N$ observations $(Y_1,\ldots,Y_N)$:
 $$
 \ell_{\theta}: (Y_1,\ldots,Y_N) \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
 $$
