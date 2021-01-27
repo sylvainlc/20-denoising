@@ -99,14 +99,21 @@ Recently, efficient data-driven methods have emerged. Most of them assume that p
 
 Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel value $Y$ only using the noisy observations of the surrounding pixels. The trained network has extracted some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} methods because they require few assumptions on the noise. This noise is assumed to be centered and the noise components associated with different observations are independent. This is well suited to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
 
-Current denoising neural networks make use of convolutional layers, which have a receptive field, centered on a pixel $Y$. Through self-supervision, the network predicts $Y$ given the noisy observations of the surrounding pixels. It is pivotal that the network does not use $Y$ as an input as the learning task would boil down to recovering one of the input data. A common approach is then to ensure that $Y$ is not used in the computation, either by masking it or by modifying the convolutional architecture.
+We introduce a novel self-supervised method, based on the joint training of two neural networks refered as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and recieves a masked input during training. Our main contribution is to add the flexible N-net which can remove the need to have strong assumptions on the noise distribution: our only assumption is that the noise components associated with the different observations are independent and centered.
+This N-net recovers precisely the noise distribution during training, even for complex asymetric noises. We derive this method from a novel mathematical modeling of the denoising problem, opening new avenues for better understanding of why self-supervised network work so well in practice.
 
-In this work, we propose a method which is able to recover both the original signal and the noise distribution. Our only assumption is that the noise components associated with the different observations are independent and centered. It introduces a simple mathematical framework, which we hope will lead to a better understanding on the inference procedure. Practically, our framework is simple, fast, flexible as it is based on standard neural network layers, and produces significantly better metrics over 6 standard microscopy datasets. Finally, we introduce a simple metric to estimate the sharpness of denoised images, which we hope will be used to better assess blind denoising quality.%The code will be  released after the reviewing process.
+The contribution of this paper can be summarized as follows.
+\begin{itemize}
+  \item We introduce a novel blind denoising model, modeling both the signal and noise distribution
+  \item We achieve state-of-the-art denoising over 6 standard microscopy dataset
+  \item We show that we are able to recover noise distribution efficiently in varying synthetic noise experiments
+  \item We introduce a novel sharpness metric useful to assess blind denoising quality
+\end{itemize}
 
 \section{Related work}
 \label{sec:related}
 \paragraph{Denoising by masking observed data.}
-Self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void} and Noise2Self (N2S) \cite{batson2019noise2self}. They rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually  implemented as a convolutional neural network such as a U-net \cite{ronneberger2015u}, through masked self-supervision, minimizing the following objective:
+Self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void} and Noise2Self (N2S) \cite{batson2019noise2self}. They rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually  implemented as a convolutional neural network such as the U-net \cite{ronneberger2015u}, through masked self-supervision, minimizing the following objective:
 
 $$\mathcal{L}: \theta\mapsto \frac{1}{M}\sum_{i=1}^M \|f_\theta(Y^{masked}_i) - Y_i\|^2\,, $$
 where $Y^{masked}_i$ is the image in which the pixel $Y_i$  on which the loss is computed  have been masked. This masking step is crucial to foster learning of  local structure in the signal to predict the masked values.
