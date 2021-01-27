@@ -5,4 +5,5 @@
 *.log
 *.pdf
 *.gz
+*.zip
 icml2021_style/*
