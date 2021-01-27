@@ -135,24 +135,30 @@ effectively using all the pixels, resulting in significantly better performance.
 Few other works have true J-invariant functions which are kept J-invariant at test time, however this is not trivially achieved in convolutional neural networks. This was achieved in \cite{laine2019high} by introducing directional convolution kernels, which only depend on pixels in a specific directions, ensuring that the value does not depend on pixels on the opposite direction. The function is therefore J-invariant, where J is a partition of the image, excluding the central pixel, depending on the direction chosen. One drawback is that the inference has to be performed four times, in each direction.
 More recently \cite{lee2020noise2kernel} introduces a combination of specific convolutions operators with dilation and strides, ensuring that the function is independent of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as they do not require a tuned masking procedure. However, this constrains strongly the network architecture, and the reported results are less competitive than other methods.
 
-\paragraph{Benefits of a noise model.}
-Among the denoising community, a few works have explicitely modeled the noise distribution. In \cite{laine2019high}, the authors considered Gaussian, Poisson and impulse noises.
-They either fix the noise parameters, or estimate them with an auxiliary neural network.
-As they model the signal distribution as well as the noise distribution, they can include the central pixel explicitely at test time in order to improve performances. This is only possible because they have a truely J-invariant function at test time. Their approach is consistant and yields good performance, but is then restricted to known, synthetic noise and therefore falls under the category of \textit{non-blind denoising} methods.
-Intuitively, the test-time use of central pixel is also happening in other methods such as N2V or N2S, but the dependency on central pixel is not explicit and unknown.
+\paragraph{Contribution of a noise model.}
+Among the denoising community, a few works have explicitely modeled the noise distribution to improve performances.
+In \cite{laine2019high}, the authors considered Gaussian, Poisson and impulse noises ditribution whose parameters are either fixed or estimated with an auxiliary neural network.
+As they model the signal distribution as well as the noise distribution, they can include the central pixel explicitely at test time in order to improve performances.
+This is only possible because they have a truely J-invariant function at test time.
+Their approach is consistant and yields very good performances, but is restricted to known, synthetic noise and therefore falls under the category of \textit{non-blind denoising} methods.
 
-
-\textit{charles: jean peux tu m'aider sur cette partie, je pense que c'est important de bien expliquer et je veux pas dire de bêtises, tu connais mieux ces travaux que moi}
-\cite{krull2019probabilistic,prakash2020fully,2020DivNoising} make use of a noise model, which is a more generic modelisation of noise depending on the signal intensity: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$. In practice, a noise function (or network)  models a noise which depends on the intensity of the signal, which can better model approximates real noises.
-In these works, noise models are build upon a 2D histograms of denoised and noisy observed values, either using additional calibration data \cite{krull2019probabilistic} (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{krull2019probabilistic}. In one variant, the noise distribution is fitted with gaussian mixture model with empirically designed constrains.
-The denoising network is then trained to predict a whole histogram distribution of possible noisy values, approximating the previously defined noise distribution at each pixel, which is inefficient as it requires to predict $800$ values instead of a single point estimate of each pixel.
+\cite{krull2019probabilistic,prakash2020fully,2020DivNoising} make use of a noise model, which is a more generic modelisation of the ditribution of the noise given the signal intensity: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$, and can better model real noises.
+In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data \cite{krull2019probabilistic} (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}. In one variant, the noise distribution is fitted with gaussian mixture model with empirically designed constrains.
+The denoising network is then trained to predict a whole histogram distribution of possible noisy values, approximating the previously defined noise distribution at each pixel.
+This rather inefficient as it requires to predict $800$ values instead of a single point estimate of each pixel.
 Both methods can improve performances but still display a checkerboard pattern and sometimes produce numeric instabilities during training \cite{goncharova2020}.
-Finally, \cite{2020DivNoising} uses the Variational Autoencoder formalism, adding a pre-calibrated noise model in their architecture. This method yeilds rather blurry images and sometimes produces hallucination artefactes.
-%We build upon these works by proposing a fully jointly trainable and stable denoising network and noise network.
+The result also depends on the binning choice made to build the 2D histogram, which is not trivial in the case of fluorescence-microscopy data where signal range can be very high.
+Their complexity is higher than N2V/N2S as they require $2$ training procedure and callibration data or $3$ training procedures.
+Finally, \cite{2020DivNoising} uses the Variational Autoencoder formalism, adding a pre-calibrated noise model in their architecture.
+This method yeilds rather blurry images and sometimes generates hallucination artefacts.
 
 It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise model, such as \cite{zhang2017beyond,yue2019variational}, which explicitely uses large neural networks to model a complex noise, with even less assumption on the noise (noise can be slightly structured, not centered...). Even though \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting, which it does not apply in our setting.
 
-Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train time, which results in better empirical performances\textit{[Jean] en est-on sûr ?}, and the ability to tune the masking to match structured noise (see section X)(\cite{broaddus2020removing} \textit{[Jean] suggestion: séparer en 2 phrases pour bien introduire l'avantage de prendre en compte des bruits structurés et insiter sur le fait qu'on a pas cette souplesse dans les vrai J-invariant networks}) . We provide a few directions to explain why relaxing the J-invariance might be beneficial.
+The work of Laine et al. \cite{laine2019high} gives the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time.
+On the contray, methods such as N2V or N2S use the central pixel at test-time, but the dependency on central pixel is not explicit and unknown.
+Instead of focusing on finding new strictly J-invariant functions, our approch rather focuses on having efficient masking procedure only at train-time.
+We provide a few directions to explain why relaxing the J-invariance might be beneficial.
+This also gives the flexibility to tune the masking to match structured noise, which we observed in 2 of the 6 datasets (see section X) \cite{broaddus2020removing}.
 
 \section{Model}
 \label{sec:model}
