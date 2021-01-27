@@ -94,20 +94,22 @@ Our method significantly outperforms current state-of-the-art self-supervised bl
 \section{Introduction}
 \label{sec:introduction}
 
-Image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by a noise $\varepsilon$. Classical denoising approaches  are model-driven in the sense that they rely on assumptions on the noise distribution or on the structure of the signal but are often  limited by the relevance of these assumptions.
+Image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by a noise $\varepsilon$. Classical denoising approaches  are model-driven in the sense that they rely on strong assumptions on the noise distribution or on the structure of the signal but are often  limited by the relevance of these assumptions.
 Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problem with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining  independent observations of the same signal is often unrealistic in practice.
 
-Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel value $Y$ only using the noisy observations of the surrounding pixels. The trained network has extracted some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} methods because they require few assumptions on the noise. This noise is assumed to be centered and the noise components associated with different observations are independent. This is well suited to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
+Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel value $Y$ only using the noisy observations of the surrounding pixels. In such frameworks, the trained network extracts some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} methods because they require few assumptions on the noise. This noise is assumed to be centered and the noise components associated with different observations are independent. This is well suited to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
 
-We introduce a novel self-supervised method, based on the joint training of two neural networks refered as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and recieves a masked input during training. Our main contribution is to add the flexible N-net which can remove the need to have strong assumptions on the noise distribution: our only assumption is that the noise components associated with the different observations are independent and centered.
-This N-net recovers precisely the noise distribution during training, even for complex asymetric noises. We derive this method from a novel mathematical modeling of the denoising problem, opening new avenues for better understanding of why self-supervised network work so well in practice.
+In this paper, we introduce a novel self-supervised method, based on the joint training of two neural networks referred as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training. Our main contribution is to add the flexible N-net 
+%which can remove the need to have strong assumptions on the noise distribution: our only assumption is that the noise components associated with the different observations are independent and centered.
+%This N-net 
+which recovers precisely the noise distribution during training, even for complex asymetric noises. We derive this method from a novel mathematical modeling of the denoising problem, opening new avenues for better understanding of why self-supervised networks achieve remarkable results.
 
 The contribution of this paper can be summarized as follows.
 \begin{itemize}
-  \item We introduce a novel blind denoising model, modeling both the signal and noise distribution
-  \item We achieve state-of-the-art denoising over 6 standard microscopy dataset
-  \item We show that we are able to recover noise distribution efficiently in varying synthetic noise experiments
-  \item We introduce a novel sharpness metric useful to assess blind denoising quality
+  \item We introduce a novel blind denoising model, modeling both the signal and noise distributions.
+  \item The proposed architectures outperform state-of-the-art algorithms  over 6 standard microscopy datasets.
+  \item We show that N-net recovers the noise distribution efficiently in varying experiments with synthetic noises.
+  \item We introduce a novel sharpness metric useful to assess blind denoising quality.
 \end{itemize}
 
 \section{Related work}
