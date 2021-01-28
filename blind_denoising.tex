@@ -235,29 +235,28 @@ In Section~\ref{sec:experiments} we propose other noise distributions to account
 
 \section{Experiments}
 \subsection{Model Architecture}
-\paragraph{P-Net}
-In \cite{ronneberger2015u}, the function $\mu_{\theta_d}$ was parameterized by a UNet  deep neural network, which has a fully convolutional architecture.
+\paragraph{D-Net}
+The function $\mu_{\theta_d}$ was parameterized by a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture.
 We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
-The main difference with the networks used in N2S and N2N is that we use upsampling layer instead of transpose convolution, as we observed transpose convolution tend to increase the checkerboard artefact.
+The main difference with the networks used in N2S and N2N is that we use upsampling layer instead of transpose convolution, as we observed transpose convolution tend to increase the checkerboard artefact. This was also observed by \cite{kobayashi2020image}.
 The receptive field of this network is 35x35 pixels.
-For natural images, we used 3 levels of contractions/expansions and 128 filters.
+At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves slightly performances in terms of PSNR and GPSNR.
+% For natural images, we used 3 levels of contractions/expansions and 128 filters.
 
-\textit{[Jean] cette section ne devrait-elle pas aller ailleurs ? ou supprimée?}
-This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m)})$ depend on $x^{(l,m)}$ and its neighborhood.
-While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
+% \textit{[Jean] cette section ne devrait-elle pas aller ailleurs ? ou supprimée?}
+% This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m)})$ depend on $x^{(l,m)}$ and its neighborhood.
+% While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
 
 \paragraph{N-Net}
 The function $\sigma_{\theta_n}$ describing the local variance of the noise distribution is parameterized by a fully convolutional network composed of six 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and relu).
 This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
 The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
 
-\subsection{Self-supervised loss}
-Following \cite{batson2019noise2self}, we used a self-supervised loss with pixel masking along a grid. The loss is computed only on the masked pixels.
+\subsection{Masking procedure}
+Following \cite{batson2019noise2self}, we masked pixels along a grid. The loss is computed only on the masked pixels.
 We obtained the best results with a replacement by a 3x3 gaussian filter with $\sigma=1$ with a weight equal to zero at the center position.
 The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturbs the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
 In order to push the limits of this trade-off between learning efficiency and denoising quality, we introduced two modifications on the original approach: we used a random dynamic spacing between 3 and 5 pixels and we also dropped out randomly 10\% of the grid points. Both modifications allow to have relative positions of masked pixels that change randomly, and thus reduce considerably the grid spacing without drop of performances. The value of the loss was normalized by the number of points in the grid.
-
-Fluorescence-microscopy datasets usually display a high signal frequency imbalance, where background is overrepresented. To cope with this issue, we introduced a weight map to give more relative importance to rare signal during training. Let $p(x)$ the observed probability of a value within the training dataset and G the masking grid for a given mini-batch, the associated weight is $\frac{1 - p(x)}{\sum_{G}(1 - p(x))}$
 
 \subsection{Datasets}
 We trained and evaluated our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
@@ -266,17 +265,16 @@ The 3 first datasets have been published along with the PN2V method\cite{krull20
 
 The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}. We used the 16-bit raw images kindly provided by the authors. The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation. Following the authors, for each FOV, only the raw image of index 249 is used for training and for evaluation.
 
-This dataset contains also alinged super-resolution images (referred to as SIM-GT) which were used to evaluate the deconvolution procedure. We downscaled the SIM-GT image using a 2x2 average pooling transform in order to have a pixel-wise correspondance with wide-field (WF) images. In order to have the SIM-GT and WF images in the same intensity range, for each FOV we scaled linearily the SIM-GT image in order to have the modal values and the 95\% percentile correspond with the WF ground truth image.
+% This dataset contains also alinged super-resolution images (referred to as SIM-GT) which were used to evaluate the deconvolution procedure. We downscaled the SIM-GT image using a 2x2 average pooling transform in order to have a pixel-wise correspondance with wide-field (WF) images. In order to have the SIM-GT and WF images in the same intensity range, for each FOV we scaled linearily the SIM-GT image in order to have the modal values and the 95\% percentile correspond with the WF ground truth image.
 
 \subsection{Training}
-Networks are trained using Adam optimizer with a learning rate of $10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 15 epochs until $10^{-6}$. We trained networks for 300 steps of 100 epochs.
+Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $2*10^{-6}$. We trained networks for 300 epochs of 200 steps. We observed that networks reach a near-optimal state in the first 50 epochs, but we kept a longer training to have more reproducible results.
 We obtained better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we did not use a validation step.
-Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets. Batch size was set to 4 and tile overlap to a value that yielded in mini batches of 64 tiles. Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90, 180, 270)$.
-[For natural images tile size was set to 128x128.]
-\begin{itemize}
-\item average flip
-\item alternate procedure ?
-\end{itemize}
+Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets. Batch size was set to 4 and tile overlap to a value that yielded in mini batches of 64 tiles. Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90°, 180°, 270°)$.
+
+We observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre as in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked on this axis, within an extent of 1 pixel for \emph{PN2V-C} and 3 pixels for \emph{PN2V-MA}. Those ranges can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, so we progressively increase the range until the axial correlation disapear.
+
+% \textit{describe alternate training procedure?}
 
 \subsection{Evaluation}
 For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR computation.
@@ -286,8 +284,44 @@ In order to take into account local contrasts, we introduced a very simple metri
 GPSNR is computed by transforming both ground truth and sample images with gaussian gradient magnitude with $\sigma=1$, using the range of the gradient magnitude transform of the ground truth image.
 
 \section{Results}
-We compared our method to 2 baselines the current state-of-the-art blind self-supervised denoising method for bio-images, DecoNoising, as well as one of the most simple denoising method: convolution by a gaussian. For each dataset we chose the optimal standard deviation of the gaussian so that it maximizes the PSNR. We believe it makes a good reference, as it actually removed efficiently noise, but also local contrasts, so a good denoising method should perform better both in terms of PNSR and GPSNR/SSIM. We were suprised to notice that N2V do not permforms better than the optimal gaussian in terms of PSNR for 3 of the 6 datasets.
+\subsection{Synthetic Noise}
 
+
+
+\subsection{Real Noise}
+We compared our method to 2 baselines: the blind self-supervised denoising method that has shown best results on the datasets we chose, DecoNoising, as well as one of the most simple denoising method: convolution by a gaussian.
+For each dataset we chose the optimal standard deviation of the gaussian so that it maximizes the PSNR.
+We believe it makes a good reference, as it actually removed efficiently noise, but also local contrasts, so a good denoising method should perform better both in terms of PNSR and GPSNR.
+As an exmaple, we noticed that N2V do not permforms better than the optimal gaussian in terms of PSNR for 3 of the 6 datasets, but always outperforms the gaussian in terms of GPSNR, which stresses out the importance of using several metrics.
+
+\begin{table*}[t]
+\caption{Evaluation of our method on 6 datasets with PSNR/GPSNR metrics. GPSNR estimate sharpness. Metrics computed on noisy images are displayed in the raw columns. For DecoNoising, PSNR are taken from \cite{goncharova2020} and GPSNR are computed on prediction made by networks trained using the source code provided by the authors.}
+\label{results}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccc}
+\toprule
+
+Dataset & Raw & Gaussian & DecoNoising & Ours \\
+\midrule
+PN2V-C & $28.98$ / $31.58$ & $34.92$ / $31.58$ & $36.39$ / $33.53$ & $37.68$ / $34.71$ \\
+PN2V-MN & $28.10$ / $29.21$ & $35.53$ / $30.94$ & $36.34$ / $32.10$ & $39.11$ / $35.26$\\
+PN2V-MA & $23.71$ / $22.57$ & $34.07$ / $27.94$ & $34.04$ / $27.55$ & $34.49$ / $28.27$ \\
+W2S-0 & $21.85$ / $16.80$ & $33.87$ / $25.39$ & $34.90$ / $26.21$ & $35.33$ / $27.73$ \\
+W2S-1 & $19.33$ / $16.05$ & $32.27$ / $25.87$ & $32.31$ / $25.98$ & $33.46$ / $27.72$ \\
+W2S-2 & $20.39$ / $15.55$ & $34.66$ / $28.97$ & $35.09$ / $30.18$ & $36.52$* / $31.29$* \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table*}
+
+\subsection{Ablation experiments}
+To better understand the contribution of the noise model, we compared our method to a simple D-net trained with L2 objectve, with the same training parameters.
 
 \section{Conclusion}
 
