@@ -138,11 +138,10 @@ Few other works have true J-invariant functions which are kept J-invariant at te
 More recently, \cite{lee2020noise2kernel} introduced a combination of specific convolution operators with dilation and strides, ensuring that the function is independent of the central pixel by design, therefore J-invariant with J being the center pixel. This also benefits the training procedure, as it does not require a tuned masking procedure. However, this constrains strongly the network architecture, and the reported results are less competitive than alternative methods.
 
 \paragraph{Contribution of a noise model.}
-Among the denoising community, a few works have explicitely modeled the noise distribution to improve performances.
-In \cite{laine2019high}, the authors considered Gaussian, Poisson and impulse noises ditribution whose parameters are either fixed or estimated with an auxiliary neural network.
-As they model the signal distribution as well as the noise distribution, they can include the central pixel explicitely at test time in order to improve performances.
-This is only possible because they have a truely J-invariant function at test time.
-Their approach is consistant and yields very good performances, but is restricted to known, synthetic noise and therefore falls under the category of \textit{non-blind denoising} methods.
+The denoising literatture includes few works which explicitely model the noise distribution to improve performances. In \cite{laine2019high}, the authors used Gaussian noise independent of the signal and Poisson-Gaussian noise, i.e. a Gaussian noise with variance scaling linearly with the signal value, as well as impulse noise, i.e. a uniform noise.
+In this work, the noise parameters are either known or estimated with an auxiliary neural network.
+As the the signal distribution and the noise distribution belong to a known parametric family, the central pixel can be included at test time in order to improve performances.
+This is only possible because a truely J-invariant function is used at test time. This approach is consistent and yields good performance, but is then restricted to known, synthetic noise and therefore falls under the category of \textit{non-blind denoising} methods.
 
 \cite{krull2019probabilistic,prakash2020fully,2020DivNoising} make use of a noise model, which is a more generic modelisation of the ditribution of the noise given the signal intensity: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$, and can better model real noises.
 In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data \cite{krull2019probabilistic} (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}. In one variant, the noise distribution is fitted with gaussian mixture model with empirically designed constrains.
