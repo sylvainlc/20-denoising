@@ -90,7 +90,7 @@
 %%%%%%%%% ABSTRACT
 \begin{abstract}
 We propose a novel self-supervised  image blind denoising approach  in which two neural networks jointly predict the clean signal and infer the noise distribution.
-Assuming that the signal is locally spatially dependent, the networks can be jointly trained without clean training data. Therefore, our approach is  particularly relevant for biomedical image denoising where the noise is difficult to model precisely and clean training data are usually unavailable.
+Assuming that the observations are independent conditionally to the signal, the networks can be jointly trained without clean training data. Therefore, our approach is  particularly relevant for biomedical image denoising where the noise is difficult to model precisely and clean training data are usually unavailable.
 
 Our method significantly outperforms current state-of-the-art self-supervised blind denoising algorithms, on six publicly available biomedical image datasets. We also show empirically with synthetic noisy data that our model captures the noise distribution efficiently. Finally, the described framework is simple, lightweight and computationally efficient, making it useful in practical cases.
 \end{abstract}
@@ -279,7 +279,7 @@ The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refe
 \subsection{Training}
 Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $2*10^{-6}$. We trained networks for 300 epochs of 200 steps. We observed that networks reach a near-optimal state in the first 50 epochs, but we kept a longer training to have more reproducible results.
 We obtained better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we did not use a validation step.
-Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets. Batch size was set to 4 and tile overlap to a value that yielded in mini batches of 64 tiles. Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90°, 180°, 270°)$.
+Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets. Batch size was set to 4 and tile overlap to a value that yielded in mini batches of 64 tiles. Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$.
 
 We observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre as in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked on this axis, within an extent of 1 pixel for \emph{PN2V-C} and 3 pixels for \emph{PN2V-MA}. Those ranges can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, so we progressively increase the range until the axial correlation disapear.
 
