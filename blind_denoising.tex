@@ -124,7 +124,7 @@ Self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krul
 $$\mathcal{L}: \theta\mapsto \frac{1}{M}\sum_{i=1}^M \|f_\theta(Y^{masked}_i) - Y_i\|^2\,, $$
 where $Y^{masked}_i$ is the image in which the pixel $Y_i$  on which the loss is computed  has been masked. This masking step is crucial to foster learning of  local structure in the signal to predict the masked values.
 
-In practice, the masking procedure has a strong impact on training, as only masked pixels are used for training (typically representing a few percent of the image). In N2V, $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are sampled  randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood (with a positive probability of replacing $Y_i$ by itself meaning that no masking is introduced). In N2S,  $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are obtained with  a fixed grid, and $Y_i$ is replaced by the average of neighboring observations. 
+In practice, the masking procedure has a strong impact on training, as only masked pixels are used for training (typically representing a few percent of the image). In N2V, $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are sampled  randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood (with a positive probability of replacing $Y_i$ by itself meaning that no masking is introduced). In N2S,  $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are obtained with  a fixed grid, and $Y_i$ is replaced by the average of neighboring observations.
 %Even though the prediction of a noisy pixel conditionnally on its neighbors is an impossible task to learn perfectly, the estimated function $f_{\hat \theta}$ shows strong denoising properties.
 In both cases, the estimated function $f_{\theta}$ shows strong denoising properties.
 
@@ -290,7 +290,7 @@ In order to take into account local contrasts, we introduced a very simple metri
 GPSNR is computed by transforming both ground truth and sample images with gaussian gradient magnitude with $\sigma=1$, using the range of the gradient magnitude transform of the ground truth image.
 
 \section{Results}
-\subsection{Synthetic Noise}
+\subsection{Noise Capture}
 
 
 
@@ -301,23 +301,23 @@ We believe it makes a good reference, as it actually removed efficiently noise, 
 As an exmaple, we noticed that N2V do not permforms better than the optimal gaussian in terms of PSNR for 3 of the 6 datasets, but always outperforms the gaussian in terms of GPSNR, which stresses out the importance of using several metrics.
 
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/GPSNR metrics. GPSNR estimate sharpness. Metrics computed on noisy images are displayed in the raw columns. For DecoNoising, PSNR are taken from \cite{goncharova2020} and GPSNR are computed on prediction made by networks trained using the source code provided by the authors.}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the raw columns. For DecoNoising, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors.}
 \label{results}
 \vskip 0.15in
 \begin{center}
 \begin{small}
 \begin{sc}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
 
-Dataset & Raw & Gaussian & DecoNoising & Ours \\
+Dataset & Raw & Gaussian & N2V & DecoNoising & Ours \\
 \midrule
-PN2V-C & $28.98$ / $31.58$ & $34.92$ / $31.58$ & $36.39$ / $33.53$ & $37.68$ / $34.71$ \\
-PN2V-MN & $28.10$ / $29.21$ & $35.53$ / $30.94$ & $36.34$ / $32.10$ & $39.11$ / $35.26$\\
-PN2V-MA & $23.71$ / $22.57$ & $34.07$ / $27.94$ & $34.04$ / $27.55$ & $34.49$ / $28.27$ \\
-W2S-0 & $21.85$ / $16.80$ & $33.87$ / $25.39$ & $34.90$ / $26.21$ & $35.33$ / $27.73$ \\
-W2S-1 & $19.33$ / $16.05$ & $32.27$ / $25.87$ & $32.31$ / $25.98$ & $33.46$ / $27.72$ \\
-W2S-2 & $20.39$ / $15.55$ & $34.66$ / $28.97$ & $35.09$ / $30.18$ & $36.52$* / $31.29$* \\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $37.68$ / $0.9711$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.11$ / $0.9774$\\
+PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.49$ / $0.8867$ \\
+W2S-0 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ \\
+W2S-1 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ \\
+W2S-2 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.52$* / $0.9261$* \\
 \bottomrule
 \end{tabular}
 \end{sc}
