@@ -53,12 +53,16 @@
 \begin{icmlauthorlist}
 \icmlauthor{Jean Ollion}{sabilab}
 \icmlauthor{Charles Ollion}{cmap}
+\icmlauthor{\'Elisabeth Gassiat}{ups}
 \icmlauthor{Sylvain Le Corff}{tsp,cmap}
+\icmlauthor{Luc Leh\'ericy}{uca}
 \end{icmlauthorlist}
 
 \icmlaffiliation{sabilab}{SABILab, Die, France}
 \icmlaffiliation{cmap}{CMAP, Ecole Polytechnique, Institut Polytechnique de Paris, France}
 \icmlaffiliation{tsp}{Samovar, T\'el\'ecom SudParis, D\'epartement CITI, Institut Polyechnique de Paris, France}
+\icmlaffiliation{ups}{Universit\'e Paris-Saclay, CNRS, Laboratoire de math\'ematiques d'Orsay, 91405, Orsay, France}
+\icmlaffiliation{uca}{Laboratoire J. A. Dieudonn\'e, Universit\'e C\^ote d'Azur, CNRS, 06108, Nice, France}
 
 \icmlcorrespondingauthor{Cieua Vvvvv}{c.vvvvv@googol.com}
 \icmlcorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
@@ -85,7 +89,7 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-We propose a novel self-supervised approach for image blind denoising, in which two neural networks jointly predict the clean signal and infer the noise distribution.
+We propose a novel self-supervised  image blind denoising approach  in which two neural networks jointly predict the clean signal and infer the noise distribution.
 Assuming that the signal is locally spatially dependent and that the noises associated with training data are independent, the networks can be jointly trained without clean training data. Therefore, our approach is  particularly relevant for biomedical image denoising where the noise is difficult to model precisely and clean training data are usually unavailable.
 
 Our method significantly outperforms current state-of-the-art self-supervised blind denoising algorithms, on six publicly available biomedical image datasets. We also show empirically with synthetic noisy data that our model captures the noise distribution efficiently. Finally, the described framework is simple, lightweight and computationally efficient, making it useful in practical cases.
