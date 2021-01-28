@@ -178,7 +178,7 @@ Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to rec
 Let $X$ be the target signal in a pixel and $\Omega_X$ be the signal values in a neighborhood of $X$.  The observation $Y$ associated with $X$  is given by
 \begin{equation}
 \label{eq:def:Y}
-Y = X + \varepsilon\,,
+Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 \end{equation}
 %which means that
 %$$
@@ -188,8 +188,11 @@ Y = X + \varepsilon\,,
 %$$
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
-where $\varepsilon$ is a centered noise which depends on $(X,\Omega_X)$. The assumption that the noise is state-dependent is crucial in the experiments as detailed in Section~\ref{}. In standard approaches \cite{},  $\varepsilon$ is assumed to be a centered Gaussian random variable with known variance $\sigma^2$ \cite{} or $\varepsilon$ has a Poisson-Gaussian distribution, i.e. it  is a centered Gaussian random variable with variance $\alpha X + \eta^2$ \cite{}.
-Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$. We also propose an extension of this setting in which $\varepsilon$ is a mixture of Gaussian random variables with state-dependent variances to account for skewness.
+
+where $\varepsilon$ is a centered noise independent of $(X,\Omega_X)$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$. In standard approaches \cite{},  $\varepsilon$ is assumed to be a centered Gaussian random variable and  $\sigma^2_{\theta_n}(\cdot)$ is either known and constant \cite{} or has a Poisson-Gaussian shape i.e., scales with $\alpha X + \eta^2$, see \cite{}.  In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$. Model \eqref{eq:def:Y} does not fit directly the assumptions of \cite{gassiat:lecorff:lehericy:2021} and identifiability of the noise and signal  distributions remains an open problem in this setting. Our approach in this paper is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood. 
+
+%Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$. 
+%We also propose an extension of this setting in which $\varepsilon$ is a mixture of Gaussian random variables with state-dependent variances to account for skewness.
 
 In this paper, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called \textit{D-net} and with unknown weights $\theta_d$.
 
