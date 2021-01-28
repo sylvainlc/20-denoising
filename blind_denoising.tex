@@ -228,8 +228,8 @@ In Section~\ref{sec:experiments} we propose other noise distributions to account
 \section{Experiments}
 \subsection{Model Architecture}
 \paragraph{P-Net}
-The function $x\mapsto \mu_p$ is implemented through a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture.
-We made a few changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
+In \cite{ronneberger2015u}, the function $\mu_{\theta_d}$ was parameterized by a UNet  deep neural network, which has a fully convolutional architecture.
+We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
 The main difference with the networks used in N2S and N2N is that we use upsampling layer instead of transpose convolution, as we observed transpose convolution tend to increase the checkerboard artefact.
 The receptive field of this network is 35x35 pixels.
 For natural images, we used 3 levels of contractions/expansions and 128 filters.
@@ -239,11 +239,8 @@ This implies that at a given coordinate $(l,m)$, $(\mu_p^{(l,m)}, \sigma_p^{(l,m
 While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
 
 \paragraph{N-Net}
-The function describing the noise distribution is implemented through a fully convolutional network composed of six 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and relu).
-We found that such networks could be trained in a supervised way with a clean image x as input and the following cost function, where y is a corrupted version of x:
-$$
-y\mapsto\varphi_{0,\sigma_n^2}(x)
-$$
+The function $\sigma_{\theta_n}$ describing the local variance of the noise distribution is parameterized by a fully convolutional network composed of six 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and relu).
+This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
 The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
 
 \subsection{Self-supervised loss}
