@@ -21,6 +21,9 @@
 % custom packages
 \usepackage{amsmath}
 \usepackage{amssymb}
+% for referencing footnotes several times. to load after hyperref
+\usepackage{cleveref}
+\crefformat{footnote}{#2\footnotemark[#1]#3}
 % \usepackage{times}
 % \usepackage{epsfig}
 % If accepted, instead use the following line for the camera-ready submission:
@@ -246,6 +249,7 @@ In Section~\ref{sec:experiments} we propose other noise distributions to account
 
 
 \section{Experiments}
+\label{sec:experiments}
 \subsection{Model Architecture}
 \paragraph{D-Net}
 The function $\mu_{\theta_d}$ was parameterized by a UNet \cite{ronneberger2015u} deep neural network, which has a fully convolutional architecture.
@@ -273,12 +277,12 @@ In order to push the limits of this trade-off between learning efficiency and de
 \subsection{Datasets}
 We trained and evaluated our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
 
-The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024x1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512x512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024x1024$.
+The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
 We used the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
 
 The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 We used the 16-bit raw images kindly provided by the authors.
-The dataset is composed of 120 FOV of 400 observations of size $512x512$ pixels.
+The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
 The first 80 are used for training and the last 40 for evaluation.
 Following the authors, for each FOV, only the raw image of index 249 is used for training or for evaluation, which corresponds better to most use case where only one observation of a given FOV is available.
 
@@ -306,20 +310,39 @@ We observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlat
 
 \subsection{Evaluation}
 For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR computation.
-When comparing images, the PSNR is not highly indicative of perceived similarity, in particular it do not reflect similarity of high frequency information such as textures and local contrasts\cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that them into account.
+When comparing images, the PSNR is not highly indicative of perceived similarity, in particular it do not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that them into account.
 To address this shortcoming, we used Structural similarity (SSIM) that take textures and edges into account. It was computed as in \cite{wang2004image}.
 
 \section{Results}
 \subsection{Noise estimation}
+To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 synthetic dataset by adding noise to the ground truth of dataset \textit{w2s-0}, so that the datasets have a PSNR value close to the PSNR of the orignial dataset (in a range of $0.1$dB). We used 3 classical noise models:
+\begin{itemize}
+  \item Additive gaussian: $y = x + N(0, \sigma)$ with $\sigma=20$
+  \item Poisson-Gaussian: $y = x + \sqrt{\alpha * (x-min(x)) + \eta^2 }*N(0,1)$ with $\alpha=5, \eta=12$ and $min(x)$ begin the minimal value of the ground truth on the whole dataset.
+  \item Speckle: $y = x + (x-min(x))*N(0,\sigma)$ with $\sigma=0.405$
+\end{itemize}
+Figure \ref{fig:noisestd} show the comparison between the observed and predicted standard deviation of the noise.
+It shows our method is able to capture the different noise distributions even in areas where signal is rare.
+
+\begin{figure}[ht]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_noise_std.pdf}}
+\caption{Noise estimation. For the observed noise and 3 types of synthetic noises, let $x$ be the ground truth, $y$ the noisy observations (displayed in column \textit{Noisy}) fed to the network and $\hat{x}$ the denoised predicted value (displayed in column \textit{Denoised}). The plots display the observed standard deviation of the noise: $y - x$ as a function of $x$, as well as the predicted standard deviation of the noise $\sigma_n$. The density histogram of the observed values is displayed in blue, in logarithmic scale.}
+\label{fig:noisestd}
+\end{center}
+\vskip -0.2in
+\end{figure}
 
 \subsection{Application on real noise}
 We compared our method to 2 baselines: the blind self-supervised denoising method that has shown best results on the datasets we chose, DecoNoising, as well as one of the most simple denoising method: convolution by a gaussian.
-For each dataset we chose the optimal standard deviation of the gaussian so that it maximizes the PSNR.
-We believe it makes a good reference, as it actually removed efficiently noise, but also local contrasts, so a good denoising method should perform better both in terms of PNSR and SSIM.
+For each dataset we chose the optimal standard deviation of the gaussian so that it maximizes the PSNR on the whole evaluation dataset.
+We believe it makes a good reference, as it one of the simplest method that removes noise efficiently, but also other high-frequency information such as local contrasts.
+A good denoising method should thus perform better both in terms of PNSR and SSIM.
 As an exmaple, we can see in \ref{results} that N2V do not permforms better than the optimal gaussian in terms of PSNR for 3 of the 6 datasets.
 
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the raw columns. For DecoNoising, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors.}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal gaussian baseline\footnotemark.}
 \label{results}
 \vskip 0.15in
 \begin{center}
@@ -328,7 +351,7 @@ As an exmaple, we can see in \ref{results} that N2V do not permforms better than
 \begin{tabular}{lccccc}
 \toprule
 
-Dataset & Raw & Gaussian & N2V & DecoNoising & Ours \\
+Dataset & Observed & Gaussian & N2V & DecoNoising & Ours \\
 \midrule
 PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $37.68$ / $0.9711$ \\
 PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.11$ / $0.9774$\\
@@ -343,6 +366,20 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{center}
 \vskip -0.1in
 \end{table*}
+% footnote text of the 2 footnotes of the caption
+\addtocounter{footnote}{-1}
+\footnotetext{\label{note:n2v}Using no positivity contraint, and removing the convolution for N2V.}
+\addtocounter{footnote}{1}
+\footnotetext{\label{note:gaussian}The optimal Gaussian baseline corresponds to the convolution by a gaussian with a standard deviation chosen to maximize the PSNR on the whole evaluation dataset.}
+\begin{figure*}[ht]
+\vskip 0.2in
+\begin{center}
+\includegraphics[width=6.75in]{fig_images.pdf}
+\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evalutation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline\cref{note:gaussian}.}
+\label{fig:images}
+\end{center}
+\vskip -0.2in
+\end{figure*}
 
 \subsection{Improving noise estimation}
 

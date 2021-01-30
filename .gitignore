@@ -3,7 +3,7 @@
 *.blg
 *.brf
 *.log
-*.pdf
+blind_denoising.pdf
 *.gz
 *.zip
 icml2021_style/*
