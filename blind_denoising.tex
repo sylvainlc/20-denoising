@@ -265,7 +265,10 @@ At test-time, we averaged the prediction of the image with the predictions of it
 % While the central pixel $x^{(l,m)}$ is masked during training (its value is replaced with a deterministic function of the neighboring pixels), the convolutional architecture still uses the replaced value and learns the parameters of the convolution associated with this central value.
 
 \paragraph{N-Net}
-The function $\sigma_{\theta_n}$ describing the local variance of the noise distribution is parameterized by a fully convolutional network composed of six 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$).
+The function $\sigma_{\theta_n}$ describing the local variance of the noise distribution is parameterized by a fully convolutional network composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$).
+A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block.
+\textit{TODO: describe architecture in GMM mode. Graphe en SI ? }
+
 This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
 The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
 
@@ -280,7 +283,6 @@ We trained and evaluated our method on 6 publicly available datasets of microsco
 
 The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
 To be able to compare our method, we used the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
-However this does not correpsonds to real use cases.
 
 The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 We used the 16-bit raw images kindly provided by the authors.
@@ -288,10 +290,11 @@ The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixel
 The first 80 are used for training and the last 40 for evaluation.
 Following the authors, for each FOV, only the raw image of index 249 is used for training or for evaluation, which corresponds better to most use case where only one observation per FOV is available.
 
-Images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset. This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and siganl distribution has often an heavy tail towards high values.
+Images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.\footnote{This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and siganl distribution has often an heavy tail towards high values.}
 
 \subsection{Training}
-Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We trained networks for 300 epochs of 200 steps. We observed that networks reach a near-optimal state in the first 50 epochs, but we kept a longer training to have more reproducible results.
+Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We trained networks for 400 epochs of 200 steps.
+This is an over-estimation of the required training as we observed that networks reach a near-optimal state within the first 100 epochs, but we kept a longer training to have more reproducible results.
 We obtained better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we did not use a validation step.
 Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets.
 Batch size was set to 4 for \emph{PN2V-C} and 1 for all other datasets.
@@ -300,11 +303,12 @@ Tiles were augmented with random horizontal and/or vertical flip and/or a random
 
 We observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre as in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked on this axis, within an extent of 2 pixel for \emph{PN2V-C} and 3 pixels for \emph{PN2V-MA}.
 Those ranges can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears.
+Importantly, for those datasets, only data-augmentation is only composed of combinations of flips to avoid axes transposition.
 
 \subsection{Evaluation}
 For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR computation.
 When comparing images, the PSNR is not highly indicative of perceived similarity, in particular it do not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that them into account.
-To address this shortcoming, we used Structural similarity (SSIM) that take textures and edges into account. It was computed as in \cite{wang2004image}.
+To address this shortcoming, we used Structural similarity (SSIM) that take textures and edges into account \cite{wang2004image}, computed as in the original work.
 
 \section{Results}
 \subsection{Noise estimation}
@@ -323,9 +327,9 @@ Examples of noisy images and the corresponding predicted denoised images are dis
 \vskip -0.2in
 \end{figure}
 \footnotetext{Display range was shrinked in Y-axis for visualization purposes, excluding some points of the empirical std of the Speckle noise model.}
-To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{w2s-1}, so that the datasets have a PSNR value close to the PSNR of the orignial dataset (in a range of $\pm0.1$dB).
+To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{w2s-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the orignial dataset (in a range of $\pm0.1$dB).
 We used 3 classical noise models: additive gaussian, poisson-gaussian and speckle, see Sup.~section~\ref{si:synthetic} for details.
-Empirical and predicted distribution of noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
+Empirical and predicted distributions of noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
 It shows our method is able to capture the different noise distributions even in areas where signal is rare.
 
 \subsection{Improving estimation on real noise}
@@ -335,35 +339,37 @@ It shows our method is able to capture the different noise distributions even in
 \centerline{\includegraphics[width=\columnwidth]{fig_skewness.pdf}}
 \caption{Real noise estimation. \textbf{Upper-left}: empirical distribution of the noise $Y - X$ as a function of $X$, normalized in each signal value bin\textit{faut il le préciser ou c'est évident?} for dataset \textit{w2s-1}.
 \textbf{Upper-right}: corresponding predicted noise distribution for a 3-component-GMM.
-\textbf{Lower-left}: Skewness of empirical and predicted noise distribution as a function of $X$, estimated with Pearson's moment coefficient of skewness.
+\textbf{Lower-left}: Skewness of empirical and predicted noise distribution as a function of $X$, estimated with Pearson's moment coefficient of skewness\footnotemark.
 \textbf{Lower-rigth}:  Kullback–Leibler divergence between empirical noise ditribution and predicted ditribution generated by each model, as a function of $X$.
-G1 stands for Gaussian model, G2 for a 2-component-GMM and G3 a 3-component-GMM.
-All the graphs are computed using regular signal value bins, excluding signal values greater to the $XX\%$ percentile of the dataset \textit{LE JUSTIFIER}.}
+\textit{G1} stands for Gaussian model, \textit{G2} for a 2-component-GMM and \textit{G3} a 3-component-GMM.
+}
 \label{fig:skewness}
 \end{center}
 \vskip -0.2in
 \end{figure}
+\footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $XX\%$ percentile of the dataset so that there is enough observed samples in each bin to compute statistically significant metrics.}
 We observed that contrary to the classical noise models, the observed noise often display a certain degree of skewness, as illustrated in Fig.~\ref{fig:skewness}.
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better discribed by a GMM than by a single Gaussian.
 
 \subsection{Denoising performances}
+\label{sec:perf}
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal gaussian baseline\footnotemark.}
-\label{results}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
+\label{table:results}
 \vskip 0.15in
 \begin{center}
 \begin{small}
 \begin{sc}
-\begin{tabular}{lccccc}
+\begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
 \toprule
-Dataset & Observed & Gaussian & N2V & DecoNoising & Ours \\
+Dataset & Observed & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $37.68$ / $0.9711$ \\
-PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.11$ / $0.9774$\\
-PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.49$ / $0.8867$ \\
-W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ \\
-W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ \\
-W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ \\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $37.68$ / $0.9711$ & $00.00$ / $0.0000$ & $00.00$ / $0.0000$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.11$ / $0.9774$ & / & /\\
+PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.49$ / $0.8867$ & / & /\\
+W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & / & / \\
+W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & / & / \\
+W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & / & / \\
 \bottomrule
 \end{tabular}
 \end{sc}
@@ -371,26 +377,28 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{center}
 \vskip -0.1in
 \end{table*}
-% footnote text of the 2 footnotes of the caption
-\addtocounter{footnote}{-1}
-\footnotetext{\label{note:n2v}Using no positivity contraint, and removing the convolution for N2V.}
-\addtocounter{footnote}{1}
-\footnotetext{\label{note:gaussian}The optimal Gaussian baseline corresponds to the convolution by a gaussian with a standard deviation chosen to maximize the PSNR on the whole evaluation dataset.}
-We compared our method to 2 baselines: the blind self-supervised denoising method that has shown best results on the datasets we chose, DecoNoising, as well as one of the most simple denoising method: convolution by a gaussian.
-For each dataset we chose the optimal standard deviation of the gaussian so that it maximizes the PSNR on the whole evaluation dataset.
-We believe it makes a good reference, as it one of the simplest method that removes noise efficiently, but also other high-frequency information such as local contrasts.
+% footnote text of the caption
+\footnotetext{\label{note:n2v}Using no positivity constraint, and removing the convolution for N2V.}
+
+We compared our method to 3 baselines: N2V, DecoNoising, which is the self-supervised blind denoising method that has shown best results on the datasets we considered, as well as one of the most simple denoising method: convolution by a Gaussian, whose standard deviation is chosen to maximizes the PSNR on the evaluation dataset.
+We believe it makes a good reference, as it is one of the simplest denoising method, and it removes noise efficiently but also other high-frequency information such as local contrasts.
 A good denoising method should thus perform better both in terms of PNSR and SSIM.
-As an exmaple, we can see in \ref{results} that N2V do not permforms better than the optimal gaussian in terms of PSNR for 3 of the 6 datasets.
+The considered metrics are summarized in table~\ref{table:results}.
+Our method significantly outperforms the 3 baselines both in term of PSNR by XXdB on average and in terms of SSIM by a factor XX on average.
 
 \begin{figure*}[ht]
+\label{fig:images}
 \vskip 0.2in
 \begin{center}
 \includegraphics[width=6.75in]{fig_images.pdf}
-\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evalutation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline\cref{note:gaussian}.}
+\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evalutation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
 \label{fig:images}
 \end{center}
 \vskip -0.2in
 \end{figure*}
+
+This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
+
 
 \section{Conclusion}
 
