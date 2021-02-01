@@ -251,3 +251,8 @@ yields:
 - \frac{( Y_i - X_m )^2}{\sigma^2_{\theta_n}(X_i,\Omega_i)} - \log(\sigma^2_{\theta_n}(X_i,\Omega_i)) \\
 + \frac{( \mu_\phi(Y_i,\Omega_i) - X_m )^2}{\sigma^2_{\phi}(Y_i,\Omega_i)} + \log(\sigma^2_{\phi}(Y_i,\Omega_i))
 \end{multline*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%NOTES SUR LES ASPECTS EXPERIMENTAUX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This dataset contains also alinged super-resolution images (referred to as SIM-GT) which were used to evaluate the deconvolution procedure. We downscaled the SIM-GT image using a 2x2 average pooling transform in order to have a pixel-wise correspondance with wide-field (WF) images. In order to have the SIM-GT and WF images in the same intensity range, for each FOV we scaled linearily the SIM-GT image in order to have the modal values and the 95\% percentile correspond with the WF ground truth image.

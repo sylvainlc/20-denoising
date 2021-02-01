@@ -1,0 +1,85 @@
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2021} with \usepackage[nohyperref]{icml2021} above.
+\usepackage{hyperref}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage{icml2021}
+
+% custom packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+% for referencing footnotes several times. to load after hyperref
+\usepackage{cleveref}
+\crefformat{footnote}{#2\footnotemark[#1]#3}
+% \usepackage{times}
+% \usepackage{epsfig}
+% If accepted, instead use the following line for the camera-ready submission:
+%\usepackage[accepted]{icml2021}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{SI for Joint self-supervised blind denoising and noise estimation}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thesection}{S\arabic{section}}
+% \newcommand{\beginsupplement}{
+%  }
+
+\begin{document}
+\twocolumn[
+\icmltitle{Supplementary information for Joint self-supervised blind denoising and noise estimation}
+
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Jean Ollion}{sabilab}
+\icmlauthor{Charles Ollion}{cmap}
+\icmlauthor{\'Elisabeth Gassiat}{ups}
+\icmlauthor{Sylvain Le Corff}{tsp,cmap}
+\icmlauthor{Luc Leh\'ericy}{uca}
+\end{icmlauthorlist}
+
+\icmlaffiliation{sabilab}{SABILab, Die, France}
+\icmlaffiliation{cmap}{CMAP, Ecole Polytechnique, Institut Polytechnique de Paris, France}
+\icmlaffiliation{tsp}{Samovar, T\'el\'ecom SudParis, D\'epartement CITI, Institut Polyechnique de Paris, France}
+\icmlaffiliation{ups}{Universit\'e Paris-Saclay, CNRS, Laboratoire de math\'ematiques d'Orsay, 91405, Orsay, France}
+\icmlaffiliation{uca}{Laboratoire J. A. Dieudonn\'e, Universit\'e C\^ote d'Azur, CNRS, 06108, Nice, France}
+
+\icmlcorrespondingauthor{Jean Ollion}{jean.ollion@polytechnique.org}
+\icmlcorrespondingauthor{Sylvain Le Corff}{sylvain.le_corff@telecom-sudparis.eu}
+
+\icmlkeywords{Blind Denoising, Self-supervised, Bio-image, Machine Learning}
+
+\vskip 0.3in
+
+
+\section{Synthetic noise datasets}
+\label{si:synthetic}
+\begin{itemize}
+  \item Additive gaussian: $y = x + N(0, \sigma)$ with $\sigma=20$
+  \item Poisson-Gaussian: $y = x + \sqrt{\alpha * (x-min(x)) + \eta^2 }*N(0,1)$ with $\alpha=5, \eta=12$ and $min(x)$ begin the minimal value of the ground truth on the whole dataset.
+  \item Speckle: $y = x + (x-min(x))*N(0,\sigma)$ with $\sigma=0.405$
+\end{itemize}
+
+% dummy citation so that document compiles (at least 1 is needed). to be removed when with put other citations
+\cite{2020DivNoising}
+
+{\small
+\bibliography{blind_denoising_SI}
+\bibliographystyle{icml2021}
+}
+]
+\end{document}
