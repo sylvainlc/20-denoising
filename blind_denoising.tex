@@ -334,6 +334,18 @@ It shows our method is able to capture the different noise distributions even in
 \vskip -0.2in
 \end{figure}
 
+\subsection{Improving estimation on real noise}
+
+\begin{figure}[ht]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness.pdf}}
+\caption{Real noise estimation.}
+\label{fig:noiseskew}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
 \subsection{Application on real noise}
 We compared our method to 2 baselines: the blind self-supervised denoising method that has shown best results on the datasets we chose, DecoNoising, as well as one of the most simple denoising method: convolution by a gaussian.
 For each dataset we chose the optimal standard deviation of the gaussian so that it maximizes the PSNR on the whole evaluation dataset.
@@ -358,7 +370,7 @@ PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$
 PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.49$ / $0.8867$ \\
 W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ \\
 W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ \\
-W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.52$* / $0.9261$* \\
+W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ \\
 \bottomrule
 \end{tabular}
 \end{sc}
@@ -380,8 +392,6 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{center}
 \vskip -0.2in
 \end{figure*}
-
-\subsection{Improving noise estimation}
 
 \section{Conclusion}
 
