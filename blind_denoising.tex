@@ -175,10 +175,7 @@ This also gives the flexibility to tune the masking to match structured noise, w
 \section{Model}
 \label{sec:model}
 
-Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}.
-
-
-Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this paper where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
+Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this paper where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
 In this paper, it is assumed that the observation $Y$ associated with $X$  is given by
 \begin{equation}
@@ -194,8 +191,9 @@ Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
 where $\varepsilon$ is a centered noise independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
-In standard approaches \cite{},  $\varepsilon$ is assumed to be a centered Gaussian random variable and  $\sigma^2_{\theta_n}(\cdot)$ is either known and constant \cite{} or has a Poisson-Gaussian shape i.e., scales with $\alpha X + \eta^2$, see \cite{}.
-In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$. Model \eqref{eq:def:Y} does not fit directly the assumptions of \cite{gassiat:lecorff:lehericy:2021} and identifiability of the noise and signal  distributions remains an open problem in this setting.
+In the most common denoising algorithms,  $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$. As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, which may impact denoising performances while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions. 
+Our model does not fit directly the assumptions of \cite{gassiat:lecorff:lehericy:2021} which assumes that $\sigma^2_{\theta_n}$ is constant so that  identifiability of the noise and signal  distributions remains an open problem in this setting.
+%In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$. 
 %However, our approach in this paper is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood.
 
 %Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
@@ -203,7 +201,8 @@ In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariat
 Let  $\Omega_X$ be the signal values in a neighborhood of $X$.
 In this paper, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called \textit{D-net} and with unknown weights $\theta_d$.
 
-A natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$. During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as  a standard mean squared error loss would recover the prediction of $Y$ instead of $X$. This is the reason why we adopt a blind spot denoising approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator. In this framework, an appealing prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
+A natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$. During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as  a standard mean squared error loss would recover the prediction of $Y$ instead of $X$. This is the reason why we adopt a blind spot denoising approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator. In this framework, an appealing prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.  
+ In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust and appealing solution while other choices can be made straightforwardly.
 
 %The signal $X$ is then modeled as
 %\begin{equation}
@@ -222,7 +221,8 @@ where $\theta = (\theta_n,\theta_d)$ and
 +\frac{1}{2}\left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\,. %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
 \end{multline*}
 %This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}.
-In Section~\ref{sec:experiments} we propose other noise distributions to account for positive skewness which cannot be modeled with Gaussian distributions. We also provide empirical evaluations that choosing $g$ as the empirical mean of its entries is a robust and appealing solution while other choices can be made straightforwardly.
+
+An appealing feature of our approach is that it can be extended straightforwardly to more complex noise distributions, i.e. non Gaussian distributions. In Section~\ref{sec:experiments}, we propose such an extension with mixture models  to account for positive skewness which cannot be modeled with a single Gaussian distribution. In this context, each component of the mixture describing the distribution of $\varepsilon$ is a Gaussian distribution whose signal-dependent standard deviation is parameterized with a N-net. The results provided in Section~\ref{sec:experiments} illustrate how such models improve denoising performance for asymmetrical noise distributions.
 %The random variable $U$ being  $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$
 
 %After a training phase to estimate $\theta$, the signal values cannot be predicted as the random variable $U$ is not observed. Several predictors of $X$ can be designed.
@@ -311,6 +311,7 @@ When comparing images, the PSNR is not highly indicative of perceived similarity
 To address this shortcoming, we used Structural similarity (SSIM) that take textures and edges into account \cite{wang2004image}, computed as in the original work.
 
 \section{Results}
+\label{sec:results}
 \subsection{Noise estimation}
 
 \begin{figure}[ht]
