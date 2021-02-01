@@ -314,15 +314,15 @@ To address this shortcoming, we used Structural similarity (SSIM) that take text
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_noise_std.pdf}}
 \caption{Noise estimation.
-For the observed noise and 3 types of synthetic noises, let $X$ be the ground truth and $Y$ the noisy observations (displayed in column ).
-The plots display the observed standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by NNet.
+For 3 models of synthetic noise and the observed noise, the plots display the empirical standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by NNet\footnotemark as a function of $X$.
+Theoretical standard deviation of the noise is displayed for the 3 models of synthetic noise.
 The empirical ditribution of $Y$ is displayed in blue, in logarithmic scale.
 Examples of noisy images and the corresponding predicted denoised images are displayed in columns \textit{Noisy} and \textit{Denoised}.}
 \label{fig:noisestd}
 \end{center}
 \vskip -0.2in
 \end{figure}
-
+\footnotetext{Display range was shrinked in Y-axis for visual purpose, excluding some points of the empirical std of the Speckle noise model.}
 To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{w2s-1}, so that the datasets have a PSNR value close to the PSNR of the orignial dataset (in a range of $\pm0.1$dB).
 We used 3 classical noise models: additive gaussian, poisson-gaussian and speckle, see Sup.~section~\ref{si:synthetic} for details.
 Empirical and predicted distribution of noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
