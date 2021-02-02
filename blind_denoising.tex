@@ -124,9 +124,9 @@ which recovers precisely the noise distribution during training, even for comple
 
 The contribution of this paper can be summarized as follows.
 \begin{itemize}
-  \item We introduce a novel blind denoising model, modeling both the signal and noise distributions.
-  \item The proposed architectures outperform state-of-the-art algorithms over 6 standard microscopy datasets, without denoising artifacts.
-  \item We show that N-net recovers the noise distribution efficiently in varying experiments with synthetic noises.
+  \item We introduce a novel self-supervised blind-denoising method, modeling both the signal and noise distributions.
+  \item We show that N-net recovers the noise distribution efficiently in varying experiments with synthetic and empirical noises.
+  \item The proposed architectures outperform state-of-the-art algorithms over 6 standard microscopy datasets, without introducing denoising artifacts.
 \end{itemize}
 
 \section{Related work}
@@ -134,9 +134,10 @@ The contribution of this paper can be summarized as follows.
 \paragraph{Masking and J-invariance}
 The class of denoising functions is typically chosen to be convolutional neural networks (CNNs), which are heavily parameterized and are not restricted to good denoisers. For instance, a naive self-supervised loss without any masking would result in learning the identity function, as the considered CNNs can typically implement it. Starting from this intuition, many of the related works can be viewed as different masking schemes. This has been described in the \textit{J-invariant} framework introduced by \cite{batson2019noise2self}: a \textit{J-invariant} function does not depend on a few selected dimensions $J$ of its input variables; typically this translates into a convolutional function which does not depend on the central pixel of the convolutional receptive field, but rather on the observations of neighboring pixels \footnote{Those functions excluding the central pixel are sometimes also called \textit{blind spot}, not to be confused with \textit{blind denoising} in which the noise process is not known.}.
 
-The first masked Self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void}, in which $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are sampled  randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood (with a positive probability of replacing $Y_i$ by itself meaning that no masking is introduced).
+The first masked Self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void}, in which $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are sampled  randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood, with a positive probability of replacing $Y_i$ by itself meaning that leaks in masking are introduced.
 
-Noise2Self (N2S) \cite{batson2019noise2self} masking procedure differs from N2V: $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are obtained with a fixed grid, and $Y_i$ is replaced by the average of neighboring observations. In practice, the masking procedure has a strong impact on training: 1) improving masking schemes can improve denoising performance 2) as only masked pixels are used for training, as typically representing a few percent of the image, this affects greatly the training efficiency.
+Noise2Self (N2S) \cite{batson2019noise2self} masking procedure differs from N2V: $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are obtained with a fixed grid, and $Y_i$ is replaced by the average of the 4 direct neighboring observations, which can also be leaky\footnote{In areas with low signal values of quantized microscopy images there is a non-null probability that the replacement value is equal to the central value}.
+In practice, the masking procedure has a strong impact on training: 1) improving masking schemes can improve denoising performance 2) as only masked pixels are used for training, as typically representing a few percent of the image, this affects greatly the training efficiency.
 
 These work implement the underlying CNN architecture is the UNet \cite{ronneberger2015u}, a typical convolutional autoencoder architecture, involving skip connections, which can reproduce fine grained details, while making use of higher-level spatially coarse information. While showing strong denoising performance in N2S and N2V, they however can produce \textit{checkerboard patterns}, which are high frequency artifact that arise in the denoised results.
 These works have been extended in DecoNoising \cite{goncharova2020} in which a Gaussian convolution is added after the neural network output to simulate microscope Point Spread Function.
@@ -166,7 +167,7 @@ It is worth noting that supervised \textit{blind denoising} methods have used pa
 
 \paragraph{Chosen approach} The work of Laine et al. \cite{laine2019high} gives the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time. On the contray, methods such as N2V or N2S use the central pixel at test-time, but the dependency on central pixel is not explicit and unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approch rather focuses on having efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time\textcolor{red}{, and we provide a few directions to explain why this might be beneficial}.
 \textcolor{red}{This also gives the flexibility to tune the masking to match structured noise, which we observed in 2 of the 6 considered datasets (see section~\ref{sec:masking})} \cite{broaddus2020removing}.
-In addition, we build upon the work of \cite{krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser, and only requiring single predictions per pixels: this results in a training and inference procedures that are simpler, more efficient and more stable.
+We also build upon the work of \cite{laine2019high, krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser, and only requiring single predictions per pixels: this results in a training and inference procedures that are simpler, more efficient and more stable.
 
 \section{Model}
 \label{sec:model}
@@ -279,13 +280,12 @@ Images were normalized using the modal value as center and the difference betwee
 
 \subsection{Masking procedure}
 \label{sec:masking}
-Following \cite{batson2019noise2self}, we masked pixels along a grid. The loss is computed only on the masked pixels.
-We obtained the best results with a replacement by a 3x3 gaussian filter with $\sigma=1$ with a weight equal to zero at the center position, and a sum of weights equal to 1.
-The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturbs the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
-In order to push the limits of this trade-off between learning efficiency and denoising quality, we introduced two modifications on the original approach: we used a random dynamic spacing between 3 and 5 pixels, which allow to have relative positions of masked pixels that change randomly.
+Following \cite{batson2019noise2self}, we masked pixels along a grid and computed the lossonly on masked pixels.
+We obtained the best results by replacing the central value by the weighted average of the 8 direct neighbors\footnote{This may due to the fact that with this replacement function, the probability of having a replacement value equal to the central value is much lower than in \cite{batson2019noise2self}} with Gaussian weights ($\sigma=1$).
+The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed relative positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturb the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
+In order to push the limits of this trade-off, we introduced two modifications on the original approach: we used a random dynamic spacing between 3 and 5 pixels, which allow to have relative positions of masked pixels that change randomly.
 
-We observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre as in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked on this axis, within an extent of 2 pixel for \emph{PN2V-C} and 3 pixels for \emph{PN2V-MA}.
-Those ranges can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears.
+Furthermore, we observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extention can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears}.
 
 \subsection{Training}
 Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We trained networks for 400 epochs of 200 steps.
@@ -294,7 +294,7 @@ We obtained better and more reproductible results using the weights of the train
 Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets.
 Batch size was set to 4 for \emph{PN2V-C} and 1 for all other datasets.
 Each mini batch was cut into 100 tiles.
-Tiles were augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, only data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
+Tiles were augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
 
 We observed a few failed trains when NNet predicts a 3-component-GMM, with a frequency that depends on the dataset.
 This can be detected during the first epoch by monitoring the standard deviation of the predicted ditribution, which increases instead of decreasing.
