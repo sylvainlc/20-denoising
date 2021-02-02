@@ -102,23 +102,21 @@ Our method significantly outperforms current state-of-the-art self-supervised bl
 \section{Introduction}
 \label{sec:introduction}
 
-Image denoising is a well-known Computer Vision task designed to restore pictures taken in poor conditions. In scientific imagery (microscopy, astronomy, etc.) for instance,  the optical setting accounts for very noisy images, which limits their interpretability or their automatic processing.
+Image denoising is a well-known Computer Vision task designed to restore pictures taken in poor conditions. In scientific imagery (microscopy, astronomy, etc.) for instance,  the optical setting may produce very noisy images, which limits their interpretability or their automatic processing.
 
-Formally, image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by a noise $\varepsilon$. Classical denoising approaches are model-driven in the sense that they rely on strong assumptions on the noise distribution or on the structure of the signal but are often limited by the relevance of these assumptions.
+Formally, image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by an additive noise $\varepsilon$. Classical denoising approaches are model-driven in the sense that they rely on strong assumptions on the noise distribution or on the structure of the signal but are often limited by the relevance of these assumptions.
 Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problem with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining independent observations of the same signal is often unrealistic in practice.
 
 Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel $Y$ only using the noisy observations of the surrounding pixels. In such frameworks, the trained network extracts some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} as they only assume that the noises associated with different observations are independent and centered. This is well suited to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
 
-These methods rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually implemented as a convolutional neural network. Using only the noisy observations $Y$, and a binary mask $M$, the following self-supervision objective is minimized:
+These methods rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually implemented as a convolutional neural network. Using only the noisy observations and a binary mask $M$, the objective is to minimize a self-supervision loss of the form:
+$$\mathcal{L}: \theta\mapsto \frac{1}{M}\sum_{i=1}^M \|f_\theta(Y^{masked}_i) - Y_i\|_2^2\,, $$
+where $Y^{masked}_i$ is the image in which the pixel $Y_i$ has been masked using $M$. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
 
-$$\mathcal{L}: \theta\mapsto \frac{1}{M}\sum_{i=1}^M \|f_\theta(Y^{masked}_i) - Y_i\|^2\,, $$
-where $Y^{masked}_i$ is the image in which the pixel $Y_i$ has been masked. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
-
-While these methods are practial and results in strong denoising functions, they suffer from several drawbacks:
-
+While these methods are appealing in practice and result in efficient denoising functions, they suffer from several drawbacks:
 \begin{itemize}
   \item it is not well understood why they work well in practice, i.e. what type of noise they are able to remove, how sensible they are to masking scheme, etc.
-  \item they often suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}
+  \item they often suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}.
 \end{itemize}
 
 To adress these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training. Our main contribution is to add the flexible N-net
@@ -127,7 +125,7 @@ which recovers precisely the noise distribution during training, even for comple
 The contribution of this paper can be summarized as follows.
 \begin{itemize}
   \item We introduce a novel blind denoising model, modeling both the signal and noise distributions.
-  \item The proposed architectures outperform state-of-the-art algorithms over 6 standard microscopy datasets, without denoising artifacts
+  \item The proposed architectures outperform state-of-the-art algorithms over 6 standard microscopy datasets, without denoising artifacts.
   \item We show that N-net recovers the noise distribution efficiently in varying experiments with synthetic noises.
 \end{itemize}
 
