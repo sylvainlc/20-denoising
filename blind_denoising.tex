@@ -105,7 +105,7 @@ Our method significantly outperforms current state-of-the-art self-supervised bl
 Image denoising is a well-known Computer Vision task designed to restore pictures taken in poor conditions. In scientific imagery (microscopy, astronomy, etc.) for instance,  the optical setting may produce very noisy images, which limits their interpretability or their automatic processing.
 
 Formally, image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by an additive noise $\varepsilon$. Classical denoising approaches are model-driven in the sense that they rely on strong assumptions on the noise distribution or on the structure of the signal but are often limited by the relevance of these assumptions.
-Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problems with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining independent observations of the same signal is often unrealistic in practice.
+Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problem with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining independent observations of the same signal is often unrealistic in practice.
 
 Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel $Y$ only using the noisy observations of the surrounding pixels. In such frameworks, the trained network extracts some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} as they only assume that the noises associated with different observations are independent and centered. This is well suited to typical microscopy settings, in which both the clean image is unavailable, and the real noise process is complex and not known.
 
@@ -114,8 +114,8 @@ where $Y^{masked}_i$ is the image in which the pixel $Y_i$ has been masked using
 
 While these methods are appealing in practice and result in efficient denoising functions, they suffer from several drawbacks:
 \begin{itemize}
-  \item It is not well understood why they work well in practice, i.e. what type of noise they are able to remove, how sensible they are to the masking scheme, etc.
-  \item They often suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}.
+  \item it is not well understood why they work well in practice, i.e. what type of noise they are able to remove, how sensible they are to masking scheme, etc.
+  \item they often suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}.
 \end{itemize}
 
 To adress these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training. Our main contribution is to add the flexible N-net
@@ -131,7 +131,7 @@ The contribution of this work can be summarized as follows.
 \section{Related work}
 \label{sec:related}
 \paragraph{Masking and J-invariance.}
-The most typical class of denoising functions is chosen to be comprised of convolutional neural networks (CNNs), which are heavily parameterized functions and are not restricted to solve denoising problems. As an important consequence, a naive self-supervised loss without any masking would result in learning the identity function (i.e. the function outputing the noisy observation $Y$ if it is not masked in the input data), as the considered CNNs can typically implement it. Starting from this intuition, many of the related works can be viewed as different masking schemes. This has been described in the \textit{J-invariant} framework introduced by \cite{batson2019noise2self}: a \textit{J-invariant} function does not depend on a few selected dimensions $J$ of its input variables; typically this translates into a convolutional function which does not depend on the central pixel of the convolutional receptive field, but rather on the observations of neighboring pixels. \footnote{Those functions excluding the central pixel are sometimes also called \textit{blind spot}, not to be confused with \textit{blind denoising} in which the noise process is not known.}
+The most typical  class of denoising functions is chosen be comprised of  convolutional neural networks (CNNs), which are heavily parameterized functions and are not restricted to solve denoising problems. As an important consequence, a naive self-supervised loss without any masking would result in learning the identity function (i.e. the function outputing the noisy observation $Y$ if it is not masked in the input data), as the considered CNNs can typically implement it. Starting from this intuition, many of the related works can be viewed as different masking schemes. This has been described in the \textit{J-invariant} framework introduced by \cite{batson2019noise2self}: a \textit{J-invariant} function does not depend on a few selected dimensions $J$ of its input variables; typically this translates into a convolutional function which does not depend on the central pixel of the convolutional receptive field, but rather on the observations of neighboring pixels. \footnote{Those functions excluding the central pixel are sometimes also called \textit{blind spot}, not to be confused with \textit{blind denoising} in which the noise process is not known.}
 
 The first masked self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void}, in which $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant M}$ are sampled  randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood, with a positive probability of replacing $Y_i$ by itself meaning that leaks in masking are introduced.
 
@@ -140,31 +140,31 @@ In practice, the masking procedure has a strong impact on training: (i) improvin
 
 The underlying CNN architecture implemented by these works is the UNet \cite{ronneberger2015u}, a typical convolutional autoencoder architecture, involving skip connections, which can reproduce fine grained details, while making use of higher-level spatially coarse information. While showing strong denoising performance in N2S and N2V, they however can produce \textit{checkerboard patterns}, which are high frequency artifacts that arise in the denoised results.
 These works have been extended in DecoNoising \cite{goncharova2020} in which a Gaussian convolution is added after the neural network output to simulate microscope Point Spread Function.
-This technique improves performances, however the deconvolved image (predicted image before the Gaussian convolution) displays even stronger checkerboard pattern.
+This technique improves performances, however the deconvolved image (predicted image before the Gaussian convolution) has even stronger checkerboard pattern.
 
 Finally, \cite{broaddus2020removing} showed that when the noise has local correlations (for instance a  directional noise),  masking can be adapted to remove them - by masking adjacent pixels in the same direction as the noise spatial correlation for instance.
 
 \paragraph{J-invariance without masking.}
-Instead of masking specific pixels, it is possible to design specific convolutional operators to limit the receptive field, ensuring that the resulting function is \textit{J-invariant} by design. This was achieved in \cite{laine2019high} by introducing directional convolution kernels, each kernel has its receptive field restricted to a half-plane that does not contain the central pixel. The associated function then takes values which only depend on pixels in specific directions, ensuring that it does not depend on pixels in the opposite direction. One drawback is that the inference has to be performed four times, one in each direction.
+Instead of masking specific pixels, it is possible to design specific convolutional operators to limit the receptiveir field, ensuring that the resulting function is \textit{J-invariant} by design. This was achieved in \cite{laine2019high} by introducing directional convolution kernels, each kernel has its receptive field restricted to a half-plane that does not contain the central pixel. The associated function then takes values which only depend on pixels in specific directions, ensuring that it does not depend on pixels on the opposite direction. One drawback is that the inference has to be performed four times, one in each direction.
 
 More recently, \cite{lee2020noise2kernel} introduced a combination of specific convolution operators with dilation and strides, ensuring that the function is independent of the central pixel by design, therefore \textit{J-invariant}. It is interesting to note that with standard convolutions, a two layered network already cannot be made independent of the central pixel, which is why the authors had to rely on very specific convolutions.
 
-The benefit of these architectures compared to the masking-based training is that all output pixels can contribute to the loss function as in conventional training, rather than just the masked pixels; and they do not require a carefully tuned masking procedure. However, they strongly constrain the network architecture, which can hinder the denoising performance or result in more expensive inference schemes.
+The benefit of these architectures compared to the masking-based training is that all output pixels can contribute to the loss function as in conventional training, rather than just the masked pixels; and they do not require a carefuly tuned masking procedure. However, they strongly constrain the network architecture, which can hinder the denoising performance or result in more expensive inference schemes.
 
 \paragraph{Contribution of a noise model.}
-The denoising literature includes few works which explicitly model the noise distribution, either by choosing a priori a  family of distributions (e.g. a Gaussian noise), or by selecting a more flexible class of distributions.
+The denoising literature includes few works which explicitely model the noise distribution, either by choosing a priori a  family of distributions (e.g. a Gaussian noise), or by selecting a more flexible class of distributions.
 
 The former is illustrated in \cite{laine2019high}, in which three types of corrupting noise are considered: Gaussian noise independent of the signal; Poisson-Gaussian noise, i.e. a Gaussian noise with variance scaling linearly with the signal value; finally impulse noise, i.e. a uniform noise. In each case, the noise parameters are either known or estimated with an auxiliary neural network. As the signal distribution and the noise distribution belong to a known parametric family, the noisy central pixel can be included at test time in order to improve performances. However, as the noise type has to be chosen a priori, the method is restricted to known and synthetic noise types and therefore falls under the category of \textit{non-blind denoising} methods.
 
-In \cite{krull2019probabilistic,prakash2020fully,2020DivNoising}, the authors make use of a more flexible noise model, which is a generic modelisation of the conditional distribution of the noise given the signal intensity and thus can better model real noises.%: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$,
-In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}. This increases the complexity of the method, as it requires several training procedures and calibration. In the latter variant, the noise distribution is fitted with a Gaussian mixture model with empirically designed constraints.
+In \cite{krull2019probabilistic,prakash2020fully,2020DivNoising}, the authors make use of a more flexible noise model, which is a generic modelisation of the conditional ditribution of the noise given the signal intensity and thus can better model real noises.%: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$,
+In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}. This increases the complexity of the method, as it requires several training procedures and callibration. In the latter variant, the noise distribution is fitted with a Gaussian mixture model with empirically designed constraints.
 The denoising network is then trained to predict a whole distribution of possible noisy values, by predicting $800$ values (signal bins) instead of a single point estimate of each pixel, approximating the previously defined noise distribution at each pixel.\footnote{The result depends on the binning choice made to build the 2D histogram, which is not trivial in the case of fluorescence-microscopy data where signal range can be very high.}
 
 Finally, \cite{2020DivNoising} used the Variational AutoEncoder formalism, adding a pre-calibrated noise model in their architecture. This provides new interesting possibilities, as it can generate a diversity of denoised results, possibly interesting in creative processes. In the case of scientific images such as microscopy, the possible presence of visual artifacts or blurry results makes it less appropriate.
 
-It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise models, such as \cite{zhang2017beyond,yue2019variational}, which explicitly used large neural networks to model a complex noise, with even less assumption on the noise (noise can be slightly structured). Even though the algorithm proposed in \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting, which does not apply in our setting.
+It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise models, such as \cite{zhang2017beyond,yue2019variational}, which explicitely used large neural networks to model a complex noise, with even less assumption on the noise (noise can be slightly structured). Even though the algorithm proposed in \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting, which does not apply in our setting.
 
-\paragraph{Chosen approach.} The work of Laine et al. \cite{laine2019high} gave the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time. On the contray, methods such as N2V or N2S use the central pixel at test-time, but the dependency on the central pixel is not explicit and unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approch rather focuses on having an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time\textcolor{red}{, and we provide a few directions to explain why this might be beneficial}.
+\paragraph{Chosen approach.} The work of Laine et al. \cite{laine2019high} gave the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time. On the contray, methods such as N2V or N2S use the central pixel at test-time, but the dependency on central pixel is not explicit and unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approch rather focuses on having an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time\textcolor{red}{, and we provide a few directions to explain why this might be beneficial}.
 \textcolor{red}{This also gives the flexibility to tune the masking to match structured noise, which we observed in 2 of the 6 considered datasets (see section~\ref{sec:masking})} \cite{broaddus2020removing}.
 We also build upon the work of \cite{laine2019high, krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser, and only requiring a single prediction per pixel: this results in a training and inference procedures that are simpler, more efficient and more stable.
 
@@ -232,7 +232,7 @@ An appealing feature of our approach is that it can be extended straightforwardl
 %The approach proposed in this work is decomposed into two steps.
 %\begin{enumerate}
 %\item First, $\mu_{\theta_p}$ is obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $\mu_{\theta_p}$.
-%\item After a training procedure to estimate the parameters of these networks, the estimator of the unknown pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
+%\item After a training procedure to estimate the parameters of these networks, the estimator of the unknow pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
 %\end{enumerate}
 %The signal $X$ is then modeled as $X =  \mu_{\theta_p}(\Omega_Y;Y)$ so that
 %$$
@@ -259,54 +259,55 @@ An appealing feature of our approach is that it can be extended straightforwardl
 \label{sec:experiments}
 \subsection{Model Architecture}
 \paragraph{D-Net}
-The function $\mu_{\theta_d}$ is parameterized by a UNet \cite{ronneberger2015u}. The main difference with the networks used in N2S and N2N is that we use upsampling layers with nearest-neighbor approximation instead of transpose convolutions, as we observed the latter tend to increase the checkerboard artefact. This was also observed by \cite{kobayashi2020image}. Additional architecture and training information can be found in Supplementary Information.
+The function $\mu_{\theta_d}$ is parameterized by a UNet \cite{ronneberger2015u}. The main difference with the networks used in N2S and N2N is that we use upsampling layers with nearest-neighbor approximation instead of transpose convolutions, as we observed transpose convolution tend to increase the checkerboard artefact. This was also observed by \cite{kobayashi2020image}. Additional architecture and training information can be found in Supplementary Information.
+At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances in terms of PSNR and SSIM.
 
 \paragraph{N-Net}
-The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. In the Gaussian Mixture Model (GMM) case, the network parametrizes a more complex distribution and therefore has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means and $N$ mixture weights parametrized by the N-Net. The full architecture detail for both models are available in Supplementary Information.
+The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. In the Gaussian Mixture Model (GMM) case, the network parametrizes a more complex distribution and therefore has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means and $N$ mixture weights parametrized by the N-Net. The full architecture detail for both models are avaiable in Supplementary Information.
 
 %This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
 %The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
 
 \subsection{Datasets}
-We train and evaluate our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
+We trained and evaluated our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
 
-The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each composed of several observations of the same FOV. \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
+The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
 For fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
 
-The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} referred to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
+The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 We used the 16-bit raw images kindly provided by the authors.
 The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
 The first 80 are used for training and the last 40 for evaluation.
 Following the authors, for each FOV, only the raw image of index 249 is used for training or for evaluation, which corresponds better to a real setting where only one observation per FOV is available.
 
-Images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.\footnote{This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution has often an heavy tail towards high values.}
+Images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.\footnote{This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and siganl distribution has often an heavy tail towards high values.}
 
 \subsection{Masking procedure}
 \label{sec:masking}
-Following \cite{batson2019noise2self}, we mask pixels along a grid and compute the loss only on masked pixels.
+Following \cite{batson2019noise2self}, we masked pixels along a grid and computed the loss only on masked pixels.
 We obtained the best results by replacing the central value by the weighted average of the 8 direct neighbors with Gaussian weights ($\sigma=1$).
-The drawback of masking along a grid is that pixels are masked at fixed relative positions with regards to the central pixel. If grid spacing is too small, then too many masked pixels are present in the receptive field and perturb the performances, because the network learns to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
-In order to push the limits of this trade-off, we introduced two modifications on the original approach: we used a random dynamic spacing between 3 and 5 pixels, so that relative positions of masked pixels change randomly, and we also remve randomly $1\%$ of the grid elements.
+The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed relative positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturb the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
+In order to push the limits of this trade-off we use a random dynamic spacing between 3 and 5 pixels, which allow to have relative positions of masked pixels that change randomly.
 
-Furthermore, we observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking procedure introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extension can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disappears}.
+Furthermore, we observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extention can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears}.
 
 \subsection{Training}
 Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We train networks for 400 epochs of 200 steps.
-%This is an over-estimation of the required training as we observed that networks reach a near-optimal state within the first 100 epochs, but we kept a longer training to have more reproducible results.
-We obtain better and more reproducible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibly because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
+This is an over-estimation of the required training as we observed that networks reach a near-optimal state within the first 100 epochs, but we kept a longer training to have more reproducible results.
+We obtain better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
 Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets.
 Batch size was set to 4 for \emph{PN2V-C} and 1 for all other datasets.
 Each mini batch is split into 100 tiles.
-Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}. At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances in terms of PSNR and SSIM.
+Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
 
 We observe a few failed trains when NNet predicts a 3-component-GMM, with a frequency that depends on the dataset. \textcolor{red}{trop vague, et peut nous retomber dessus. Si on pointe des défauts il faut être hyper précis dessus je pense}
-%This can be detected during the first epoch by monitoring the standard deviation of the predicted distribution, which increases instead of decreasing.
-This can be avoided by initializing the N-Net replacing \textit{D-net} by $X\mapsto g(X)$ and training for a few epochs, however as these failed trains are usually rare, in practice we simply restart the training from scratch.
-\textcolor{red}{mettre cette note dans les SI ? expliquer d'ou ça vient (plus de degrés de liberté dans la distribution)}
+%This can be detected during the first epoch by monitoring the standard deviation of the predicted ditribution, which increases instead of decreasing.
+This can be avoided by initializing the N-Net replacing \textit{D-net} by $X\mapsto g(X)$ and train for a few epochs, however as these failed trains are usually rare, in practice we simply restart the training from scratch.
+\textcolor{red}{mettre cette note dans les SI ? expliquer d'ou ça vient (plus de degrés de liberté dans la ditribution)}
 
 \subsection{Evaluation}
 For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR computation.
-When comparing images, the PSNR is not highly indicative of perceived similarity, in particular it does not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce.
+When comparing images, the PSNR is not highly indicative of perceived similarity, in particular it do not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that them into account.
 To address this shortcoming, we used Structural similarity (SSIM) that take textures and edges into account \cite{wang2004image}, computed as in the original work.
 
 \section{Results}
@@ -320,14 +321,14 @@ To address this shortcoming, we used Structural similarity (SSIM) that take text
 \caption{Noise estimation.
 For 3 models of synthetic noise and the observed noise, the plots display the empirical standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by NNet\footnotemark as a function of $X$.
 Theoretical standard deviation of the noise is displayed for the 3 models of synthetic noise.
-The empirical distribution of $Y$ is displayed in blue, in logarithmic scale.
+The empirical ditribution of $Y$ is displayed in blue, in logarithmic scale.
 Examples of noisy images and the corresponding predicted denoised images are displayed in columns \textit{Noisy} and \textit{Denoised}.}
 \label{fig:noisestd}
 \end{center}
 \vskip -0.2in
 \end{figure}
 \footnotetext{Display range was shrinked in Y-axis for visualization purposes, excluding some points of the empirical std of the Speckle noise model.}
-To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{w2s-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
+To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{w2s-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the orignial dataset (in a range of $\pm0.1$dB).
 We used 3 classical noise models: additive gaussian, poisson-gaussian and speckle, see Sup.~section~\ref{si:synthetic} for details.
 Empirical and predicted distributions of noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
 It shows our method is able to capture the different noise distributions even in areas where signal is rare.
@@ -340,21 +341,21 @@ It shows our method is able to capture the different noise distributions even in
 \caption{Real noise estimation. \textbf{Upper-left}: empirical distribution of the noise $Y - X$ as a function of $X$, normalized in each signal value bin\textcolor{red}{faut il le préciser ou c'est évident?} for dataset \textit{w2s-1}.
 \textbf{Upper-right}: corresponding predicted noise distribution for a 3-component-GMM.
 \textbf{Lower-left}: Skewness of empirical and predicted noise distribution as a function of $X$, estimated with Pearson's moment coefficient of skewness\footnotemark.
-\textbf{Lower-rigth}:  Kullback–Leibler divergence between empirical noise distribution and predicted distribution generated by each model, as a function of $X$.
+\textbf{Lower-rigth}:  Kullback–Leibler divergence between empirical noise ditribution and predicted ditribution generated by each model, as a function of $X$.
 \textit{G1} stands for Gaussian model, \textit{G2} for a 2-component-GMM and \textit{G3} a 3-component-GMM.
 }
 \label{fig:skewness}
 \end{center}
 \vskip -0.2in
 \end{figure}
-\footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $XX\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.}
-We observed that contrary to the classical noise models, the observed noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
-In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
+\footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $XX\%$ percentile of the dataset so that there is enough observed samples in each bin to compute statistically significant metrics.}
+We observed that contrary to the classical noise models, the observed noise often display a certain degree of skewness, as illustrated in Fig.~\ref{fig:skewness}.
+In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better discribed by a GMM than by a single Gaussian.
 
 \subsection{Denoising performances}
 \label{sec:perf}
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimates sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on predictions made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
 \label{table:results}
 \vskip 0.15in
 \begin{center}
@@ -381,8 +382,8 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \footnotetext{\label{note:n2v}Using no positivity constraint, and removing the convolution for N2V.}
 
 We compared our method to 3 baselines: N2V, DecoNoising, which is the self-supervised blind denoising method that has shown best results on the datasets we considered, as well as one of the most simple denoising method: convolution by a Gaussian, whose standard deviation is chosen to maximizes the PSNR on the evaluation dataset.
-We believe it makes a good reference, as it is one of the simplest denoising methods, and it removes noise efficiently but also other high-frequency information such as local contrasts.
-%A good denoising method should thus perform better both in terms of PNSR and SSIM.
+We believe it makes a good reference, as it is one of the simplest denoising method, and it removes noise efficiently but also other high-frequency information such as local contrasts.
+A good denoising method should thus perform better both in terms of PNSR and SSIM.
 The considered metrics are summarized in table~\ref{table:results}.
 Our method significantly outperforms the 3 baselines both in term of PSNR by XXdB on average and in terms of SSIM by a factor XX on average.
 
@@ -391,7 +392,7 @@ Our method significantly outperforms the 3 baselines both in term of PSNR by XXd
 \vskip 0.2in
 \begin{center}
 \includegraphics[width=6.75in]{fig_images.pdf}
-\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
+\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evalutation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
 \label{fig:images}
 \end{center}
 \vskip -0.2in
@@ -406,7 +407,7 @@ This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}:
 \section{Discussion}
 We introduced a novel self-supervised blind-denoising method modeling both the signal and noise distributions. We believe its simplicity, performances and the interpretability of the noise distribution will be useful both in practical applications, and as a basis for future research. First, future works could consider even more complex family of noises, such as non-centered noise, or structured noises, that can also arise in real-life setups. In particular \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noise such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noise.
 Second, more theoretical works could explore the identifiability of the model under the assumptions made. \textcolor{red}{TODO: sylvain je te laisse écrire ici}
-Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on masking procedure and convolutional architecture, but was the network wasn't trained explicitly to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
+Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on masking procedure and convolutional architecture, but was the network wasn't trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
 
 {\small
 \bibliography{blind_denoising}
