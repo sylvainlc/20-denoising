@@ -191,9 +191,9 @@ Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
 where $\varepsilon$ is a centered noise independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
-In the most common denoising algorithms,  $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$. As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, which may impact denoising performances while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions. 
+In the most common denoising algorithms,  $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$. As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, which may impact denoising performances while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions.
 Our model does not fit directly the assumptions of \cite{gassiat:lecorff:lehericy:2021} which assumes that $\sigma^2_{\theta_n}$ is constant so that  identifiability of the noise and signal  distributions remains an open problem in this setting.
-%In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$. 
+%In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$.
 %However, our approach in this paper is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood.
 
 %Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
@@ -201,7 +201,7 @@ Our model does not fit directly the assumptions of \cite{gassiat:lecorff:leheric
 Let  $\Omega_X$ be the signal values in a neighborhood of $X$.
 In this paper, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called \textit{D-net} and with unknown weights $\theta_d$.
 
-A natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$. During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as  a standard mean squared error loss would recover the prediction of $Y$ instead of $X$. This is the reason why we adopt a blind spot denoising approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator. In this framework, an appealing prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.  
+A natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$. During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as  a standard mean squared error loss would recover the prediction of $Y$ instead of $X$. This is the reason why we adopt a blind spot denoising approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator. In this framework, an appealing prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
  In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust and appealing solution while other choices can be made straightforwardly.
 
 %The signal $X$ is then modeled as
@@ -305,6 +305,11 @@ We observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlat
 Those ranges can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears.
 Importantly, for those datasets, only data-augmentation is only composed of combinations of flips to avoid axes transposition.
 
+We observed a few failed trains when NNet predicts a 3-component-GMM, with a frequency that depends on the dataset.
+This can be detected during the first epoch by monitoring the standard deviation of the predicted ditribution, which increases instead of decreasing.
+This can be avoided by initializing the NNet replacing \textit{D-net} by $X\mapsto g(X)$ and train for a few epochs, however as these failed trains are usually rare, in practice we simply restart the training from scratch.
+\textcolor{red}{mettre cette note dans les SI ? expliquer d'ou ça vient (plus de degrés de liberté dans la ditribution)}
+
 \subsection{Evaluation}
 For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR computation.
 When comparing images, the PSNR is not highly indicative of perceived similarity, in particular it do not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that them into account.
@@ -338,7 +343,7 @@ It shows our method is able to capture the different noise distributions even in
 \vskip 0.2in
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_skewness.pdf}}
-\caption{Real noise estimation. \textbf{Upper-left}: empirical distribution of the noise $Y - X$ as a function of $X$, normalized in each signal value bin\textit{faut il le préciser ou c'est évident?} for dataset \textit{w2s-1}.
+\caption{Real noise estimation. \textbf{Upper-left}: empirical distribution of the noise $Y - X$ as a function of $X$, normalized in each signal value bin\textcolor{red}{faut il le préciser ou c'est évident?} for dataset \textit{w2s-1}.
 \textbf{Upper-right}: corresponding predicted noise distribution for a 3-component-GMM.
 \textbf{Lower-left}: Skewness of empirical and predicted noise distribution as a function of $X$, estimated with Pearson's moment coefficient of skewness\footnotemark.
 \textbf{Lower-rigth}:  Kullback–Leibler divergence between empirical noise ditribution and predicted ditribution generated by each model, as a function of $X$.
@@ -365,12 +370,12 @@ In order to be able to capture this aspect, we predict a Gaussian mixture model 
 \toprule
 Dataset & Observed & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $37.68$ / $0.9711$ & $00.00$ / $0.0000$ & $00.00$ / $0.0000$ \\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.34$ / & / & / \\
 PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.11$ / $0.9774$ & / & /\\
 PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.49$ / $0.8867$ & / & /\\
-W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & / & / \\
+W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & / & $35.27$ / $0.9624$ \\
 W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & / & / \\
-W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & / & / \\
+W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & $36.60$ / $0.9269$ & $36.59$ / $0.9269$ \\
 \bottomrule
 \end{tabular}
 \end{sc}
@@ -400,6 +405,9 @@ Our method significantly outperforms the 3 baselines both in term of PSNR by XXd
 
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
 
+\textcolor{red}{TODO: commenter les differences entre G1 / G2 / G3 lorsqu'elles seront présentées}
+
+\section{Discussion}
 
 \section{Conclusion}
 
