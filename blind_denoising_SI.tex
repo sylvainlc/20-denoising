@@ -76,15 +76,19 @@
 
 \section{Additional Implementation details}
 
-\paragraph{Networks and training} We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
+\paragraph{Networks and training.} We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
 The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighorhood that are masked.
-At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves slightly performances in terms of PSNR and SSIM.
 
 \paragraph{N-Net architecture details}
 In the case of Gaussian output, the N-Net is composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$). A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block (to ensure the predicted $\sigma$ is positive).
 
-\textcolor{red}{Todo Jean : In the GMM case,  }
-
+In the case N-net predicts a GMM with N components, the second block is connected to three distinct blocks, each connected to a convolution 1x1 with:
+\begin{itemize}
+  \item N channels, followed by an exponential activation function to predict $\sigma_{i}$
+  \item N channels, followed by a softmax activation to predict $\alpha_{i}$\footnote{In case $N=2$ only one channel is predicted followed by a sigmoid activation function}
+  \item N-1 channels to predict the ditribution centers $\mu_{i}$.
+\end{itemize}
+To ensure that the distribution is centered, the center of the last distribution is computed as $\mu_{N} = \frac{1}{\alpha_{N-1}} * \sum_{i=1}^{N-1}{\alpha_{i} * \mu{i}}$
 
 % dummy citation so that document compiles (at least 1 is needed). to be removed when with put other citations
 \cite{2020DivNoising}
