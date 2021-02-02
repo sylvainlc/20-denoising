@@ -121,7 +121,7 @@ While these methods are appealing in practice and result in efficient denoising 
 To adress these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training. Our main contribution is to add the flexible N-net
 which recovers precisely the noise distribution during training, even for complex asymetric noises. We derive this method from a novel mathematical modeling of the denoising problem, opening new avenues for better understanding of why self-supervised networks achieve remarkable results.
 
-The contribution of this paper can be summarized as follows.
+The contribution of this work can be summarized as follows.
 \begin{itemize}
   \item We introduce a novel self-supervised blind-denoising method, modeling both the signal and noise distributions.
   \item We show that N-net recovers the noise distribution efficiently in varying experiments with synthetic and empirical noises.
@@ -171,9 +171,9 @@ We also build upon the work of \cite{laine2019high, krull2019probabilistic} by d
 \section{Model}
 \label{sec:model}
 
-Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this paper where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
+Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this work where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
-In this paper, it is assumed that the observation $Y$ associated with $X$  is given by
+In this work, it is assumed that the observation $Y$ associated with $X$  is given by
 \begin{equation}
 \label{eq:def:Y}
 Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
@@ -182,7 +182,7 @@ Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 %$$
 %Y = X + (\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})-\mu_{\theta_p}(\Omega_Y;Y)) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon
 %$$
-%The blind denoising framework introduced in this paper can be written as a regression problem where the observations conditionally on $\Omega_Y$ the observation is given by
+%The blind denoising framework introduced in this work can be written as a regression problem where the observations conditionally on $\Omega_Y$ the observation is given by
 %$$
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
@@ -190,12 +190,12 @@ where $\varepsilon$ is a centered noise independent of $X$ and $\sigma^2_{\theta
 In the most common denoising algorithms,  $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$. As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, which may impact denoising performances while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions.
 Our model does not fit directly the assumptions of \cite{gassiat:lecorff:lehericy:2021} which assumes that $\sigma^2_{\theta_n}$ is constant so that  identifiability of the noise and signal  distributions remains an open problem in this setting.
 %In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$.
-%However, our approach in this paper is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood.
+%However, our approach in this work is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood.
 
 %Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
 %We also propose an extension of this setting in which $\varepsilon$ is a mixture of Gaussian random variables with state-dependent variances to account for skewness.
 Let  $\Omega_X$ be the signal values in a neighborhood of $X$.
-In this paper, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called \textit{D-net} and with unknown weights $\theta_d$.
+In this work, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called \textit{D-net} and with unknown weights $\theta_d$.
 
 A natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$. During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as  a standard mean squared error loss would recover the prediction of $Y$ instead of $X$. This is the reason why we adopt a blind spot denoising approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator. In this framework, an appealing prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
  In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust and appealing solution while other choices can be made straightforwardly.
@@ -229,7 +229,7 @@ An appealing feature of our approach is that it can be extended straightforwardl
 %instead of introducing an explicit noise  distribution in the definition of $U$ and  therefore in \eqref{eq:def:X} and then to estimate the posterior distribution of $X$ given $Y$ we propose to introduce a loss function which
 
 % and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$.
-%The approach proposed in this paper is decomposed into two steps.
+%The approach proposed in this work is decomposed into two steps.
 %\begin{enumerate}
 %\item First, $\mu_{\theta_p}$ is obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $\mu_{\theta_p}$.
 %\item After a training procedure to estimate the parameters of these networks, the estimator of the unknow pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
@@ -263,37 +263,37 @@ The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local
 We trained and evaluated our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
 
 The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
-To be able to compare our method, we used the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
+For fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
 
 The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 We used the 16-bit raw images kindly provided by the authors.
 The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
 The first 80 are used for training and the last 40 for evaluation.
-Following the authors, for each FOV, only the raw image of index 249 is used for training or for evaluation, which corresponds better to most use case where only one observation per FOV is available.
+Following the authors, for each FOV, only the raw image of index 249 is used for training or for evaluation, which corresponds better to a real setting where only one observation per FOV is available.
 
 Images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.\footnote{This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and siganl distribution has often an heavy tail towards high values.}
 
 \subsection{Masking procedure}
 \label{sec:masking}
-Following \cite{batson2019noise2self}, we masked pixels along a grid and computed the lossonly on masked pixels.
+Following \cite{batson2019noise2self}, we mask pixels along a grid and compute the loss only on masked pixels.
 We obtained the best results by replacing the central value by the weighted average of the 8 direct neighbors\footnote{This may due to the fact that with this replacement function, the probability of having a replacement value equal to the central value is much lower than in \cite{batson2019noise2self}} with Gaussian weights ($\sigma=1$).
-The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed relative positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturb the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
+The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed relative positions. If grid spacing is too small, then too many masked pixels are present in the receptive field and perturb the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
 In order to push the limits of this trade-off, we introduced two modifications on the original approach: we used a random dynamic spacing between 3 and 5 pixels, which allow to have relative positions of masked pixels that change randomly.
 
 Furthermore, we observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extention can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears}.
 
 \subsection{Training}
-Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We trained networks for 400 epochs of 200 steps.
+Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We train networks for 400 epochs of 200 steps.
 This is an over-estimation of the required training as we observed that networks reach a near-optimal state within the first 100 epochs, but we kept a longer training to have more reproducible results.
-We obtained better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we did not use a validation step.
+We obtain better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
 Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets.
 Batch size was set to 4 for \emph{PN2V-C} and 1 for all other datasets.
-Each mini batch was cut into 100 tiles.
-Tiles were augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
+Each mini batch is split into 100 tiles.
+Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
 
-We observed a few failed trains when NNet predicts a 3-component-GMM, with a frequency that depends on the dataset.
-This can be detected during the first epoch by monitoring the standard deviation of the predicted ditribution, which increases instead of decreasing.
-This can be avoided by initializing the NNet replacing \textit{D-net} by $X\mapsto g(X)$ and train for a few epochs, however as these failed trains are usually rare, in practice we simply restart the training from scratch.
+We observe a few failed trains when NNet predicts a 3-component-GMM, with a frequency that depends on the dataset. \textcolor{red}{trop vague, et peut nous retomber dessus. Si on pointe des défauts il faut être hyper précis dessus je pense}
+%This can be detected during the first epoch by monitoring the standard deviation of the predicted ditribution, which increases instead of decreasing.
+This can be avoided by initializing the N-Net replacing \textit{D-net} by $X\mapsto g(X)$ and train for a few epochs, however as these failed trains are usually rare, in practice we simply restart the training from scratch.
 \textcolor{red}{mettre cette note dans les SI ? expliquer d'ou ça vient (plus de degrés de liberté dans la ditribution)}
 
 \subsection{Evaluation}
@@ -346,7 +346,7 @@ In order to be able to capture this aspect, we predict a Gaussian mixture model 
 \subsection{Denoising performances}
 \label{sec:perf}
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
 \label{table:results}
 \vskip 0.15in
 \begin{center}
@@ -393,11 +393,12 @@ This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}:
 
 \textcolor{red}{TODO: commenter les differences entre G1 / G2 / G3 lorsqu'elles seront présentées}
 
+%The ability to capture synthetic and empirical noises also improves the denoiser performance in most datasets.
+
 \section{Discussion}
-
-\section{Conclusion}
-
-
+We introduced a novel self-supervised blind-denoising method modeling both the signal and noise distributions. We believe its simplicity, performances and the interpretability of the noise distribution will be useful both in practical applications, and as a basis for future research. First, future works could consider even more complex family of noises, such as non-centered noise, or structured noises, that can also arise in real-life setups. In particular \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noise such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noise.
+Second, more theoretical works could explore the identifiability of the model under the assumptions made. \textcolor{red}{TODO: sylvain je te laisse écrire ici}
+Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on masking procedure and convolutional architecture, but was the network wasn't trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
 
 {\small
 \bibliography{blind_denoising}
