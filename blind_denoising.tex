@@ -355,7 +355,7 @@ In order to be able to capture this aspect, we predict a Gaussian mixture model 
 \subsection{Denoising performances}
 \label{sec:perf}
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Observed} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
 \label{table:results}
 \vskip 0.15in
 \begin{center}
@@ -363,13 +363,13 @@ In order to be able to capture this aspect, we predict a Gaussian mixture model 
 \begin{sc}
 \begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
 \toprule
-Dataset & Observed & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
+Dataset & Noisy & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.34$ / & / & / \\
-PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.11$ / $0.9774$ & / & /\\
-PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.49$ / $0.8867$ & / & /\\
-W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & / & $35.27$ / $0.9624$ \\
-W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & / & / \\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ & / & / \\
+PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$ & $38.76$ / $0.9756$ & / \\
+PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$ & / & $34.69$ / $0.8877$ \\
+W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & $35.27$ / $0.9623$ & $35.27$ / $0.9624$ \\
+W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & $33.48$ / $0.8871$ & $33.47$ / $0.8871$ \\
 W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & $36.60$ / $0.9269$ & $36.59$ / $0.9269$ \\
 \bottomrule
 \end{tabular}
