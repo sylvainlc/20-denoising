@@ -169,7 +169,7 @@ Finally, \cite{2020DivNoising} used the Variational Auto\-Encoder formalism, add
 
 It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise models, such as \cite{zhang2017beyond,yue2019variational}, which explicitly used large neural networks to model a complex noise, with even less assumption on the noise (noise can be slightly structured). Even though the algorithm proposed in \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting, which does not apply in our setting.
 
-\paragraph{Chosen approach.} The work of Laine et al. \cite{laine2019high} gave the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time. On the contray, methods such as N2V or N2S use the central pixel at test-time, but the dependency on the central pixel is not explicit and unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approch rather focuses on having an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time.
+\paragraph{Chosen approach.} The work of Laine et al. \cite{laine2019high} gave the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time. On the contrary, methods such as N2V or N2S use the central pixel at test-time, but the dependency on the central pixel is not explicit and unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approch rather focuses on having an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time.
 This also gives the flexibility to tune the masking to match structured noise, which we observed in 2 of the 6 considered datasets (see section~\ref{sec:masking}).
 We also build upon the work of \cite{laine2019high, krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser (see Fig.~\ref{fig:plumbing}), and only requiring a single prediction per pixel: this results in a training and inference procedures that are simpler, more efficient and more stable.
 
@@ -196,7 +196,7 @@ In the most common denoising algorithms,  $\varepsilon$ is assumed to be a cente
 
  %while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions.
 %Our model does not fit directly the assumptions of
-In \cite{gassiat:lecorff:lehericy:2021}, $\sigma^2_{\theta_n}$ is assumed to be constant and the target signal to be weakly dependent to obtain identifiability of the noise and the signal  distributions. % remains an open problem in this setting.
+In \cite{gassiat:lecorff:lehericy:2021}, $\sigma^2_{\theta_n}$ is assumed to be constant and the target signal is assumed to be weakly dependent to obtain identifiability of the noise and the signal  distributions. % remains an open problem in this setting.
 %In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$.
 %However, our approach in this work is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood.
 %Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
@@ -204,7 +204,7 @@ In \cite{gassiat:lecorff:lehericy:2021}, $\sigma^2_{\theta_n}$ is assumed to be 
 In \eqref{eq:def:Y}, we extend the model  proposed by \cite{gassiat:lecorff:lehericy:2021} by considering a state-dependent standard deviation and identifiability remains an open problem. However, we assume in this paper that $X$ is dependent with the signal in the neighbooring pixels $\Omega_X$ so that heteroscedasticity is the only challenge to obtain identifiability of \eqref{eq:def:Y} which is left for future works.
 In this work, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and we propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called \textit{D-net} and with unknown weights $\theta_d$.
 
-A natural estimator of $X$ given the noisy observations is given by $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$.
+A natural estimator of $X$ given the noisy observations is $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$.
 During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as $\mu_{\theta_d}$ would learn to output the noisy observation $Y$ if it is not masked in the input data.
 This is the reason why we adopt a blind spot \textcolor{red}{formuler autrement: "masking approach" ? or "we mask"} denoising approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator.
 In this framework, a genuine prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
@@ -413,7 +413,7 @@ This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}\
 \section{Discussion}
 We introduced a novel self-supervised blind-denoising method modeling both the signal and the noise distributions. We believe its simplicity, performances and the interpretability of the noise distribution will be useful both in practical applications, and as a basis for future research.
 
-First, future works could consider even more complex family of noises, such as non-centered noise, or structured noises, that can also arise in real-life setups. In particular, \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noise such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noises.
+First, future works could consider more complex families of noise distributions  such as structured or non-centered noises, that can also arise in real-life setups. In particular, \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noises such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noises.
 
 Second, more theoretical works could explore the model proposed in this work  (i) to obtain identifiability of model \eqref{eq:def:Y} and extend \cite{gassiat:lecorff:lehericy:2021} to state-dependent standard deviations and (ii) to establish rates of convergence for the proposed estimators.
 
