@@ -247,7 +247,7 @@ An appealing feature of our approach is that it can be extended straightforwardl
 
 \section{Experiments}
 \begin{figure}[ht]
-\vskip 0.2in
+% \vskip 0.2in
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_plomberie.pdf}}
 \caption{Plumbing.}
@@ -292,12 +292,10 @@ In order to push the limits of this trade-off we use a random dynamic spacing be
 Furthermore, we observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extention can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears}.
 
 \subsection{Training}
-Networks are trained using Adam optimizer with a learning rate of $4*10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $1*10^{-6}$. We train networks for 400 epochs of 200 steps.
+Networks are trained using Adam optimizer with a learning rate of $4\cdot10^{-4}$, decreased by $\frac{1}{2}$ on plateau of 30 epochs until $10^{-6}$. We train networks for 400 epochs of 200 steps.
 This is an over-estimation of the required training as we observed that networks reach a near-optimal state within the first 100 epochs, but we kept a longer training to have more reproducible results.
 We obtain better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibliy because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
-Each batch is composed of (overlapping) random tiles of 96x96 pixels for microscopy datasets.
-Batch size was set to 4 for \emph{PN2V-C} and 1 for all other datasets.
-Each mini batch is split into 100 tiles.
+Batch size is set to 1, and each batch is split into 100 tiles (overlapping) random tiles of 96x96 pixels.
 Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
 
 We observe a few failed trains when NNet predicts a 3-component-GMM, with a frequency that depends on the dataset. \textcolor{red}{trop vague, et peut nous retomber dessus. Si on pointe des défauts il faut être hyper précis dessus je pense}
@@ -315,7 +313,7 @@ To address this shortcoming, we used Structural similarity (SSIM) that take text
 \subsection{Noise estimation}
 
 \begin{figure}[ht]
-\vskip 0.2in
+% \vskip 0.2in
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_noise_std.pdf}}
 \caption{Noise estimation.
@@ -335,7 +333,7 @@ It shows our method is able to capture the different noise distributions even in
 
 \subsection{Improving estimation on real noise}
 \begin{figure}[ht]
-\vskip 0.2in
+% \vskip 0.2in
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_skewness.pdf}}
 \caption{Real noise estimation. \textbf{Upper-left}: empirical distribution of the noise $Y - X$ as a function of $X$, normalized in each signal value bin\textcolor{red}{faut il le préciser ou c'est évident?} for dataset \textit{w2s-1}.
@@ -355,9 +353,10 @@ In order to be able to capture this aspect, we predict a Gaussian mixture model 
 \subsection{Denoising performances}
 \label{sec:perf}
 \begin{table*}[t]
-\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
+\caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimate sharpness. Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
 \label{table:results}
-\vskip 0.15in
+% \vskip 0.15in
+\vskip -0.15in
 \begin{center}
 \begin{small}
 \begin{sc}
@@ -365,9 +364,9 @@ In order to be able to capture this aspect, we predict a Gaussian mixture model 
 \toprule
 Dataset & Noisy & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ & / & / \\
-PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$ & $38.76$ / $0.9756$ & / \\
-PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$ & / & $34.69$ / $0.8877$ \\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ & $38.47*$ / $0.9738*$ & $38.27*$ / $0.9756*$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$ & $38.76*$ / $0.9756*$ & $39.15*$ / $0.9778*$ \\
+PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$ & $34.68*$ / $0.8880*$ & $34.70*$ / $0.8877*$ \\
 W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & $35.27$ / $0.9623$ & $35.27$ / $0.9624$ \\
 W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & $33.48$ / $0.8871$ & $33.47$ / $0.8871$ \\
 W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & $36.60$ / $0.9269$ & $36.59$ / $0.9269$ \\
@@ -376,7 +375,7 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{sc}
 \end{small}
 \end{center}
-\vskip -0.1in
+\vskip -0.2in
 \end{table*}
 % footnote text of the caption
 \footnotetext{\label{note:n2v}Using no positivity constraint, and removing the convolution for N2V.}
