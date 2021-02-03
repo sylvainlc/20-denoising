@@ -66,17 +66,10 @@
 \vskip 0.3in
 
 
-\section{Synthetic noise datasets}
-\label{si:synthetic}
-\begin{itemize}
-  \item Additive gaussian: $y = x + N(0, \sigma)$ with $\sigma=20$
-  \item Poisson-Gaussian: $y = x + \sqrt{\alpha * (x-min(x)) + \eta^2 }*N(0,1)$ with $\alpha=5, \eta=12$ and $min(x)$ begin the minimal value of the ground truth on the whole dataset.
-  \item Speckle: $y = x + (x-min(x))*N(0,\sigma)$ with $\sigma=0.405$
-\end{itemize}
-
 \section{Additional Implementation details}
-
-\paragraph{Networks and training.} We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
+\label{si:implementation}
+\paragraph{Networks and training.}
+We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
 The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighorhood that are masked.
 
 \paragraph{N-Net architecture details}
@@ -90,12 +83,44 @@ In the case N-net predicts a GMM with N components, the second block is connecte
 \end{itemize}
 To ensure that the distribution is centered, the center of the last distribution is computed as $\mu_{N} = \frac{1}{\alpha_{N-1}} * \sum_{i=1}^{N-1}{\alpha_{i} * \mu{i}}$
 
-% dummy citation so that document compiles (at least 1 is needed). to be removed when with put other citations
-\cite{2020DivNoising}
+\section{Datasets}
+\subsection{Experimental Datasets}
+\label{si:datasetxp}
+\paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}.}
+\begin{itemize}
+  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$, validation subset is:
+  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$, validation subset is:
+  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$, validation subset is:
+\end{itemize}
+Evaluation subsets:
+% \emph{PN2V-C} : ($[0, 512]$, $[0, 512]$)
+% \emph{PN2V-MN} : $([0, 512], [0, 256])$
+% \emph{PN2V-MA} : $([0, 1024], [0, 512])$
+\textcolor{red}{TODO FIX EVALUATION SUBBSETS}
+\textcolor{red}{TODO provide links}
+
+\paragraph{Datasets published in \cite{zhou2020w2s}.}
+We used the 16-bit raw images kindly provided by the authors.
+The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
+The first 80 are used for training and the last 40 for evaluation.
+Following the authors, for each FOV, only the observation of index 249 is used for training and evaluation
+
+For both datasets images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.
+This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution has often an heavy tail towards high values.
+
+For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR and SSIM computation.
+
+\subsection{Synthetic noise datasets}
+\label{si:synthetic}
+\begin{itemize}
+  \item Additive gaussian: $y = x + N(0, \sigma)$ with $\sigma=20$
+  \item Poisson-Gaussian: $y = x + \sqrt{\alpha * (x-min(x)) + \eta^2 }*N(0,1)$ with $\alpha=5, \eta=12$ and $min(x)$ begin the minimal value of the ground truth on the whole dataset.
+  \item Speckle: $y = x + (x-min(x))*N(0,\sigma)$ with $\sigma=0.405$
+\end{itemize}
 
 {\small
 \bibliography{blind_denoising}
 \bibliographystyle{icml2021}
 }
-]
+] % end of 1-column area
 \end{document}
