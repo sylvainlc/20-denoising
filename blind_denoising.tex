@@ -118,8 +118,9 @@ While these methods are appealing in practice and result in efficient denoising 
   \item they often suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}.
 \end{itemize}
 
-To adress these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training. Our main contribution is to add the flexible N-net
-which recovers precisely the noise distribution during training, even for complex asymetric noises. We derive this method from a novel mathematical modeling of the denoising problem, opening new avenues for better understanding of why self-supervised networks achieve remarkable results.
+To adress these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training.
+Our main contribution is to add the flexible N-net which recovers precisely the noise distribution during training, even for complex asymetric noises.
+We derive this method from a novel mathematical modeling of the denoising problem, opening new avenues for better understanding of why self-supervised networks achieve remarkable results.
 
 The contribution of this work can be summarized as follows.
 \begin{itemize}
@@ -166,7 +167,7 @@ It is worth noting that supervised \textit{blind denoising} methods have used pa
 
 \paragraph{Chosen approach.} The work of Laine et al. \cite{laine2019high} gave the intuition that a striclty J-invariant function lacks the information of the central pixel at test-time. On the contrary, methods such as N2V or N2S use the central pixel at test-time, but the dependency on the central pixel is not explicit and is unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approch rather focuses on having an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time\textcolor{red}{, and we provide a few perspectives to explain why this might be beneficial}.
 \textcolor{red}{This also gives the flexibility to tune the masking to match structured noise, which we observed in 2 of the 6 considered datasets (see section~\ref{sec:masking})} \cite{broaddus2020removing}.
-We also build upon the work of \cite{laine2019high, krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser, and only requiring a single prediction per pixel: this results in training and inference procedures that are simpler, more efficient and more stable.
+We also build upon the work of \cite{laine2019high, krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser (see Fig.~\ref{fig:plumbing}), and only requiring a single prediction per pixel: this results in training and inference procedures that are simpler, more efficient and more stable.
 
 \section{Model}
 \label{sec:model}
@@ -251,7 +252,12 @@ An interesting  feature of our approach is that it can be extended straightforwa
 % \vskip 0.2in
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_plomberie.pdf}}
-\caption{Plumbing.}
+\caption{Training setup.
+For each mini-bacth, a random grid is drawn.
+The masking function $x\mapsto g(x)$ is applied on each element of the grid and replaced in the masked image that is fed to the D-net.
+The denoised image predicted by D-net is fed to N-net that predicts in turn a pixel-wise noise distribution.
+The negative log-likelihood of the predicted ditribution evaluated on the noise estimation is computed on each element of the grid.
+}
 \label{fig:plumbing}
 \end{center}
 \vskip -0.2in
