@@ -272,7 +272,7 @@ The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local
 \subsection{Datasets}
 We trained and evaluated our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth is estimated by averaging several observations of the same field-of-view (FOV).
 
-The 3 first datasets have been published along with the PN2V method\cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
+The 3 first datasets have been published along with the PN2V method \cite{krull2019probabilistic}, each is composed of several observations of the same FOV. \emph{Convallaria} dataset, refered to as \emph{PN2V-C} is composed of 100 observations of size $1024$x$1024$; \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$ and \emph{Mouse Actin} refered to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$.
 For fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for PSNR computation: $(Y,X)\in([0, 512], [0, 512])$ for PN2V-C, $([0, 512], [0, 256])$ for PN2V-MN and $([0, 1024], [0, 512])$ for PN2V-MA.
 
 The 3 last datasets are the 3 channels of the W2S dataset\cite{zhou2020w2s} refered to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
@@ -287,7 +287,7 @@ Images were normalized using the modal value as center and the difference betwee
 \label{sec:masking}
 Following \cite{batson2019noise2self}, we masked pixels along a grid and computed the loss only on masked pixels.
 We obtained the best results by replacing the central value by the weighted average of the 8 direct neighbors with Gaussian weights ($\sigma=1$).
-The drawback of maksing along a grid is that for a given receptive field, pixels are masked at fixed relative positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturb the performances, because the network learn to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
+The drawback of masking along a grid is that for a given receptive field, pixels are masked at fixed relative positions. If grid spacing is too low, then too many masked pixels are present in the receptive field and perturb the performances, because the network learns to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
 In order to push the limits of this trade-off we use a random dynamic spacing between 3 and 5 pixels, which allow to have relative positions of masked pixels that change randomly.
 
 Furthermore, we observed that dataset \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking produre introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extention can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disapears}.
@@ -350,7 +350,7 @@ It shows our method is able to capture the different noise distributions even in
 \vskip -0.2in
 \end{figure}
 \footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $XX\%$ percentile of the dataset so that there is enough observed samples in each bin to compute statistically significant metrics.}
-We observed that contrary to the classical noise models, the observed noise often display a certain degree of skewness, as illustrated in Fig.~\ref{fig:skewness}.
+We observed that contrary to the classical noise models, the observed noise often displays a certain degree of skewness, as illustrated in Fig.~\ref{fig:skewness}.
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better discribed by a GMM than by a single Gaussian.
 
 \subsection{Denoising performances}
@@ -406,9 +406,9 @@ This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}:
 %The ability to capture synthetic and empirical noises also improves the denoiser performance in most datasets.
 
 \section{Discussion}
-We introduced a novel self-supervised blind-denoising method modeling both the signal and noise distributions. We believe its simplicity, performances and the interpretability of the noise distribution will be useful both in practical applications, and as a basis for future research. First, future works could consider even more complex family of noises, such as non-centered noise, or structured noises, that can also arise in real-life setups. In particular \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noise such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noise.
-Second, more theoretical works could explore the identifiability of the model under the assumptions made. \textcolor{red}{TODO: sylvain je te laisse écrire ici}
-Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on masking procedure and convolutional architecture, but was the network wasn't trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
+We introduced a novel self-supervised blind-denoising method modeling both the signal and the  noise distributions. We believe its simplicity, performances and the interpretability of the noise distribution will be useful both in practical applications, and as a basis for future research. First, future works could consider even more complex family of noises, such as non-centered noise, or structured noises, that can also arise in real-life setups. In particular, \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noise such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noises.
+Second, more theoretical works could explore the model proposed in this work  (i) to obtain identifiability of model \eqref{eq:def:Y} and extend \cite{gassiat:lecorff:lehericy:2021} to state-dependent standard deviations and (ii) to establish rates of convergence for the proposed estimators.
+Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on the  masking procedure and the convolutional architecture, but the network is not trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
 
 {\small
 \bibliography{blind_denoising}
