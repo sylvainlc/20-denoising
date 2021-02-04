@@ -11,7 +11,8 @@
 % please comment out the following usepackage line and replace
 % \usepackage{icml2021} with \usepackage[nohyperref]{icml2021} above.
 \usepackage{hyperref}
-
+\usepackage{xr}
+\externaldocument{blind_denoising}
 % Attempt to make hyperref and algorithmic work together better:
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
 
@@ -122,9 +123,55 @@ For the 6 chosen datasets, images are encoded in 16-bit thus the actual data ran
   \item Speckle: $y = x + (x-min(x))*N(0,\sigma)$ with $\sigma=0.405$
 \end{itemize}
 
+\section{Noise estimation}
+\label{si:skewness}
+\begin{figure}[ht]
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_pn2v-C.pdf}}
+\caption{Real noise estimation for dataset \textit{PN2V-C}. See main text Fig~\ref{fig:skewness}.
+}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_pn2v-MN.pdf}}
+\caption{Real noise estimation for dataset \textit{PN2V-MN}. See main text Fig~\ref{fig:skewness}.
+}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_pn2v-MA.pdf}}
+\caption{Real noise estimation for dataset \textit{PN2V-MA}. See main text Fig~\ref{fig:skewness}.
+}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_w2s-2.pdf}}
+\caption{Real noise estimation for dataset \textit{W2S-2}. See main text Fig~\ref{fig:skewness}.
+}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_w2s-3.pdf}}
+\caption{Real noise estimation for dataset \textit{W2S-3}. See main text Fig~\ref{fig:skewness}.
+}
+\end{center}
+\vskip -0.2in
+\end{figure}
+
 {\small
 \bibliography{blind_denoising}
 \bibliographystyle{icml2021}
 }
-
 \end{document}

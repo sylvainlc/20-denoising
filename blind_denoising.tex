@@ -311,7 +311,7 @@ Furthermore, we observed that datasets \emph{PN2V-C} and \emph{PN2V-MA} display 
 
 \subsection{Training}
 Networks are trained using Adam optimizer with a learning rate of $4\cdot10^{-4}$, decreased by $1/2$ on plateau of 30 epochs until $10^{-6}$. We train networks for 400 epochs of 200 steps.
-Training time is about 2 min per epoch on a NVIDIA Tesla P4.  
+Training time is about 2 min per epoch on a NVIDIA Tesla P4.
 We obtain better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibly because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
 Batch size is set to 1, and each batch is split into 100 (overlapping) tiles of 96x96 pixels.
 Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
@@ -393,6 +393,7 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{table*}
 
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
+This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
 In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution.
 This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which can be observed in experimental datasets.
 This comment paves the way to many perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
