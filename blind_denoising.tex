@@ -311,6 +311,7 @@ Furthermore, we observed that datasets \emph{PN2V-C} and \emph{PN2V-MA} display 
 
 \subsection{Training}
 Networks are trained using Adam optimizer with a learning rate of $4\cdot10^{-4}$, decreased by $1/2$ on plateau of 30 epochs until $10^{-6}$. We train networks for 400 epochs of 200 steps.
+Training time is about 2 min per epoch on a NVIDIA Tesla P4.  
 We obtain better and more reproductible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibly because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
 Batch size is set to 1, and each batch is split into 100 (overlapping) tiles of 96x96 pixels.
 Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
@@ -432,6 +433,9 @@ First, future works could consider more complex families of noise distributions 
 Second, more theoretical works could explore the model proposed in this work  (i) to obtain identifiability of model \eqref{eq:def:Y} and extend \cite{gassiat:lecorff:lehericy:2021} to state-dependent standard deviations and (ii) to establish rates of convergence for the proposed estimators.
 
 Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on the  masking procedure and the convolutional architecture, but the network is not trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
+
+\section{Code}
+Source code as well as a notebook to reproduce the results will be made available after the reviewing process.
 
 {\small
 \bibliography{blind_denoising}
