@@ -335,8 +335,8 @@ Examples of noisy images and the corresponding predicted denoised images are dis
 \footnotetext{Display range was shrinked in Y-axis for visualization purposes, excluding some points of the empirical std of the Speckle noise model.}
 To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
 We used 3 classical noise models: additive Gaussian, Poisson-Gaussian and speckle, see Sup.~section~\ref{si:synthetic} for details.
-Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
-It shows that our method is able to capture the different noise distributions even in areas where signal is rare.
+Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}. One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is very sharp approximation of the  known theoretical standard deviation.
+It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
 
 \subsection{Improving estimation on real noise}
 \begin{figure}[ht]
@@ -355,8 +355,9 @@ The probability density is normalized for each signal value bin.
 \vskip -0.2in
 \end{figure}
 \footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $99.5\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.}
-We observed that contrary to the classical noise models, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
-In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
+We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
+In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian. In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution. This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which are likely to corrupt real datasets. This comment paves the way to many perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically  the number of mixing components. Such approaches have been proposed in more simple cases  using for instance Expectation Maximization based algorithms. This remains an open problem in our framework and we leave this topic for future research.
+
 
 \subsection{Denoising performances}
 \begin{figure*}
