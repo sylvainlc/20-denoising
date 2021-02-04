@@ -32,6 +32,7 @@
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
 \icmltitlerunning{SI for Joint self-supervised blind denoising and noise estimation}
+\newcommand{\interval}[2]{\mathopen{[}#1\,;#2\mathclose{]}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thesection}{S\arabic{section}}
@@ -64,15 +65,16 @@
 \icmlkeywords{Blind Denoising, Self-supervised, Bio-image, Machine Learning}
 
 \vskip 0.3in
-
+]
 
 \section{Additional Implementation details}
 \label{si:implementation}
-\paragraph{Networks and training.}
+\subsection{Networks and training}
+\paragraph{D-Net architecture details.}
+The architecture is based on U-net \cite{ronneberger2015u}.
 We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
-The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighorhood that are masked.
 
-\paragraph{N-Net architecture details}
+\paragraph{N-Net architecture details.}
 In the case of Gaussian output, the N-Net is composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$). A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block (to ensure the predicted $\sigma$ is positive).
 
 In the case N-net predicts a GMM with N components, the second block is connected to three distinct blocks, each connected to a convolution 1x1 with:
@@ -88,22 +90,24 @@ To ensure that the distribution is centered, the center of the last distribution
 \label{si:datasetxp}
 \paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}.}
 \begin{itemize}
-  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$, validation subset is:
-  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$, validation subset is:
-  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$, validation subset is:
+  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $(Y, X)\in(\interval{0}{512}, \interval{0}{512})$
+  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $(Y, X)\in(\interval{0}{512}, \interval{0}{256})$
+  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $(Y, X)\in(\interval{0}{1024}, \interval{0}{512})$
 \end{itemize}
-Evaluation subsets:
-% \emph{PN2V-C} : ($[0, 512]$, $[0, 512]$)
-% \emph{PN2V-MN} : $([0, 512], [0, 256])$
-% \emph{PN2V-MA} : $([0, 1024], [0, 512])$
-\textcolor{red}{TODO FIX EVALUATION SUBBSETS}
-\textcolor{red}{TODO provide links}
+
+The \emph{PN2V-C} and \emph{PN2V-MA} datasets are acquired on a spinning disc confocal microscope and \emph{PN2V-MN} dataset is acquired with a point scanning confocal microscope.
+Datasets can be downloaded from: \url{https://github.com/juglab/pn2v}
 
 \paragraph{Datasets published in \cite{zhou2020w2s}.}
+
 We used the 16-bit raw images kindly provided by the authors.
 The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
 The first 80 are used for training and the last 40 for evaluation.
 Following the authors, for each FOV, only the observation of index 249 is used for training and evaluation
+Images are acquired with a electron-multiplying charge-coupled device camera on a wide-field microscope.
+It can be downloaded here: \url{https://datasets.epfl.ch/w2s/W2S_raw.zip}
+
+\paragraph{Normalization.}
 
 For both datasets images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.
 This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution has often an heavy tail towards high values.
@@ -122,5 +126,5 @@ For the 6 chosen datasets, images are encoded in 16-bit thus the actual data ran
 \bibliography{blind_denoising}
 \bibliographystyle{icml2021}
 }
-] % end of 1-column area
+
 \end{document}
