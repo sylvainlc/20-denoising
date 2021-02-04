@@ -139,7 +139,7 @@ The contribution of this work can be summarized as follows.
 \paragraph{Masking and J-invariance.}
 The most typical class of denoising functions is chosen to be comprised of convolutional neural networks (CNNs), which are heavily parameterized functions and are not restricted to solve denoising problems. As an important consequence, a naive self-supervised loss without any masking would result in learning the identity function (i.e. the function outputing the noisy observation $Y$ if it is not masked in the input data), as the considered CNNs can typically implement it. Starting from this intuition, many of the related works can be viewed as different masking schemes. This has been described in the \textit{J-invariant} framework introduced by \cite{batson2019noise2self}: a \textit{J-invariant} function does not depend on a few selected dimensions $J$ of its input variables; typically this translates into a convolutional function which does not depend on the central pixel of the convolutional receptive field, but rather on the observations of neighboring pixels\footnote{Those functions excluding the central pixel are sometimes also called \textit{blind spot}, not to be confused with \textit{blind denoising} in which the noise process is not known.}.
 
-The first masked self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void}, in which $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant N}$ are sampled  randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood, with a positive probability of replacing $Y_i$ by itself meaning that leaks in masking are introduced.
+The first masked self-supervised denoising methods were introduced by Noise2Void (N2V) \cite{krull2018noise2void}, in which $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant N}$ are sampled randomly in the picture, and masking consists in replacing $Y_i$ by a random observed value in its neighborhood, with a positive probability of replacing $Y_i$ by itself meaning that leaks in masking are introduced.
 
 Noise2Self (N2S) \cite{batson2019noise2self} masking procedure differs from N2V in the sense that $\{(Y^{masked}_i,Y_i)\}_{1\leqslant i\leqslant N}$ are obtained with a fixed grid, and $Y_i$ is replaced by the average of the 4 direct neighboring observations.
 In practice, the masking procedure has a strong impact on training: (i) improving masking schemes can improve denoising performance and (ii) as only masked pixels are used for training, typically representing a few percent of the image, this affects greatly the training efficiency.
@@ -304,8 +304,11 @@ Following the authors, for each FOV, only one observation is used for training a
 \label{sec:masking}
 Following \cite{batson2019noise2self}, we mask pixels along a grid and compute the loss only on masked pixels.
 We obtained the best results by replacing the central value by the weighted average of the 8 direct neighbors with Gaussian weights ($\sigma=1$).
-The drawback of masking along a grid is that pixels are masked at fixed relative positions with regards to the central pixel. If grid spacing is too small, then too many masked pixels are present in the receptive field and perturb the performances, because the network learns to avoid using masked pixels for prediction. On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
+The drawback of masking along a grid is that pixels are masked at fixed relative positions with regards to the central pixel.
+If grid spacing is too small, then too many masked pixels are present in the receptive field and perturb the performances, because the available information is reduced.
+On the other hand, the larger the spacing, the less pixels are used for training, which reduces dramatically training efficiency.
 In order to push the limits of this trade-off, we use a random dynamic spacing between 3 and 5 pixels, which allows to have relative positions of masked pixels that change randomly.
+On average, $6.8\%$ of the image is masked.
 
 Furthermore, we observed that datasets \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking procedure introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extension can be determined easily in a self-supervised setup because the neural network tend to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disappears}.
 
@@ -423,7 +426,7 @@ For the version predicting a simple Gaussian distribution, the average PSNR gain
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
 Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB\footnote{Comparison with PSNR values reported in \cite{goncharova2020}}.
 
-It is worth noting than considering mixture models improves the PSNR in two datasets out of six.
+It is worth noting that considering mixture models improves the PSNR in two datasets out of six.
 As mentionned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and very challenging) statistical problem but we believe that such experiments support future research in this direction.
 
 \section{Discussion}
