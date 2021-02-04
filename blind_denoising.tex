@@ -359,6 +359,15 @@ We observed that contrary to the classical noise models, real noise often displa
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
 
 \subsection{Denoising performances}
+\begin{figure*}
+\vskip 0.2in
+\begin{center}
+\includegraphics[width=6.75in]{fig_images.pdf}
+\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
+\label{fig:images}
+\end{center}
+\vskip -0.2in
+\end{figure*}
 \label{sec:perf}
 \begin{table*}[t]
 \caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics. SSIM estimates sharpness. Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\protect\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
@@ -393,18 +402,7 @@ We believe the latter makes a good reference, as it is one of the simplest denoi
 The considered metrics are summarized in table~\ref{table:results}.
 Our method significantly outperforms the 3 baselines both in term of PSNR by \textcolor{red}{XXdB} on average and in terms of SSIM by a factor \textcolor{red}{XX} on average.
 
-\begin{figure*}[ht]
-\label{fig:images}
-\vskip 0.2in
-\begin{center}
-\includegraphics[width=6.75in]{fig_images.pdf}
-\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
-\end{center}
-\vskip -0.2in
-
-\end{figure*}
-
-This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}\textcolor{red}{TODO FIX REF}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
+This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
 
 \textcolor{red}{TODO: commenter les differences entre G1 / G2 / G3 lorsqu'elles seront présentées}
 
@@ -418,7 +416,7 @@ First, future works could consider more complex families of noise distributions 
 Second, more theoretical works could explore the model proposed in this work  (i) to obtain identifiability of model \eqref{eq:def:Y} and extend \cite{gassiat:lecorff:lehericy:2021} to state-dependent standard deviations and (ii) to establish rates of convergence for the proposed estimators.
 
 Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on the  masking procedure and the convolutional architecture, but the network is not trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
-
+\clearpage
 {\small
 \bibliography{blind_denoising}
 \bibliographystyle{icml2021}
