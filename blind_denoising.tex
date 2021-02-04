@@ -339,6 +339,7 @@ Empirical and predicted distributions of the noise standard deviation are illust
 It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
 
 \subsection{Improving estimation on real noise}
+\label{sec:exp:real:noise}
 \begin{figure}[ht]
 % \vskip 0.2in
 \begin{center}
@@ -356,7 +357,7 @@ The probability density is normalized for each signal value bin.
 \end{figure}
 \footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $99.5\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.}
 We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
-In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian. In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution. This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which are likely to corrupt real datasets. This comment paves the way to many perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically  the number of mixing components. Such approaches have been proposed in more simple cases  using for instance Expectation Maximization based algorithms. This remains an open problem in our framework and we leave this topic for future research.
+In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian. In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution. This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which are likely to corrupt real datasets. This comment paves the way to many perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically  the number of mixing components. Such approaches have been proposed in more simple cases  using for instance Expectation Maximization and penalized maximum likeihood based algorithms. This remains an open problem in our framework and we leave this topic for future research.
 
 
 \subsection{Denoising performances}
@@ -403,9 +404,9 @@ We believe the latter makes a good reference, as it is one of the simplest denoi
 The considered metrics are summarized in table~\ref{table:results}.
 Our method significantly outperforms the 3 baselines both in term of PSNR by \textcolor{red}{XXdB} on average and in terms of SSIM by a factor \textcolor{red}{XX} on average.
 
-This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
+This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts. It is worth noting  than considering mixture models improve the PSNR in four cases out of six. As mentionned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and very challenging) statistical problem but we believe that such experiments support future research in this direction.
 
-\textcolor{red}{TODO: commenter les differences entre G1 / G2 / G3 lorsqu'elles seront présentées}
+
 
 %The ability to capture synthetic and empirical noises also improves the denoiser performance in most datasets.
 
