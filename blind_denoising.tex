@@ -335,7 +335,7 @@ Examples of noisy images and the corresponding predicted denoised images are dis
 \footnotetext{Display range was shrinked in Y-axis for visualization purposes, excluding some points of the empirical std of the Speckle noise model.}
 To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
 We used 3 classical noise models: additive Gaussian, Poisson-Gaussian and speckle, see Sup.~section~\ref{si:synthetic} for details.
-Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}. One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is very sharp approximation of the  known theoretical standard deviation.
+Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}. One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the  known theoretical standard deviation.
 It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
 
 \subsection{Improving estimation on real noise}
