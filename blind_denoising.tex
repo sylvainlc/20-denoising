@@ -111,7 +111,8 @@ Image denoising is a well-known Computer Vision task designed to restore picture
 Formally, image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by an additive noise $\varepsilon$. Classical denoising approaches are model-driven in the sense that they rely on strong assumptions on the noise distribution or on the structure of the signal but are often limited by the relevance of these assumptions.
 Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problems with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining independent observations of the same signal is often unrealistic in practice.
 
-Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel $Y$ only using the noisy observations of the surrounding pixels. In such frameworks, the trained network extracts some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} as they only assume that the noises associated with different observations are independent and centered. This is well suited to typical microscopy settings, in which the clean image is unavailable and the real noise process is complex and not known.
+Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void} by training a neural network to predict the value of a (corrupted) pixel $Y$ only using the noisy observations of the surrounding pixels. In such frameworks, the trained network extracts some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} as they only assume that the noises associated with different observations are independent and centered.
+This is well suited to typical microscopy settings, in which the clean image is unavailable and the noise process is complex and not known.
 
 These methods rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually implemented as a convolutional neural network. Using only the noisy observations and a binary mask $M$, the objective is to minimize a self-supervision loss of the form $\theta\mapsto \sum_{i=1}^N \|f_\theta(Y^{masked}_i) - Y_i\|_2^2$,
 where $Y^{masked}_i$ is an image in which the pixel $Y_i$ has been masked using $M$. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
@@ -277,7 +278,9 @@ The loss function is then computed on each element of the grid.
 \label{sec:experiments}
 \subsection{Model Architecture}
 \paragraph{D-net.}
-The function $\mu_{\theta_d}$ is parametrized by a U-net. The main difference with the networks used in N2S and N2N is that we use upsampling layers with nearest-neighbor approximation instead of transpose convolutions, as we observed that transpose convolution tends to increase the checkerboard artefact. Additional architecture and training information can be found in supplementary section~\ref{si:implementation}.
+The function $\mu_{\theta_d}$ is parametrized by a U-net. The main difference with the networks used in N2S and N2N is that we use upsampling layers with nearest-neighbor approximation instead of transpose convolutions, as we observed that transpose convolution tends to increase the checkerboard artefact.
+Additional architecture and training information can be found in supplementary section~\ref{si:implementation}.
+The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighorhood that are masked.
 At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances.
 
 \paragraph{N-net.}
@@ -415,6 +418,7 @@ We believe the latter makes a good reference, as it is one of the simplest denoi
 The considered metrics are summarized in table~\ref{table:results}.
 Our method significantly outperforms the 3 baselines both in term of PSNR and SSIM on all datasets.
 For the version predicting a simple Gaussian distribution, the average PSNR increase over DecoNoisng is $+1.42$dB.
+Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR increase of $+1.49$dB\footnote{Comparison with PSNR values reported in \cite{goncharova2020}}.
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artefacts.
 
 It is worth noting than considering mixture models improves the PSNR in two datasets out of six.
