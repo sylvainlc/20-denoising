@@ -196,7 +196,7 @@ Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
 where $\varepsilon$ is a centered noise independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
-This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant\footnote{From the perspective of this model, the approach of N2V and N2S is equivalent to considering that $x\mapsto \sigma^2_{\theta_n}(x) = 1$.} or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
+This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant\footnote{From the perspective of our model, the approach of N2V and N2S is equivalent to considering that $x\mapsto \sigma^2_{\theta_n}(x) = 1$.} or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
 
  %while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions.
