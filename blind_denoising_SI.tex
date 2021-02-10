@@ -76,15 +76,18 @@ The architecture is based on U-net \cite{ronneberger2015u}.
 We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
 
 \paragraph{N-Net architecture details.}
-In the case of Gaussian output, the N-Net is composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$). A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block (to ensure the predicted $\sigma$ is positive).
+In the case of a Gaussian noise, the N-Net is composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$). A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block (to ensure that the predicted $\sigma$ is positive).
 
-In the case N-net predicts a GMM with N components, the second block is connected to three distinct blocks, each connected to a convolution 1x1 with:
+In the case where the N-net predicts a GMM with N components with weights $(\alpha_i)_{1\leqslant i\leqslant N}$, means $(\mu_i)_{1\leqslant i\leqslant N}$ and variances $(\sigma^2_i)_{1\leqslant i\leqslant N}$, the second block is connected to three distinct blocks, each connected to a convolution 1x1 with:
 \begin{itemize}
-  \item N channels, followed by an exponential activation function to predict $\sigma_{i}$
-  \item N channels, followed by a softmax activation to predict $\alpha_{i}$\footnote{In case $N=2$ only one channel is predicted followed by a sigmoid activation function}
-  \item N-1 channels to predict the ditribution centers $\mu_{i}$.
+  \item N channels, followed by an exponential activation function to predict $\sigma_{i}$.
+  \item N channels, followed by a softmax activation to predict $\alpha_{i}.$\footnote{When $N=2$, only one channel is used and followed by a sigmoid activation function.}
+  \item N-1 channels to predict the ditribution means $\mu_{i}$.
 \end{itemize}
-To ensure that the distribution is centered, the center of the last distribution is computed as $\mu_{N} = \frac{1}{\alpha_{N-1}} * \sum_{i=1}^{N-1}{\alpha_{i} * \mu{i}}$
+To ensure that the distribution is centered, the center of the last distribution is computed as 
+$$
+\mu_{N} = \frac{1}{\alpha_{N-1}} \sum_{i=1}^{N-1}{\alpha_{i} \mu{i}}\,.
+$$
 
 \section{Datasets}
 \subsection{Experimental Datasets}
@@ -105,7 +108,7 @@ We used the 16-bit raw images kindly provided by the authors.
 The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
 The first 80 are used for training and the last 40 for evaluation.
 Following the authors, for each FOV, only the observation of index 249 is used for training and evaluation
-Images are acquired with a electron-multiplying charge-coupled device camera on a wide-field microscope.
+images are acquired with a electron-multiplying charge-coupled device camera on a wide-field microscope.
 It can be downloaded here: \url{https://datasets.epfl.ch/w2s/W2S_raw.zip}
 
 \paragraph{Normalization.}
@@ -118,9 +121,9 @@ For the 6 chosen datasets, images are encoded in 16-bit thus the actual data ran
 \subsection{Synthetic noise datasets}
 \label{si:synthetic}
 \begin{itemize}
-  \item Additive gaussian: $y = x + N(0, \sigma)$ with $\sigma=20$
-  \item Poisson-Gaussian: $y = x + \sqrt{\alpha * (x-min(x)) + \eta^2 }*N(0,1)$ with $\alpha=5, \eta=12$ and $min(x)$ begin the minimal value of the ground truth on the whole dataset.
-  \item Speckle: $y = x + (x-min(x))*N(0,\sigma)$ with $\sigma=0.405$
+  \item Additive gaussian: $Y = X + \varepsilon$ with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=20$.
+  \item Poisson-Gaussian: $Y = X + (\alpha * (X-\underline{X}) + \eta^2 )^{1/2}\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, 1)$, $\alpha=5, \eta=12$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
+  \item Speckle: $X = X + (X-min(\underline{X}))\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
 \section{Noise estimation}
@@ -169,7 +172,7 @@ For the 6 chosen datasets, images are encoded in 16-bit thus the actual data ran
 \end{center}
 \vskip -0.2in
 \end{figure}
-
+\clearpage
 {\small
 \bibliography{blind_denoising}
 \bibliographystyle{icml2021}
