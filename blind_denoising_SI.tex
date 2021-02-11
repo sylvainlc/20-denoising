@@ -176,14 +176,6 @@ The same applies for SSIM computation.
 \end{figure}
 \FloatBarrier
 
-
-\section{Hyperparameter selection}
-
-\paragraph{Masking.}
-We optimized grid spacing in a range $\interval{2}{9}$ pixels, and compared replacement by a random neighbor to the average of neighbors. We also compared the average of $4$, $8$ or $24$ closest neighboring pixels.
-
-\paragraph{Training.} Start learning rate was chosen in a range $\interval{10^-3}{10^-5}$. We considered a number of tiles in a range $\interval{16}{144}$.
-
 \section{Source code}
 Source code can be found at this url: \url{https://github.com/4936icml/icml4936}.
 
