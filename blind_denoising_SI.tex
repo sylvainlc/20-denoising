@@ -92,9 +92,9 @@ $$
 \label{si:datasetxp}
 \paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}.}
 \begin{itemize}
-  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{512}$
-  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{256}$
-  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{1024}, X\in\interval{0}{512}$
+  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{512}$.
+  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{256}$.
+  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{1024}, X\in\interval{0}{512}$.
 \end{itemize}
 
 The \emph{PN2V-C} and \emph{PN2V-MA} datasets are acquired on a spinning disc confocal microscope and \emph{PN2V-MN} dataset is acquired with a point scanning confocal microscope.
@@ -116,7 +116,7 @@ This is relevant in fluorescence microscopy data where signal is often less abun
 
 \paragraph{Metrics.}
 For the 6 chosen datasets, images are encoded in 16-bit.
-PSNR is defined as $PSNR = 10 \log_{10}(\frac{d}{MSE})$, with $d$ the maximum possible pixel value of the image and $MSE$ the mean squared error.
+PSNR is defined as $PSNR = 10 \log_{10}(d/\mathrm{MSE})$, with $d$ the maximum possible pixel value of the image and $\mathrm{MSE}$ the mean squared error.
 For 8-bit encoded images d is simply $255$, and for 16-bit images it would be $65635$ but this does not correspond to the actual possible range of microscopy data, thus the actual range of values of each ground truth image is used. This is also what is done in \cite{goncharova2020} as we obtain the same PSNR values for raw images.
 The same applies for SSIM computation.
 
