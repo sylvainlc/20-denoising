@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{authblk}
+\usepackage{breakcites}
 \usepackage{booktabs,hyperref}
 \usepackage{amssymb,amsmath,amsthm,twoopt,xargs,mathtools,cleveref}
 \usepackage{times,dsfont,ifthen}
@@ -12,13 +13,13 @@
 \title{Joint self-supervised blind denoising and noise estimation}
 \date{}
 
-%\author[$\wr$]{Mathis Chagneux}
+
 \author[$\star$]{Jean Ollion}
 \author[$\amalg$]{Charles Ollion}
 \author[$\dag$]{\'Elisabeth Gassiat}
 \author[$\top$]{Luc Leh\'ericy}
 \author[$\ddag$]{Sylvain Le Corff}
-%\affil[$\wr$]{{\small LTCI, T\'el\'ecom Paris, Institut Polytechnique de Paris, Palaiseau.}}
+
 \affil[$\star$]{{\small SABILab, Die.}}
 \affil[$\amalg$]{{\small CMAP, \'Ecole Polytechnique, Institut Polytechnique de Paris, Palaiseau.}}
 \affil[$\dag$]{{\small Universit\'e Paris-Saclay, CNRS, Laboratoire de math\'ematiques d'Orsay, 91405, Orsay.}}
@@ -33,190 +34,6 @@
 \pagestyle{fancy}
 
 \newcommand{\interval}[2]{\mathopen{[}#1\,;#2\mathclose{]}}
-\def\dimX{d}
-\def\dimY{m}
-%\def\Xset{\mathsf{X}}
-\def\Xset{\mathbb{R}^d}
-\def\Yset{\mathsf{Y}}
-\newcommand{\mk}{\kernel{G}}
-\newcommand{\hk}{\kernel{Q}}
-\newcommand{\md}[1]{g_{#1}}
-\newcommand{\SmoothFigSize}{0.27}
-
-\newcommand{\logllh}[1]{\ell_{#1}}
-\newcommand{\llh}[1]{\mathsf{L}_{#1}}
-\newcommand{\testf}{\mathsf{h}}
-
-\newcommandx\filtderiv[2][1=]{
-\ifthenelse{\equal{#1}{}}
-	{\eta_{#2}}
-	{\eta_{#2}^\N}
-}
-\newcommand{\pred}[1]{\pi_{#1}}
-\newcommand{\parvec}{\theta}
-\newcommand{\parspace}{\Theta}
-\newcommand{\tstatletter}{\kernel{T}}
-\newcommand{\retrok}{\kernel{D}}
-\newcommandx\tstat[2][1=]{
-\ifthenelse{\equal{#1}{}}
-	{\tstatletter_{#2}}
-	{\tau_{#2}^{#1}}
-}
-\newcommandx\tstathat[2][1=]{
-\ifthenelse{\equal{#1}{}}
-	{\tstatletter_{#2}}
-	{\widehat{\tau}_{#2}^{#1}}
-}
-\newcommand{\af}[1]{h_{#1}} 
-\newcommand{\deriv}{\nabla_{\parvec}}
-
-\newcommand{\kernel}[1]{\mathbf{#1}}
-\newcommand{\bmf}[1]{\set{F}(#1)}
-\newcommand{\set}[1]{\mathsf{#1}}
-
-\newcommandx{\bk}[2][1=]{ 
-\ifthenelse{\equal{#1}{}}
-{\overleftarrow{\kernel{Q}}_{#2}}
-{\overleftarrow{\kernel{Q}}_{#2}^{#1}}
-}
-
-\newcommandx{\bkhat}[2][1=]{ 
-\ifthenelse{\equal{#1}{}}
-{\widehat{\kernel{Q}}_{#2}}
-{\widehat{\kernel{Q}}_{#2}^{#1}}
-}
-
-\newcommand{\lk}{\kernel{L}}
-\newcommand{\idop}{\operatorname{id}}
-\newcommand{\hd}[1]{q_{#1}} 
-\newcommand{\hdhat}[1]{\widehat{q}_{#1}} 
-
-
-\newcommand{\addf}[1]{\termletter_{#1}}
-\newcommand{\addfc}[1]{\underline{\termletter}_{#1}}
-\newcommand{\adds}[1]{\af{#1}}
-\newcommand{\term}[1]{\termletter_{#1}}
-\newcommand{\termletter}{\tilde{h}}
-\newcommand{\N}{N}
-\newcommand{\partpred}[1]{\pi_{#1}^\N}
-\newcommand{\tstattil}[2]{\tilde{\tau}_{#2}^{#1}}
-\newcommandx{\K}[1][1=]{
-\ifthenelse{\equal{#1}{}}{{\kletter}}{{\widetilde{\N}^{#1}}}}
-\newcommand{\hkup}{\bar{\varepsilon}}
-\newcommand{\bi}[3]{J_{#1}^{(#2, #3)}}
-\newcommand{\bihat}[3]{\widehat{J}_{#1}^{(#2, #3)}}
-
-\newcommand{\kletter}{\widetilde{\N}}
-
-\def\sigmaX{\mathcal{X}}
-\def\sigmaY{\mathcal{Y}}
-\def\1{\mathds{1}}
-\def\pE{\mathbb{E}}
-\def\pP{\mathbb{P}}
-\def\plim{\overset{\pP}{\longrightarrow}}
-\def\dlim{\Longrightarrow}
-\def\gauss{\mathcal{N}}
-
-
-\newcommand{\esssup}[2][]
-{\ifthenelse{\equal{#1}{}}{\left\| #2 \right\|_\infty}{\left\| #2 \right\|^2_{\infty}}}
-
-
-\newcommand{\swght}[2]{\ensuremath{\omega_{#1}^{#2}}}
-
-\newtheorem{assumptionA}{\textbf{A}\hspace{-3pt}}
-\newcommand{\rset}{\ensuremath{\mathbb{R}}}
-\newcommand{\iid}{i.i.d.}
-
-\newcommand{\smwght}[3]{\tilde{\omega}_{#1|#2}^{#3}}
-\newcommand{\smwghtfunc}[2]{\tilde{\omega}_{#1|#2}}
-
-\newcommand{\smpart}[3]{\ensuremath{\tilde{\xi}_{#1|#2}^{#3}}}
-\def\aux{{\scriptstyle{\mathrm{aux}}}}
-\newcommand{\bdm}{\mathsf{TwoFilt}_{bdm}}
-\newcommand{\fwt}{\mathsf{TwoFilt}_{fwt}}
-
-\newcommand{\kiss}[3][]
-{\ifthenelse{\equal{#1}{}}{r_{#2|#3}}
-{\ifthenelse{\equal{#1}{fully}}{r^{\star}_{#2|#3}}
-{\ifthenelse{\equal{#1}{smooth}}{\tilde{r}_{#2|#3}}{\mathrm{erreur}}}}}
-
-\newcommand{\chunk}[4][]%
-{\ifthenelse{\equal{#1}{}}{\ensuremath{{#2}_{#3:#4}}}{\ensuremath{#2^#1}_{#3:#4}}
-}
-
-\newcommand{\kissforward}[3][]
-{\ifthenelse{\equal{#1}{}}{p_{#2}}
-{\ifthenelse{\equal{#1}{fully}}{p^{\star}_{#2}}
-{\ifthenelse{\equal{#1}{smooth}}{\tilde{r}_{#2}}{\mathrm{erreur}}}}}
-
-\newcommand{\instrpostaux}[1]{\ensuremath{\upsilon_{#1}}}
-\newcommandx\post[2][1=]{
-\ifthenelse{\equal{#1}{}}
-	{\phi_{#2}}
-	{\phi_{#2}^\N}
-}
-
-\newcommandx\posthat[2][1=]{
-\ifthenelse{\equal{#1}{}}
-	{\widehat{\phi}_{#2}}
-	{\widehat{\phi}_{#2}^\N}
-}
-
-\newcommand{\adjfunc}[4][]
-{\ifthenelse{\equal{#1}{}}{\ifthenelse{\equal{#4}{}}{\vartheta_{#2|#3}}{\vartheta_{#2|#3}(#4)}}
-{\ifthenelse{\equal{#1}{smooth}}{\ifthenelse{\equal{#4}{}}{\tilde{\vartheta}_{#2|#3}}{\tilde{\vartheta}_{#2|#3}(#4)}}
-{\ifthenelse{\equal{#1}{fully}}{\ifthenelse{\equal{#4}{}}{\vartheta^\star_{#2|#3}}{\vartheta^\star_{#2|#3}(#4)}}{\mathrm{erreur}}}}}
-
-\newcommand{\XinitIS}[2][]
-{\ifthenelse{\equal{#1}{}}{\ensuremath{\rho_{#2}}}{\ensuremath{\check{\rho}_{#2}}}}
-\newcommand{\adjfuncforward}[1]{\vartheta_{#1}}
-\newcommand{\rmd}{\ensuremath{\mathrm{d}}}
-\newcommand{\eqdef}{\ensuremath{:=}}
-\newcommand{\eqsp}{\;}
-\newcommand{\ewght}[2]{\ensuremath{\omega_{#1}^{#2}}}
-\newcommand{\ewghthat}[2]{\ensuremath{\widehat{\omega}_{#1}^{#2}}}
-\newcommand{\epart}[2]{\ensuremath{\xi_{#1}^{#2}}}
-\newcommand{\filt}[2][]%
-{%
-\ifthenelse{\equal{#1}{}}{\ensuremath{\phi_{#2}}}{\ensuremath{\phi_{#1,#2}}}%
-}
-\newcommand{\Xinit}{\ensuremath{\chi}}
-\newcommand{\sumwght}[2][]{%
-\ifthenelse{\equal{#1}{}}{\ensuremath{\Omega_{#2}}}{\ensuremath{\Omega_{#2}^{(#1)}}}}
-\newcommand{\sumwghthat}[2][]{%
-\ifthenelse{\equal{#1}{}}{\ensuremath{\widehat{\Omega}_{#2}}}{\ensuremath{\widehat{\Omega}_{#2}^{(#1)}}}}
-
-\newcounter{hypH}
-\newenvironment{hypH}{\refstepcounter{hypH}\begin{itemize}
-\item[{\bf H\arabic{hypH}}]}{\end{itemize}}
-
-\newcommand{\marginalset}{\mathsf{U}}
-
-\newcommand{\calF}[2]{\mathcal{F}_{#1}^{#2}}
-\newcommand{\calG}[2]{\mathcal{G}_{#1}^{#2}}
-\newcommand{\Uset}{\mathsf{U}}
-\newcommand{\tcalF}[2]{\widetilde{\mathcal{F}}_{#1}^{#2}}
-\newcommand{\tcalG}[2]{\widetilde{\mathcal{G}}_{#1}^{#2}}
-
-\newcommand{\kernelmarg}{\mathbf{R}}
-
-\newcommand{\pplim}{\overset{\pP}{ \underset{\N \to \infty}{\longrightarrow}}}
-\newcommand{\ddlim}{\overset{\mathcal{D}}{ \underset{\N \to \infty}{\longrightarrow}}}
-\newcommand{\aslim}{\overset{\pP\mathrm{-a.s.}}{ \underset{\N \to \infty}{\longrightarrow}}}
-
-\newcommand{\qg}[1]{\ell_{#1}}
-\newcommand{\hatqg}[1]{\mathsf{\ell}_{#1}}
-
-\newcommand{\sfd}{\mathsf{d}}
-\newcommand{\X}{\mathbf{X}}
-\newcommand{\x}{\mathbf{x}}
-\newcommand{\y}{\mathbf{y}}
-\newcommand{\E}{\mathbf{E}}
-\newcommand{\e}{\text{e}}
-\newcommand{\W}{\mathbf{W}}
-\newcommand{\Z}{\mathbf{Z}}
-\newcommand{\frob}{:}
 
 \begin{document}
 
@@ -286,9 +103,7 @@ The denoising literature includes few works which explicitly model the noise dis
 
 The former is illustrated in \cite{laine2019high}, in which three types of corrupting noise are considered: Gaussian noise independent of the signal; Poisson-Gaussian noise, i.e. a Gaussian noise with variance scaling linearly with the signal value; finally impulse noise, i.e. a uniform noise. In each case, the noise parameters are either known or estimated with an auxiliary neural network. As the signal distribution and the noise distribution belong to a known parametric family, the noisy central pixel can be included at test time in order to improve performances. However, as the noise type has to be chosen \textit{a priori}, the method is restricted to known and synthetic noise types and therefore falls under the category of \textit{non-blind denoising} methods.
 
-In \cite{krull2019probabilistic,prakash2020fully,2020DivNoising}, the authors make use of a more flexible noise model, which is a generic modelisation of the conditional distribution of the noise given the signal intensity and thus can better model real noises.
-%: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$,
-In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}.
+In \cite{krull2019probabilistic,prakash2020fully,2020DivNoising}, the authors make use of a more flexible noise model, which is a generic modelisation of the conditional distribution of the noise given the signal intensity and thus can better model real noises. In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}.
 In the latter variant, the noise distribution is parametrized with a centered Gaussian mixture model with empirically designed constraints.
 This increases the complexity of the method, as it requires several training procedures and calibration.
 The denoising network is then trained to predict a whole distribution of $800$ possible noisy values instead of a single point estimate of each pixel, approximating the previously defined noise distribution at each pixel.
@@ -304,88 +119,41 @@ We also build upon the work of \cite{laine2019high, krull2019probabilistic} by d
 \section{Model}
 \label{sec:model}
 
-Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this work where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
+Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. 
 
 In this work, it is assumed that the observation $Y$ associated with $X$  is given by
 \begin{equation}
 \label{eq:def:Y}
 Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 \end{equation}
-%which means that
-%$$
-%Y = X + (\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})-\mu_{\theta_p}(\Omega_Y;Y)) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon
-%$$
-%The blind denoising framework introduced in this work can be written as a regression problem where the observations conditionally on $\Omega_Y$ the observation is given by
-%$$
-%Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
-%$$
 where $\varepsilon$ is a centered noise independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
 This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant\footnote{From the perspective of our model, the approach of N2V and N2S is equivalent to considering that $x\mapsto \sigma^2_{\theta_n}(x) = 1$.} or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
 
- %while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions.
-%Our model does not fit directly the assumptions of
-In \cite{gassiat:lecorff:lehericy:2021}, $\sigma^2_{\theta_n}$ is assumed to be constant and the target signal is assumed to be weakly dependent to obtain identifiability of the noise and the signal  distributions. % remains an open problem in this setting.
-%In \cite{gassiat:lecorff:lehericy:2021}, the signal is assumed to be multivariate with  $\sigma^2_{\theta_n}$ independent of $X$.
-%However, our approach in this work is motivated by the fact that $\varepsilon$ is independent of $X$ and that $X$ depends on its neighborhood.
-%Conditionally to $X$, we propose a more general corrupting process as $\varepsilon$ is a centered Gaussian random variable with variance $\sigma^2_{\theta_n}(X)$ where $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called \textit{N-net} and with unknown weights $\theta_n$.
-%We also propose an extension of this setting in which $\varepsilon$ is a mixture of Gaussian random variables with state-dependent variances to account for skewness.
-In \eqref{eq:def:Y}, we extend the model  proposed by \cite{gassiat:lecorff:lehericy:2021} by considering a state-dependent standard deviation and identifiability remains an open problem. However, we assume in this work that $X$ is dependent with the signal in the neighbooring pixels $\Omega_X$ so that heteroscedasticity is the only challenge to obtain identifiability of \eqref{eq:def:Y} which is left for future works.
+
+In \cite{gassiat:lecorff:lehericy:2021}, $\sigma^2_{\theta_n}$ is assumed to be constant and the target signal is assumed to be weakly dependent to obtain identifiability of the noise and the signal  distributions. In \eqref{eq:def:Y}, we extend the model  proposed by \cite{gassiat:lecorff:lehericy:2021} by considering a state-dependent standard deviation and identifiability remains an open problem. However, we assume in this work that $X$ is dependent with the signal in the neighbooring pixels $\Omega_X$ so that heteroscedasticity is the only challenge to obtain identifiability of \eqref{eq:def:Y} which is left for future works.
 In this work, we assume that $(X,\Omega_X)$ is a random vector with dependent variables and we propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called D-net and with unknown weights $\theta_d$.
 
 A natural estimator of $X$ given the noisy observations is $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$.
 During training this predictor $\widehat X$ cannot be used to estimate $\theta_d$ and $\theta_n$ as $\mu_{\theta_d}$ would learn to output the noisy observation $Y$ if it is not masked in the input data.
 This is the reason why we adopt a making approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator.
-In this framework, a genuine prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
-In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust solution while other choices can be made straightforwardly.
+In this framework, a genuine prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust solution while other choices can be made straightforwardly.
 
-%The signal $X$ is then modeled as
-%\begin{equation}
-%\label{eq:def:X}
-%X =  \mu_{\theta_p}(\Omega_X,U)\,,
-%\end{equation}
-%where $\Omega_X$ are the signal values in a neighborhood of $X$ and $U$ is a random variable on $\mathbb{R}$. % $\Omega_X$-measurable.
-% In the case where the random variable $U$ is $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$.
+
 Combining this with the additive model  \eqref{eq:def:Y} yields the following loss function associated with $N$ observations $(Y_1,\ldots,Y_N)$:
 $$
 \ell_{\theta}: (Y_1,\ldots,Y_N) \mapsto \frac{1}{N}\sum_{i=1}^N \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
 $$
 where $\theta = (\theta_n,\theta_d)$ and
 $$
-\ell_{\theta}(Y_i|\Omega_{Y_i}) = \log(\sigma_{\theta_n}( \mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i})))^2) + \left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\,. %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
+\ell_{\theta}(Y_i|\Omega_{Y_i}) = \log(\sigma_{\theta_n}( \mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i})))^2) + \left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\,. 
 $$
-%This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}.
 
 An interesting  feature of our approach is that it can be extended straightforwardly to more complex noise distributions. As detailed above, model \eqref{eq:def:Y} is an extension of the model considered in \cite{gassiat:lecorff:lehericy:2021} where the authors establish that the noise distribution can be identified without any assumption. Full identifiability of model \eqref{eq:def:Y} remains an open question but we display in Section~\ref{sec:experiments} an example of non-Gaussian noises, and we propose an application with mixture models  to account for positive skewness which cannot be modeled with a single Gaussian distribution. In this context, each component of the mixture describing the distribution of $\varepsilon$ is a Gaussian distribution with signal-dependent standard deviation. The results provided in Section~\ref{sec:experiments} illustrate how such models improve denoising performance for asymmetrical noise distributions.
-%The random variable $U$ being  $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$
-
-%After a training phase to estimate $\theta$, the signal values cannot be predicted as the random variable $U$ is not observed. Several predictors of $X$ can be designed.
-
-
-
-%uses the fact that by \eqref{eq:def:X} $Y_i$ is a natural linear predictor of $X_i$ and then
-%instead of introducing an explicit noise  distribution in the definition of $U$ and  therefore in \eqref{eq:def:X} and then to estimate the posterior distribution of $X$ given $Y$ we propose to introduce a loss function which
-
-% and $\overline{\Omega_Y}$ is the empirical mean of $\Omega_Y$.
-%The approach proposed in this work is decomposed into two steps.
-%\begin{enumerate}
-%\item First, $\mu_{\theta_p}$ is obtained with the P-Net fed with $\Omega_y$ and $\overline \Omega_y$ at central position, $\sigma_{\theta_n}^2$ is  obtained with the N-Net fed with $\mu_{\theta_p}$.
-%\item After a training procedure to estimate the parameters of these networks, the estimator of the unknown pixel given the observations $(y,\Omega_y)$ is set to $\mu_{\theta_p}(\Omega_y,y)$ as an approximation of the posterior mean.
-%\end{enumerate}
-%The signal $X$ is then modeled as $X =  \mu_{\theta_p}(\Omega_Y;Y)$ so that
-%$$
-%Y = X + \Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
-%$$
-%where
-%\begin{align*}
-%\Delta_{\theta_p}(\Omega_Y;\overline{\Omega_Y},Y)  &=  \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y})  -\mu_{\theta_p}(\Omega_Y;Y) \,,\\
-%&\sim \partial_2\mu_{\theta_p}(\Omega_Y;Y)[\overline{\Omega_Y}-Y]
-%\end{align*}
 
 
 \section{Experiments}
 \begin{figure}[ht]
-% \vskip 0.2in
 \begin{center}
 \centerline{\includegraphics[width=.8\columnwidth]{fig_plomberie.pdf}}
 \caption{Training setup.
@@ -403,25 +171,22 @@ The loss function is then computed on each element of the grid.
 \subsection{Model Architecture}
 \paragraph{D-net.}
 The function $\mu_{\theta_d}$ is parametrized by a U-net. The main difference with the networks used in N2S and N2N is that we use upsampling layers with nearest-neighbor approximation instead of transpose convolutions, as we observed that transpose convolution tends to increase the checkerboard artefact.
-Additional architecture and training information can be found in supplementary section~\ref{si:implementation}.
+Additional architecture and training information can be found in Section~\ref{si:implementation}.
 The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighorhood that are masked.
 At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances.
 
 \paragraph{N-net.}
-The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. In the Gaussian Mixture Model (GMM) case, the network parametrizes a more complex distribution and therefore has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means (the last mean is computed to ensure that the resulting distribution is centered) and $N$ mixture weights parametrized by the N-net. The full architecture detail for both models are available in section~\ref{si:implementation}.
-
-%This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
-%The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
+The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. In the Gaussian Mixture Model (GMM) case, the network parametrizes a more complex distribution and therefore has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means (the last mean is computed to ensure that the resulting distribution is centered) and $N$ mixture weights parametrized by the N-net. The full architecture detail for both models are available in Section~\ref{si:implementation}.
 
 \subsection{Datasets}
 We train and evaluate our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth ($X$) is estimated by averaging several observations ($Y$) of the same field-of-view (FOV).
 This allows to have access to an estimation of the noise $Y-X$, which we refer to as \textit{real noise} in this article.
 
 The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V method \cite{krull2019probabilistic}, each is composed of several observations of one single FOV.
-For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see supplementary section~\ref{si:datasetxp} for details).
+For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see Section~\ref{si:datasetxp} for details).
 
 The 3 last datasets are the 3 channels of the W2S dataset \cite{zhou2020w2s} referred to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
-The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see supplementary section~\ref{si:datasetxp} for more details).
+The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see Section~\ref{si:datasetxp} for more details).
 Following the authors, for each FOV, only one observation is used for training and for evaluation, which better corresponds to a real setting where only one observation per FOV is available.
 
 \subsection{Masking procedure}
@@ -452,10 +217,10 @@ To address this shortcoming, we used Structural Similarity (SSIM) that take text
 \label{sec:results}
 \subsection{Noise estimation}
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 % \vskip 0.2in
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_noise_std.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_noise_std.pdf}}
 \caption[Noise estimation]{Noise estimation.
 For 3 models of synthetic noise as well as the real noise, the plots display the empirical standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by the N-net\protect\footnotemark as a function of $X$.
 Theoretical standard deviation of the noise is displayed for the 3 models of synthetic noise.
@@ -467,17 +232,17 @@ Examples of noisy images and the corresponding predicted denoised images are dis
 \end{figure}
 \footnotetext{Display range was shrinked in Y-axis for visualization purposes, excluding some points of the empirical standard deviation of the Speckle noise model.}
 To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
-We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see supplementary section~\ref{si:synthetic} for details).
+We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see Section~\ref{si:synthetic} for details).
 Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
 One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the known theoretical standard deviation.
 It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
 
 \subsection{Improving estimation on real noise}
 \label{sec:exp:real:noise}
-\begin{figure}[ht]
+\begin{figure}[h!]
 % \vskip 0.2in
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_skewness_w2s-1.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_skewness_w2s-1.pdf}}
 \caption{Real noise estimation for dataset \textit{W2S-1}. \textbf{Upper-left}: empirical distribution of the noise $Y - X$ as a function of $X$.
 The probability density is normalized for each signal value bin.
 \textbf{Upper-right}: corresponding predicted noise distribution for a 3-component-GMM.
@@ -520,7 +285,7 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{table*}
 
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
-This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
+This applies for all datasets and the equivalent figures can be found in Section~\ref{si:skewness}.
 In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution.
 This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which can be observed in experimental datasets.
 This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
@@ -531,7 +296,7 @@ This remains an open problem in our framework and we leave this topic for future
 \label{sec:perf}
 % footnote text of the caption
 \footnotetext{\label{note:n2v}Using no positivity constraint, and removing the convolution for N2V.}
-\begin{figure*}
+\begin{figure*}[h!]
 \vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth
@@ -565,6 +330,9 @@ Finally, it would also be interesting to understand the role of the central pixe
 
 %\section{Code}
 %Source code is available from supplementary information.
+
+\bibliographystyle{apalike}
+\bibliography{blind_denoising}
 
 \appendix
 \section{Additional Implementation details}
@@ -678,8 +446,7 @@ The same applies for SSIM computation.
 \FloatBarrier
 
 
-\bibliographystyle{apalike}
-\bibliography{blind_denoising}
+
 
 
 \end{document}
