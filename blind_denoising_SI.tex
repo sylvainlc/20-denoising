@@ -22,9 +22,7 @@
 % custom packages
 \usepackage{amsmath}
 \usepackage{amssymb}
-% for referencing footnotes several times. to load after hyperref
-\usepackage{cleveref}
-\crefformat{footnote}{#2\footnotemark[#1]#3}
+\usepackage[section]{placeins}
 % \usepackage{times}
 % \usepackage{epsfig}
 % If accepted, instead use the following line for the camera-ready submission:
@@ -86,7 +84,7 @@ In the case where the N-net predicts a GMM with N components with weights $(\alp
 \end{itemize}
 To ensure that the distribution is centered, the center of the last distribution is computed as
 $$
-\mu_{N} = \frac{1}{\alpha_{N-1}} \sum_{i=1}^{N-1}{\alpha_{i} \mu{i}}\,.
+\mu_{N} = - \frac{1}{\alpha_{N}} \sum_{i=1}^{N-1}{\alpha_{i} \mu{i}}\,.
 $$
 
 \section{Datasets}
@@ -94,9 +92,9 @@ $$
 \label{si:datasetxp}
 \paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}.}
 \begin{itemize}
-  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $(Y, X)\in(\interval{0}{512}, \interval{0}{512})$
-  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $(Y, X)\in(\interval{0}{512}, \interval{0}{256})$
-  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $(Y, X)\in(\interval{0}{1024}, \interval{0}{512})$
+  \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{512}$
+  \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{256}$
+  \item \emph{Mouse Actin} referred to as \emph{PN2V-MA} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{1024}, X\in\interval{0}{512}$
 \end{itemize}
 
 The \emph{PN2V-C} and \emph{PN2V-MA} datasets are acquired on a spinning disc confocal microscope and \emph{PN2V-MN} dataset is acquired with a point scanning confocal microscope.
@@ -116,7 +114,11 @@ It can be downloaded here: \url{https://datasets.epfl.ch/w2s/W2S_raw.zip}
 For both datasets images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.
 This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution often has a heavy tail towards high values.
 
-For the 6 datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR and SSIM computation.
+\paragraph{Metrics.}
+For the 6 chosen datasets, images are encoded in 16-bit.
+PSNR is defined as $PSNR = 10 \log_{10}(\frac{d}{MSE})$, with $d$ the maximum possible pixel value of the image and $MSE$ the mean squared error.
+For 8-bit encoded images d is simply $255$, and for 16-bit images it would be $65635$ but this does not correspond to the actual possible range of microscopy data, thus the actual range of values of each ground truth image is used. This is also what is done in \cite{goncharova2020} as we obtain the same PSNR values for raw images.
+The same applies for SSIM computation.
 
 \subsection{Synthetic noise datasets}
 \label{si:synthetic}
@@ -172,7 +174,22 @@ For the 6 datasets, images are encoded in 16-bit thus the actual data range of e
 \end{center}
 \vskip -0.2in
 \end{figure}
-\clearpage
+\FloatBarrier
+
+
+\section{Hyperparameter selection}
+
+\paragraph{Masking.}
+We optimized grid spacing in a range $\interval{2}{9}$ pixels, and compared replacement by a random neighbor to the average of neighbors. We also compared the average of $4$, $8$ or $24$ closest neighboring pixels.
+
+\paragraph{Training.} Start learning rate was chosen in a range $\interval{10^-3}{10^-5}$. We considered a number of tiles in a range $\interval{16}{144}$.
+
+\section{Source code}
+Source code can be found at this url: \url{https://github.com/4936icml/icml4936}.
+
+A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/4936icml/cec8990acdfffedbab3d55643cb6a161}.
+by clicking on the \textit{open in colab} banner. To execute it a google account is required.
+
 {\small
 \bibliography{blind_denoising}
 \bibliographystyle{icml2021}
