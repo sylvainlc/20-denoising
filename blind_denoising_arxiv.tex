@@ -334,6 +334,7 @@ Finally, it would also be interesting to understand the role of the central pixe
 \bibliographystyle{apalike}
 \bibliography{blind_denoising}
 
+\clearpage
 \appendix
 \section{Additional Implementation details}
 \label{si:implementation}
@@ -385,7 +386,11 @@ This is relevant in fluorescence microscopy data where signal is often less abun
 
 \paragraph{Metrics.}
 For the 6 chosen datasets, images are encoded in 16-bit.
-PSNR is defined as $PSNR = 10 \log_{10}(d/\mathrm{MSE})$, with $d$ the maximum possible pixel value of the image and $\mathrm{MSE}$ the mean squared error.
+PSNR is defined as 
+$$
+PSNR = 10 \log_{10}(d/\mathrm{MSE})\,,
+$$
+with $d$ the maximum possible pixel value of the image and $\mathrm{MSE}$ the mean squared error.
 For 8-bit encoded images d is simply $255$, and for 16-bit images it would be $65635$ but this does not correspond to the actual possible range of microscopy data, thus the actual range of values of each ground truth image is used. This is also what is done in \cite{goncharova2020} as we obtain the same PSNR values for raw images.
 The same applies for SSIM computation.
 
@@ -397,11 +402,12 @@ The same applies for SSIM computation.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
+\newpage
 \section{Noise estimation}
 \label{si:skewness}
 \begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_skewness_pn2v-C.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_skewness_pn2v-C.pdf}}
 \caption{Real noise estimation for dataset \textit{PN2V-C}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
@@ -410,7 +416,7 @@ The same applies for SSIM computation.
 
 \begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_skewness_pn2v-MN.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_skewness_pn2v-MN.pdf}}
 \caption{Real noise estimation for dataset \textit{PN2V-MN}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
@@ -419,7 +425,7 @@ The same applies for SSIM computation.
 
 \begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_skewness_pn2v-MA.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_skewness_pn2v-MA.pdf}}
 \caption{Real noise estimation for dataset \textit{PN2V-MA}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
@@ -428,7 +434,7 @@ The same applies for SSIM computation.
 
 \begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_skewness_w2s-2.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_skewness_w2s-2.pdf}}
 \caption{Real noise estimation for dataset \textit{W2S-2}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
@@ -437,7 +443,7 @@ The same applies for SSIM computation.
 
 \begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=.8\columnwidth]{fig_skewness_w2s-3.pdf}}
+\centerline{\includegraphics[width=.7\columnwidth]{fig_skewness_w2s-3.pdf}}
 \caption{Real noise estimation for dataset \textit{W2S-3}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
