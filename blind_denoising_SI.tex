@@ -73,7 +73,7 @@
 \subsection{Networks and training}
 \paragraph{D-Net architecture details.}
 The architecture is based on U-net \cite{ronneberger2015u}.
-We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions is performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution, we added two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
+We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions are performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution. We also add two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
 
 \paragraph{N-Net architecture details.}
 In the case of a Gaussian noise, the N-Net is composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$). A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block (to ensure that the predicted $\sigma$ is positive).
@@ -84,7 +84,7 @@ In the case where the N-net predicts a GMM with N components with weights $(\alp
   \item N channels, followed by a softmax activation to predict $\alpha_{i}.$\footnote{When $N=2$, only one channel is used and followed by a sigmoid activation function.}
   \item N-1 channels to predict the ditribution means $\mu_{i}$.
 \end{itemize}
-To ensure that the distribution is centered, the center of the last distribution is computed as 
+To ensure that the distribution is centered, the center of the last distribution is computed as
 $$
 \mu_{N} = \frac{1}{\alpha_{N-1}} \sum_{i=1}^{N-1}{\alpha_{i} \mu{i}}\,.
 $$
@@ -114,9 +114,9 @@ It can be downloaded here: \url{https://datasets.epfl.ch/w2s/W2S_raw.zip}
 \paragraph{Normalization.}
 
 For both datasets images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.
-This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution has often an heavy tail towards high values.
+This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution often has a heavy tail towards high values.
 
-For the 6 chosen datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR and SSIM computation.
+For the 6 datasets, images are encoded in 16-bit thus the actual data range of each ground truth image is used for PSNR and SSIM computation.
 
 \subsection{Synthetic noise datasets}
 \label{si:synthetic}
