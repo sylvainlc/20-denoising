@@ -125,7 +125,7 @@ The same applies for SSIM computation.
 \begin{itemize}
   \item Additive gaussian: $Y = X + \varepsilon$ with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=20$.
   \item Poisson-Gaussian: $Y = X + (\alpha * (X-\underline{X}) + \eta^2 )^{1/2}\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, 1)$, $\alpha=5, \eta=12$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
-  \item Speckle: $X = X + (X-min(\underline{X}))\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
+  \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
 \section{Noise estimation}
