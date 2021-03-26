@@ -31,13 +31,13 @@ First of all we would like to sincerely thank all reviewers for their very detai
 \end{figure}
 \paragraph{Contribution of N-net}
 We agree that in its original version the several contributions presented in the paper are not properly distinguished.
-In the revised manuscript, we propose to highlight the contribution of the N-net to the performance first by adding Fig.~\ref{fig:review}: panels ACD show the impact of the N-net on real and several levels of synthetic noise, by comparing our model with the D-Net trained with L2 loss (as in N2V, N2S) with every other aspect fixed.
-It shows that N-net always improves performances, although not always significantly (this was verified for the 6 datasets considered in the article). Moreover the addition of N-net greatly stabilizes the training (see Fig.~\ref{fig:review}B) and improves convergence speed, which enables easier hyperparameters and architecture optimization.
+In the revised manuscript, we propose to highlight the contribution of the N-net to the performance first by adding Fig.~\ref{fig:review}: panels ACD show the impact of the N-net on real and several levels of synthetic noise, and by comparing our model with the D-Net trained with L2 loss (as in N2V, N2S) with every other aspect fixed.
+It shows that N-net always improves performances, although not always significantly (this was verified for the 6 datasets considered in the article). Moreover, the addition of the N-net greatly stabilizes the training (see Fig.~\ref{fig:review}B) and improves convergence speed, which enables easier hyperparameters and architecture optimization.
 The N-net alone can thus be seen as a modular and \textit{plug-and-play} addition to existing blind denoising models, which always improves performances and convergence.
 
 % explanations:
 From the perspective of our framework, the L2 loss can be understood as a particular case of the N-net predicting a constant unit gaussian noise. When the actual noise is significantly different from it (e.g. \textit{Speckle} vs \textit{Gaussian}), the N-net has a stronger impact (see Fig.~\ref{fig:review}C).
-TODO SYLVAIN  Intuitively, better knowledge of the noise gives better prediction of $X$ (it is known that misspecifying the noise density can lead to very poor mean integrated squared error (MISE) of the deconvolution estimator of the signal distribution, see XXX).
+From a statistical perspective,  it is known that considering a sufficiently rich noise model is crucial in deconvolution problem to recover the signal distribution (misspecifying the noise density can lead to very poor mean integrated squared error of the deconvolution estimator of the signal distribution).
 
 Moreover the noise model was shown in the main paper to capture several statistical behaviors, which is interesting \textit{per-se} and could allow to further improve performances by predicting signal distribution as in (Laine et al. 2019) and PN2V.
 
@@ -46,10 +46,10 @@ R2 concerns about the way the loss function is described in the original version
 %The D-net $\mu_\theta(\Omega_y,g(\Omega_y))$ is indeed thought as a model for the expected value of the signal X given the surrounding receptive field excluding the central pixel. This quantity as an estimate of the signal value would indeed minimize the mean squared error to the ground truth and this is what supervised training with MSE does.
 The conditional loglikelihood of the observations is written $ \log p(y|\Omega_y) = \log \int p(x,y|\Omega_y) \mathrm{d}x = \log \int p(x|\Omega_y)p(y|\Omega_y,x) \mathrm{d}x$ (*), where $p(y|\Omega_y,x)$ is given by our observation model (1).
 As it is very challenging to obtain samples from the distribution $p(x|\Omega_y)$ we propose indeed to estimate this integral by $\log p(y|\Omega_y,\hat {x})$ where $\hat {x}$ is an estimate of $\mathbb{E}[X|\Omega_y]$. Our loss function is then supported by the intuition that $\mu_\theta(\Omega_y,g(\Omega_y))$ is a good approximation of $\mathbb{E}[X|\Omega_y]$. Providing theoretical guarantees that this approximation is good remains an open problem as stated in the original paper. Even though this seems similar to N2V and N2S in terms of loss function we would like to stress that writing explicitly (*) provides a different perspective which we believe:
-(1) defines a framework to justify theoretically the proposed approximation (which is a challenging issue); (2) highlight in (*) the contribution of $\mu_\theta$ and of the noise model.
+(1) defines a framework to justify theoretically the proposed approximation (challenging issue); (2) highlights the contribution of $\mu_\theta$ and of the noise model.
 
 \paragraph{Supervised Learning}
-R1 and R2 proposed we compare our method to the supervised approach on dataset W2S-1,2 \& 3 where the evaluation dataset is distinct from the training dataset, and will include this baseline in the revised manuscript.
+R1 and R2 proposed that we compare our method to the supervised approach on dataset W2S-1,2 \& 3 where the evaluation dataset is distinct from the training dataset. We will include this baseline in the revised manuscript.
 We found that our method outperforms the supervised approach of $0.11dB$, $0.22dB$ and $0.26dB$ respectively.
 This is not in contradiction with the fact that the central pixel is masked at train time: indeed, our method uses beneficially the central pixel at inference.
 
