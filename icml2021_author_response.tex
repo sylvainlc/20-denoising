@@ -36,7 +36,7 @@ It shows that N-net always improves performances, although not always significan
 The N-net alone can thus be seen as a modular and \textit{plug-and-play} addition to existing blind denoising models, which always improves performances and convergence.
 
 % explanations:
-From the perspective of our framework, the L2 loss can be understood as a particular case of the N-net predicting a constant unit gaussian noise. When the actual noise is significantly different from it (e.g. \textit{Speckle} vs \textit{Gaussian}), the N-net has a stronger impact (see Fig.~\ref{fig:review}C).
+From the perspective of our framework, the L2 loss can be understood as a particular case of the N-net predicting a constant unit gaussian noise. When the actual noise is significantly different from it (e.g. \textit{Speckle}), the N-net has a stronger impact (see Fig.~\ref{fig:review}C).
 From a statistical perspective,  it is known that considering a sufficiently rich noise model is crucial in deconvolution problem to recover the signal distribution (misspecifying the noise density can lead to very poor mean integrated squared error of the deconvolution estimator of the signal distribution).
 
 Moreover the noise model was shown in the main paper to capture several statistical behaviors, which is interesting \textit{per-se} and could allow to further improve performances by predicting signal distribution as in (Laine et al. 2019) and PN2V.
@@ -55,8 +55,8 @@ This is not in contradiction with the fact that the central pixel is masked at t
 
 % can be removed if necessary
 \paragraph{Noise correlation}
-Regarding the question of R4: only 2 of the 6 dataset display correlation in noise, that is emphasized by the network when not taken into account.
-Following (Broaddus et al. 2020) we adapted our masking scheme to take this correlation into account (see 4.3).
+Regarding the question of R4: only 2 of the 6 dataset display correlation in noise, which is amplified by the network when not taken into account.
+Following (Broaddus et al. 2020) we adapted our masking scheme in these specific cases (see 4.3).
 
 \paragraph{Literature}
 We thank R2 for pointing out erroneous analysis of (Krull et al. 2019), and will update the manuscript accordingly.
