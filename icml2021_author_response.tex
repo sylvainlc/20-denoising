@@ -37,7 +37,7 @@ The N-net alone can thus be seen as a modular and \textit{plug-and-play} additio
 
 % explanations:
 From the perspective of our framework, the L2 loss can be understood as a particular case of the N-net predicting a constant unit gaussian noise. When the actual noise is significantly different from it (e.g. \textit{Speckle}), the N-net has a stronger impact (see Fig.~\ref{fig:review}C).
-From a statistical perspective,  it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance).
+From a statistical perspective,  it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
 
 Moreover the noise model was shown in the paper to capture several statistical behaviors, which is interesting \textit{per-se} and could allow to further improve performances by predicting signal distribution as in (Laine et al. 2019) and PN2V.
 
