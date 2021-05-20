@@ -4,8 +4,13 @@
 *.brf
 *.log
 *.out
+*.fls
 blind_denoising.pdf
 blind_denoising_SI.pdf
 *.gz
 *.zip
+*.fdb_latexmk
+blind_denoising_neurips_2021.pdf
+blind_denoising_arxiv.pdf
+icml2021_author_response.pdf
 icml2021_style/*
