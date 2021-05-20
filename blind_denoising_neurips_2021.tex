@@ -242,7 +242,7 @@ An interesting  feature of our approach is that it can be extended straightforwa
 \begin{figure}
 % \vskip 0.2in
 \begin{center}
-\centerline{\includegraphics[width=3.25in]{fig_plomberie.pdf}}
+\centerline{\includegraphics[width=3.85in]{fig_plomberie_1col.pdf}}
 \caption{Training setup.
 For each mini-batch, a random grid is drawn.
 The masking function $x\mapsto g(x)$ is applied on each element of the grid, replacing the original pixels in the masked image.
@@ -420,12 +420,6 @@ Finally, it would also be interesting to understand the role of the central pixe
 
 \section{Code}
 Source code is available from supplementary information.
-
-% \begin{figure}
-%   \centering
-%   \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-%   \caption{Sample figure caption.}
-% \end{figure}
 
 % \begin{table}
 %   \caption{Sample table title}
@@ -612,6 +606,16 @@ The same applies for SSIM computation.
   \item Poisson-Gaussian: $Y = X + (\alpha * (X-\underline{X}) + \eta^2 )^{1/2}\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, 1)$, $\alpha=5, \eta=12$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
+
+\subsection{Impact of NNet on training}
+\begin{figure}[ht]
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{fig_convergence_1col.pdf}}
+\caption{PSNR at each epoch on the test set for N-net (G1) or D-net only (L2). A: training on real noise; final performance gain of G1 over L2 is $+0.11dB$. B, C: training on different models/levels of synthetic noise added to ground truth image. C: \textit{Gaussian} and \textit{Speckle} correspond to noises presented in 5.1, that have no and high signal dependency respectively. D: \textit{Speckle} with variance multiplied by 0.5, 2 and 4. D: Mean and SEM over 5 runs.}
+}
+\end{center}
+\vskip -0.2in
+\end{figure}
 
 \subsection{Noise estimation}
 \label{si:skewness}
