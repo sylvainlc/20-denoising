@@ -355,69 +355,25 @@ Metrics computed on noisy images are displayed in the \textit{Noisy} columns. Fo
 \begin{center}
 \begin{small}
 \begin{sc}
-\begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccc}
 \toprule
-Dataset & Noisy & Gaussian & Supervised & N2V & DN & Ours \\
+Dataset & Noisy & Gaussian & Supervised & N2V & DN & Ours (best) \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $NA$ / $NA$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ \\
-PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $NA$ / $NA$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$\\
-PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $NA$ / $NA$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$\\
-W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $35.22$ / $0.9608$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$\\
-W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $33.24$ / $0.8828$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$\\
-W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $36.31$ / $0.9252$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$\\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $NA$ / $NA$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $\underline{38.47}$ / $\underline{0.9738}$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $NA$ / $NA$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $\underline{39.22}$ / $\underline{0.9779}$\\
+PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $NA$ / $NA$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $\underline{34.79}$ / $\underline{0.8905}$\\
+W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $35.22$ / $0.9608$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $\underline{35.33}$ / $\underline{0.9619}$\\
+W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $33.24$ / $0.8828$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $\underline{33.48}$ / $\underline{0.8871}$\\
+W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $36.31$ / $0.9252$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $\underline{36.60}$ / $\underline{0.9269}$\\
 \bottomrule
 \end{tabular}
+}
 \end{sc}
 \end{small}
 \end{center}
 \vskip -0.2in
 \end{table}
-% PSNR L2
-% 37,41
-% 37,67
-% 34,44
-% 35,18
-% 33,36
-% 36,42
-% SSIM L2
-% 0,9638
-% 0,9670
-% 0,8842
-% 0,9611
-% 0,8831
-% 0,9234
-% SUPERVISED
-% PSNR: raw=21.85, pred=35.22 | SSIM: raw=0.3490 pred=0.9608
-% [19.332893818789046, 33.24497106604695, 0.22564683048531498, 0.882839791039584]
-% PSNR: raw=20.40, pred=36.31 | SSIM: raw=0.2232 pred=0.9252
-%
-
-% \begin{table}[ht]
-% \caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics.
-% SSIM estimates structural similarity (sharpness).
-% Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\protect\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
-% \label{table:results}
-% \vskip -0.15in
-% \begin{center}
-% \begin{small}
-% \begin{sc}
-% \begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
-% \toprule
-% Dataset & Noisy & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
-% \midrule
-% PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ & $38.47$ / $0.9738$ & $38.28$ / $0.9756$ \\
-% PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$ & $39.22$ / $0.9779$ & $39.18$ / $0.9780$ \\
-% PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$ & $34.68$ / $0.8880$ & $34.70$ / $0.8877$ \\
-% W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & $35.27$ / $0.9623$ & $35.27$ / $0.9624$ \\
-% W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & $33.48$ / $0.8871$ & $33.47$ / $0.8871$ \\
-% W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & $36.60$ / $0.9269$ & $36.59$ / $0.9269$ \\
-% \bottomrule
-% \end{tabular}
-% \end{sc}
-% \end{small}
-% \end{center}
-% \vskip -0.2in
-% \end{table}
 
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
 This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
@@ -434,11 +390,9 @@ This remains an open problem in our framework and we leave this topic for future
 \begin{figure}
 \vskip 0.2in
 \hskip -0.625in
-% \begin{center}
 \includegraphics[width=6.75in]{fig_images.pdf}
 \caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
 \label{fig:images}
-% \end{center}
 \vskip -0.2in
 \end{figure}
 
@@ -465,24 +419,6 @@ Finally, it would also be interesting to understand the role of the central pixe
 
 \section{Code}
 Source code is available from supplementary information.
-
-% \begin{table}
-%   \caption{Sample table title}
-%   \label{sample-table}
-%   \centering
-%   \begin{tabular}{lll}
-%     \toprule
-%     \multicolumn{2}{c}{Part}                   \\
-%     \cmidrule(r){1-2}
-%     Name     & Description     & Size ($\mu$m) \\
-%     \midrule
-%     Dendrite & Input terminal  & $\sim$100     \\
-%     Axon     & Output terminal & $\sim$10      \\
-%     Soma     & Cell body       & up to $10^6$  \\
-%     \bottomrule
-%   \end{tabular}
-% \end{table}
-
 % \begin{ack}
 % acknowledgments
 % \end{ack}
@@ -502,7 +438,7 @@ Source code is available from supplementary information.
 % Note that the Reference section does not count towards the page limit.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
+
 \section*{Checklist}
 
 %%% BEGIN INSTRUCTIONS %%%
@@ -652,15 +588,39 @@ The same applies for SSIM computation.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
-\subsection{Impact of NNet on training}
+\subsection{Impact of NNet}
 \begin{figure}[ht]
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_convergence_1col.pdf}}
 \caption{PSNR at each epoch on the test set for N-net (G1) or D-net only (L2). A: training on real noise; final performance gain of G1 over L2 is $+0.11dB$. B, C: training on different models/levels of synthetic noise added to ground truth image. C: \textit{Gaussian} and \textit{Speckle} correspond to noises presented in 5.1, that have no and high signal dependency respectively. D: \textit{Speckle} with variance multiplied by 0.5, 2 and 4. D: Mean and SEM over 5 runs.}
-}
 \end{center}
 \vskip -0.2in
 \end{figure}
+
+\begin{table}[ht]
+\caption{Impact of NNet on performances. Comparison between our method predicting a GMM with 1, 2, or 3 components (respectively G1, G2, G3) and DNet only trained with L2 loss.}
+\label{si:table:nnet}
+\vskip -0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
+\toprule
+Dataset & Noisy & L2 & Ours (G1) & Ours (G2) & Ours (G3) \\
+\midrule
+PN2V-C & $28.98$ / $0.7713$ & $37.41$ / $0.9638$ & $38.33$ / $\underline{0.9754}$ & $\underline{38.47}$ / $0.9738$ & $38.28$ / $\underline{0.9756}$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $37.67$ / $0.9670$ & $39.08$ / $\underline{0.9776}$ & $\underline{39.22}$ / $\underline{0.9779}$ & $\underline{39.18}$ / $\underline{0.9780}$ \\
+PN2V-MA & $23.71$ / $0.3731$ & $34.44$ / $0.8842$ & $\underline{34.79}$ / $\underline{0.8905}$ & $34.68$ / $0.8880$ & $\underline{34.70}$ / $0.8877$ \\
+W2S-1 & $21.85$ / $0.3490$ & $35.18$ / $0.9611$ & $\underline{35.33}$ / $\underline{0.9619}$ & $\underline{35.27}$ / $\underline{0.9623}$ & $\underline{35.27}$ / $\underline{0.9624}$ \\
+W2S-2 & $19.33$ / $0.2256$ & $\underline{33.36}$ / $0.8831$ & $\underline{33.46}$ / $\underline{0.8867}$ & $\underline{33.48}$ / $\underline{0.8871}$ & $\underline{33.47}$ / $\underline{0.8871}$ \\
+W2S-3 & $20.39$ / $0.2232$ & $36.42$ / $0.9234$ & $\underline{36.57}$ / $\underline{0.9263}$ & $\underline{36.60}$ / $\underline{0.9269}$ & $\underline{36.59}$ / $\underline{0.9269}$ \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.2in
+\end{table}
 
 \subsection{Noise estimation}
 \label{si:skewness}
