@@ -76,7 +76,7 @@
 
 \begin{abstract}
 We propose a novel self-supervised image blind denoising approach in which two neural networks jointly predict the clean signal and infer the noise distribution.
-Assuming that the noisy observations are independent conditionally to the signal, the networks can be jointly trained without any clean training data. This approach is particularly relevant for biomedical image denoising where the noise is difficult to model precisely and clean training data are usually unavailable. Our method significantly outperforms current state-of-the-art self-supervised blind denoising algorithms as well as its supervised counterpart, on six publicly available biomedical image datasets. We also show empirically that it is able to efficiently capture noise distributions, both on different synthetic noise models and real multimodal and skewed data.
+Assuming that the noisy observations are independent conditionally to the signal, the networks can be jointly trained without any clean training data. This approach is particularly relevant for biomedical image denoising where the noise is difficult to model precisely and clean training data are usually unavailable. Our method significantly outperforms current state-of-the-art self-supervised blind denoising algorithms on six publicly available biomedical image datasets, as well as its supervised counterpart. We also show empirically that it is able to efficiently capture noise distributions, both on different synthetic noise models and real multimodal and skewed data.
 Finally, the described framework is simple, lightweight and computationally efficient, making it useful in practical cases.
 \end{abstract}
 
@@ -357,14 +357,14 @@ Metrics computed on noisy images are displayed in the \textit{Noisy} columns. Fo
 \begin{sc}
 \begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
 \toprule
-Dataset & Noisy & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
+Dataset & Noisy & Gaussian & Supervised & N2V & DN & Ours \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ & $38.47$ / $0.9738$ & $38.28$ / $0.9756$ \\
-PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$ & $39.22$ / $0.9779$ & $39.18$ / $0.9780$ \\
-PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$ & $34.68$ / $0.8880$ & $34.70$ / $0.8877$ \\
-W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & $35.27$ / $0.9623$ & $35.27$ / $0.9624$ \\
-W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & $33.48$ / $0.8871$ & $33.47$ / $0.8871$ \\
-W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & $36.60$ / $0.9269$ & $36.59$ / $0.9269$ \\
+PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $NA$ / $NA$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $NA$ / $NA$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$\\
+PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $NA$ / $NA$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$\\
+W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $35.22$ / $0.9608$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$\\
+W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $33.24$ / $0.8828$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$\\
+W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $36.31$ / $0.9252$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$\\
 \bottomrule
 \end{tabular}
 \end{sc}
@@ -372,6 +372,52 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ /
 \end{center}
 \vskip -0.2in
 \end{table}
+% PSNR L2
+% 37,41
+% 37,67
+% 34,44
+% 35,18
+% 33,36
+% 36,42
+% SSIM L2
+% 0,9638
+% 0,9670
+% 0,8842
+% 0,9611
+% 0,8831
+% 0,9234
+% SUPERVISED
+% PSNR: raw=21.85, pred=35.22 | SSIM: raw=0.3490 pred=0.9608
+% [19.332893818789046, 33.24497106604695, 0.22564683048531498, 0.882839791039584]
+% PSNR: raw=20.40, pred=36.31 | SSIM: raw=0.2232 pred=0.9252
+%
+
+% \begin{table}[ht]
+% \caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics.
+% SSIM estimates structural similarity (sharpness).
+% Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\protect\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
+% \label{table:results}
+% \vskip -0.15in
+% \begin{center}
+% \begin{small}
+% \begin{sc}
+% \begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
+% \toprule
+% Dataset & Noisy & Gaussian & N2V & DN & Ours (G1) & Ours (G2) & Ours (G3) \\
+% \midrule
+% PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $38.33$ / $0.9754$ & $38.47$ / $0.9738$ & $38.28$ / $0.9756$ \\
+% PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $39.08$ / $0.9776$ & $39.22$ / $0.9779$ & $39.18$ / $0.9780$ \\
+% PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $34.79$ / $0.8905$ & $34.68$ / $0.8880$ & $34.70$ / $0.8877$ \\
+% W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $35.33$ / $0.9619$ & $35.27$ / $0.9623$ & $35.27$ / $0.9624$ \\
+% W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $33.46$ / $0.8867$ & $33.48$ / $0.8871$ & $33.47$ / $0.8871$ \\
+% W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $36.57$ / $0.9263$ & $36.60$ / $0.9269$ & $36.59$ / $0.9269$ \\
+% \bottomrule
+% \end{tabular}
+% \end{sc}
+% \end{small}
+% \end{center}
+% \vskip -0.2in
+% \end{table}
 
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
 This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
