@@ -144,7 +144,7 @@ In \cite{krull2019probabilistic,prakash2020fully,2020DivNoising}, the authors ma
 In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}.
 In the latter variant, the noise distribution is parametrized with a centered Gaussian mixture model with empirically designed constraints.
 This increases the complexity of the method, as it requires several training procedures and calibration.
-The denoising network is then trained to predict a whole distribution of $800$ possible noisy values instead of a single point estimate of each pixel, approximating the previously defined noise distribution at each pixel.
+% The denoising network is then trained to predict a whole distribution of $800$ possible noisy values instead of a single point estimate of each pixel, approximating the previously defined noise distribution at each pixel.
 
 Finally, \cite{2020DivNoising} used the Variational Auto\-Encoder formalism, adding a pre-calibrated noise model in their architecture. This provides new interesting possibilities, as it can generate a diversity of denoised results, possibly interesting in creative processes. In the case of scientific images such as microscopy, the possible presence of visual artifacts or blurry results makes it less appropriate.
 
@@ -418,7 +418,7 @@ Finally, it would also be interesting to understand the role of the central pixe
 % parler de
 % - performances supérieures a supervised.
 % - limite: ne fonctionne pas sur bruit structuré (seulement axial)
-% - 
+% -
 
 \section{Code}
 Source code is available from supplementary information.
@@ -613,12 +613,12 @@ The same applies for SSIM computation.
 \toprule
 Dataset & Noisy & L2 & Ours (G1) & Ours (G2) & Ours (G3) \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $37.41$ / $0.9638$ & $38.33$ / $\underline{0.9754}$ & $\underline{38.47}$ / $0.9738$ & $38.28$ / $\underline{0.9756}$ \\
-PN2V-MN & $28.10$ / $0.6836$ & $37.67$ / $0.9670$ & $39.08$ / $\underline{0.9776}$ & $\underline{39.22}$ / $\underline{0.9779}$ & $\underline{39.18}$ / $\underline{0.9780}$ \\
-PN2V-MA & $23.71$ / $0.3731$ & $34.44$ / $0.8842$ & $\underline{34.79}$ / $\underline{0.8905}$ & $34.68$ / $0.8880$ & $\underline{34.70}$ / $0.8877$ \\
-W2S-1 & $21.85$ / $0.3490$ & $35.18$ / $0.9611$ & $\underline{35.33}$ / $\underline{0.9619}$ & $\underline{35.27}$ / $\underline{0.9623}$ & $\underline{35.27}$ / $\underline{0.9624}$ \\
-W2S-2 & $19.33$ / $0.2256$ & $\underline{33.36}$ / $0.8831$ & $\underline{33.46}$ / $\underline{0.8867}$ & $\underline{33.48}$ / $\underline{0.8871}$ & $\underline{33.47}$ / $\underline{0.8871}$ \\
-W2S-3 & $20.39$ / $0.2232$ & $36.42$ / $0.9234$ & $\underline{36.57}$ / $\underline{0.9263}$ & $\underline{36.60}$ / $\underline{0.9269}$ & $\underline{36.59}$ / $\underline{0.9269}$ \\
+PN2V-C & $28.98$ / $0.7713$ & $38.23$ / $0.9729$ & $38.33$ / $\underline{0.9754}$ & $\underline{38.47}$ / $0.9738$ & $38.28$ / $\underline{0.9756}$ \\
+PN2V-MN & $28.10$ / $0.6836$ & $39.08$ / $0.9747$ & $39.08$ / $\underline{0.9776}$ & $\underline{39.22}$ / $\underline{0.9779}$ & $\underline{39.18}$ / $\underline{0.9780}$ \\
+PN2V-MA & $23.71$ / $0.3731$ & $34.63$ / $0.8890$ & $\underline{34.79}$ / $\underline{0.8905}$ & $34.68$ / $0.8880$ & $\underline{34.70}$ / $0.8877$ \\
+W2S-1 & $21.85$ / $0.3490$ & $\underline{35.23}$ / $0.9611$ & $\underline{35.33}$ / $\underline{0.9619}$ & $\underline{35.27}$ / $\underline{0.9623}$ & $\underline{35.27}$ / $\underline{0.9624}$ \\
+W2S-2 & $19.33$ / $0.2256$ & $\underline{33.44}$ / $\underline{0.8860}$ & $\underline{33.46}$ / $\underline{0.8867}$ & $\underline{33.48}$ / $\underline{0.8871}$ & $\underline{33.47}$ / $\underline{0.8871}$ \\
+W2S-3 & $20.39$ / $0.2232$ & $\underline{36.56}$ / $\underline{0.9263}$ & $\underline{36.57}$ / $\underline{0.9263}$ & $\underline{36.60}$ / $\underline{0.9269}$ & $\underline{36.59}$ / $\underline{0.9269}$ \\
 \bottomrule
 \end{tabular}
 \end{sc}
