@@ -346,10 +346,21 @@ The probability density is normalized for each signal value bin.
 \footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $99.5\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.}
 We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
 
+In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
+This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
+In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution.
+This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which can be observed in experimental datasets.
+This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
+Such approaches have been proposed in more simple cases using for instance penalized maximum likelihood based algorithms.
+This remains an open problem in our framework and we leave this topic for future research.
+
+\subsection{Denoising performances}
+\label{sec:perf}
+
 \begin{table}[ht]
 \caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics.
 SSIM estimates structural similarity (sharpness).
-Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors\protect\footnotemark. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
+Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors (using no positivity constraint, and removing the convolution for N2V). \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}. \textit{Supervised} corresponds to supervised training of DNet trained with L2 objective. For each dataset the best of our method predicting a Gaussian model, a 2 or 3-component-GMM is shown (see Table~\ref{si:table:nnet} for details).}
 \label{table:results}
 \vskip -0.15in
 \begin{center}
@@ -375,23 +386,11 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $36.31$ / $0.9252$ & $34.65$ /
 \vskip -0.2in
 \end{table}
 
-In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
-This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
-In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a uninomodal distribution.
-This supports the use of our flexible N-net to capture a large variety of noise distributions (with mutltimodality and/or skewness) which can be observed in experimental datasets.
-This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
-Such approaches have been proposed in more simple cases using for instance penalized maximum likelihood based algorithms.
-This remains an open problem in our framework and we leave this topic for future research.
-
-\subsection{Denoising performances}
-\label{sec:perf}
-% footnote text of the caption
-\footnotetext{\label{note:n2v}Using no positivity constraint, and removing the convolution for N2V.}
 \begin{figure}
 \vskip 0.2in
 \hskip -0.625in
 \includegraphics[width=6.75in]{fig_images.pdf}
-\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. For DecoNoising and N2V, images are predicted with networks trained using the source code provided with \cite{goncharova2020}\cref{note:n2v}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
+\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. Training of DecoNoising and N2V is described in Table~\ref{table:results}. \textit{Gaussian} corresponds to the optimal gaussian baseline defined in section~\ref{sec:perf}.}
 \label{fig:images}
 \vskip -0.2in
 \end{figure}
@@ -416,6 +415,10 @@ First, future works could consider more complex families of noise distributions 
 Second, more theoretical works could explore the model proposed in this work  (i) to obtain identifiability of model \eqref{eq:def:Y} and extend \cite{gassiat:lecorff:lehericy:2021} to state-dependent standard deviations and (ii) to establish rates of convergence for the proposed estimators.
 
 Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on the  masking procedure and the convolutional architecture, but the network is not trained explicitely to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
+% parler de
+% - performances supérieures a supervised.
+% - limite: ne fonctionne pas sur bruit structuré (seulement axial)
+% - 
 
 \section{Code}
 Source code is available from supplementary information.
@@ -522,7 +525,10 @@ Checklist section heading above along with the questions/answers below.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \appendix
-
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{table}{0}
+\setcounter{figure}{0}
 \section{Appendix}
 
 
@@ -602,7 +608,6 @@ The same applies for SSIM computation.
 \label{si:table:nnet}
 \vskip -0.15in
 \begin{center}
-\begin{small}
 \begin{sc}
 \begin{tabular}{l@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c@{\hskip 7.5pt}c}
 \toprule
@@ -617,9 +622,7 @@ W2S-3 & $20.39$ / $0.2232$ & $36.42$ / $0.9234$ & $\underline{36.57}$ / $\underl
 \bottomrule
 \end{tabular}
 \end{sc}
-\end{small}
 \end{center}
-\vskip -0.2in
 \end{table}
 
 \subsection{Noise estimation}
@@ -630,7 +633,6 @@ W2S-3 & $20.39$ / $0.2232$ & $36.42$ / $0.9234$ & $\underline{36.57}$ / $\underl
 \caption{Real noise estimation for dataset \textit{PN2V-C}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
-\vskip -0.2in
 \end{figure}
 
 \begin{figure}[ht]
