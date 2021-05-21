@@ -360,7 +360,7 @@ This remains an open problem in our framework and we leave this topic for future
 \begin{table}[ht]
 \caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics.
 SSIM estimates structural similarity (sharpness).
-Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising (\textit{DN}) and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors (using no positivity constraint, and removing the convolution for N2V). \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}. \textit{Supervised} corresponds to supervised training of DNet trained with L2 objective. For each dataset the best of our method predicting a Gaussian model, a 2 or 3-component-GMM is shown (see Table~\ref{si:table:nnet} for details).}
+Metrics computed on noisy images are displayed in the \textit{Noisy} columns. For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors (using no positivity constraint, and removing the convolution for N2V). \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}. \textit{Supervised} corresponds to supervised training of DNet trained with L2 objective. For each dataset the best of our method predicting a Gaussian model, a 2 or 3-component-GMM is shown (see Table~\ref{si:table:nnet} for details).}
 \label{table:results}
 \vskip -0.15in
 \begin{center}
@@ -369,7 +369,7 @@ Metrics computed on noisy images are displayed in the \textit{Noisy} columns. Fo
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccc}
 \toprule
-Dataset & Noisy & Gaussian & Supervised & N2V & DN & Ours (best) \\
+Dataset & Noisy & Gaussian & Supervised & N2V & DecoNoising & Ours (best) \\
 \midrule
 PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $NA$ / $NA$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $\underline{38.47}$ / $\underline{0.9738}$ \\
 PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $NA$ / $NA$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $\underline{39.22}$ / $\underline{0.9779}$\\
