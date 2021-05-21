@@ -62,4 +62,40 @@ We thank R2 for pointing out erroneous analysis of (Krull et al. 2019). Regardin
 Finally, we emphasize that our method is stable, generic (to types of noises), reproducible (fast and easy code available), so we believe it is a powerful tool for experimenters and a good stepping stone for future research.
 
 % [To be removed si besoin de place] Additionally they model the noise variance as an affine function of the signal intensity. We show that the noise variance may follow a more intricate dependency to the signal intensity and design a more general way to model it
+
+
+
+Reviewer #2 4/3/2021, 10:03:14 AM
+Topic: Use of the central pixel and performance of supervised learning.
+In your feedback, you write :
+"
+We found that our method out-performs the supervised approach of0.11dB,0.22dBand0.26dBrespectively.
+This is not in contradiction with the fact that the central pixel is masked at train time: indeed,our method uses beneficially the central pixel at inference.
+"
+I unfortunately cannot follow this argument. How can the system learn to make use of the central pixel when it is masked during training?
+
+I have two questions regarding this:
+1. Could you please explain how the "method uses beneficially the central pixel at inference", when it is not allowed to see it during training?
+and
+2. Let's assume that it somehow can make some use of the central pixel, how can it surpass (!) the performance of the supervised approach, which is trained to make optimal use of the full receptive field including the central pixel?
+I am looking forward to your answers.
+
+Author 4/5/2021, 7:26:38 PM
+Topic: Use of the central pixel and performance of supervised learning.
+Thank you for your questions.
+
+1. Classical architectures with successive convolutions (such as U-net) impose a dependency upon the central pixel. This is the reason why specific architectures were developed like the directional convolutions (Laine et al. 2019) or strided convolutions (Noise2Kernel - Lee, Jeong 2020). In approaches such as Noise2Void and Noise2Self the dependency upon the central pixel at test time can be tested empirically.
+
+The beneficial use of the central pixel at inference was also observed in Noise2Self (Batson and Royer 2019), described in appendix 5.4: after training with masked pixels, they compare inference with or without masking, and obtain +0.5dB using the central pixel. We obtain comparable gains for all datasets.
+
+Our intuition is that while the information of the masked pixel is redundant with the neighborhood, the convolutional structure of the net probably induces the learning of a dependency upon the central pixel in a useful way. As discussed in paragraph 6, how the central pixel is used during inference remains an open research question.
+
+
+2. Our architecture and hyperparameters were tuned with the unsupervised setup in mind. We believe that the supervised version of our method that we presented in the rebuttal can still be improved in terms of architecture and optimization, and therefore does not correspond to the upper bound of possible performances.
+
+Also intuitively, perhaps it’s easier to learn a good denoiser with masking because it forces the network to make better use of the neighborhood rather than overfitting on the central pixel. An interesting perspective would be to use the central pixel in a sensible way both at train and test time.
+
+We hope this answers your questions.
+
+
 \end{document}
