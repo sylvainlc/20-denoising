@@ -175,7 +175,7 @@ Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 %Y = \mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}) + \sigma_{\theta_n}(\mu_{\theta_p}(\Omega_Y;\overline{\Omega_Y}))\varepsilon\,,
 %$$
 where $\varepsilon$ is a centered noise independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
-This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant\footnote{From the perspective of our model, the approach of N2V and N2S is equivalent to considering that $x\mapsto \sigma^2_{\theta_n}(x) = 1$.} or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
+This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
 
  %while  model \eqref{eq:def:Y} is shown to be robust to real noise distributions.
@@ -270,6 +270,7 @@ The function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local
 %The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
 
 \subsection{Datasets}
+\label{sec:datasets}
 We train and evaluate our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth ($X$) is estimated by averaging several observations ($Y$) of the same field-of-view (FOV).
 This allows to have access to an estimation of the noise $Y-X$, which we refer to as \textit{real noise} in this article.
 
@@ -293,6 +294,7 @@ On average, $6.8\%$ of the image is masked.
 Furthermore, we observed that datasets \emph{PN2V-C} and \emph{PN2V-MA} display axial correlation in the noise, for those datasets we adapted the masking procedure introduced in \cite{broaddus2020removing}: the replacement value was computed on a neighborhood excluding the neighbors along the correlation axis, and neighbors were masked along this axis, within an extent of 3 pixels\footnote{The masking extension can be determined easily in a self-supervised setup because the neural network tends to amplify the noise correlation, thus one can easily chose the smallest range for which the axial correlation disappears.}.
 
 \subsection{Training}
+\label{sec:training}
 Networks are trained using Adam optimizer with a learning rate of $4\cdot10^{-4}$, decreased by $1/2$ on plateau of 30 epochs until $10^{-6}$. We train networks for 400 epochs of 200 steps.
 Training time is about 2 min per epoch on a NVIDIA Tesla P4.
 We obtain better and more reproducible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibly because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
@@ -328,7 +330,7 @@ Empirical and predicted distributions of the noise standard deviation are illust
 One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the known theoretical standard deviation.
 It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
 
-\subsection{Improving estimation on real noise}
+% \subsection{Improving estimation on real noise}
 \label{sec:exp:real:noise}
 \begin{figure}
 % \vskip 0.2in
@@ -347,7 +349,6 @@ The probability density is normalized for each signal value bin.
 \end{figure}
 \footnotetext{All the graphs are computed using regular signal value bins and excluding signal values greater to the $99.5\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.}
 We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
-
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
 This applies for all datasets and the equivalent figures can be found in supplementary section~\ref{si:skewness}.
 In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a unimodal distribution.
@@ -407,38 +408,33 @@ The considered metrics are summarized in table~\ref{table:results}.
 Our method significantly outperforms the baselines both in terms of PSNR and SSIM on all datasets.
 For the version predicting a simple Gaussian distribution, the average PSNR gain over DecoNoisng is $+1.42$dB.
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artifacts.
-Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB\footnote{Comparison with PSNR values reported in \cite{goncharova2020}}.
+Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (from PSNR values reported in \cite{goncharova2020}).
 Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{si:table:results}).
 This could be explained by the fact that self-supervised training induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
 
 To better understand the contribution of the N-Net, we compared our method to the D-Net trained with L2 objective as in \cite{batson2019noise2self, krull2018noise2void}. Table~\ref{si:table:results} shows that adding shows that N-net always improves performances, although not always significantly. Moreover, the addition of the N-net greatly stabilizes the training and improves convergence speed (see Fig.~\ref{si:fig:convergence}), which enables easier hyperparameters and architecture optimization.
+From the perspective of our framework, the L2 loss (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in ig.~\ref{si:fig:convergence}B).
+From a statistical perspective, it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
 It is worth noting that considering mixture models improves the PSNR in two datasets out of six (Table~\ref{si:table:results}).
 As mentioned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
 
 \section{Discussion}
+\label{sec:discussion}
 We introduced a novel self-supervised blind-denoising method modeling both the signal and the noise distributions. We believe its simplicity, performances and the interpretability of the noise distribution will be useful both in practical applications, and as a basis for future research.
 
-First, future works could consider more complex families of noise distributions  such as structured or non-centered noises, that can also arise in real-life setups. In particular, \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noises such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noises.
+First, future works could consider more complex families of noise distributions such as structured or non-centered noises, that can also arise in real-life setups. In particular, \cite{lehtinen2018noise2noise} managed to remove very structured non-centered noises such as overlaid text. With stronger assumptions and architecture changes, it might be possible to capture such noises.
 
 Second, more theoretical works could explore the model proposed in this work  (i) to obtain identifiability of model \eqref{eq:def:Y} and extend \cite{gassiat:lecorff:lehericy:2021} to state-dependent standard deviations and (ii) to establish rates of convergence for the proposed estimators.
 
 Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on the  masking procedure and the convolutional architecture, but the network is not trained explicitly to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
-% parler de
-% - limite: ne fonctionne pas sur bruit structuré (seulement axial)
-% -
 
-\section{Code}
-Source code is available from supplementary information.
 % \begin{ack}
 % acknowledgments
 % \end{ack}
 
 \pagebreak
-{\small
 \bibliographystyle{acm}
 \bibliography{blind_denoising}
-
-}
 
 %
 % References follow the acknowledgments. Use unnumbered first-level heading for
@@ -451,34 +447,16 @@ Source code is available from supplementary information.
 
 \section*{Checklist}
 
-%%% BEGIN INSTRUCTIONS %%%
-The checklist follows the references.  Please
-read the checklist guidelines carefully for information on how to answer these
-questions.  For each question, change the default \answerTODO{} to \answerYes{},
-\answerNo{}, or \answerNA{}.  You are strongly encouraged to include a {\bf
-justification to your answer}, either by referencing the appropriate section of
-your paper or providing a brief inline description.  For example:
-\begin{itemize}
-  \item Did you include the license to the code and datasets? \answerYes{See Section~\ref{gen_inst}.}
-  \item Did you include the license to the code and datasets? \answerNo{The code and the data are proprietary.}
-  \item Did you include the license to the code and datasets? \answerNA{}
-\end{itemize}
-Please do not modify the questions and only use the provided macros for your
-answers.  Note that the Checklist section does not count towards the page
-limit.  In your paper, please delete this instructions block and only keep the
-Checklist section heading above along with the questions/answers below.
-%%% END INSTRUCTIONS %%%
-
 \begin{enumerate}
 
 \item For all authors...
 \begin{enumerate}
   \item Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
-    \answerTODO{}
+    \answerYes{}
   \item Did you describe the limitations of your work?
-    \answerTODO{}
+    \answerTODO{\ref{sec:discussion} (TODO should we explicitly say that it do not apply to centered / structured noises ? )}
   \item Did you discuss any potential negative societal impacts of your work?
-    \answerTODO{}
+    \answerNo{Not applicable}
   \item Have you read the ethics review guidelines and ensured that your paper conforms to them?
     \answerTODO{}
 \end{enumerate}
@@ -486,45 +464,45 @@ Checklist section heading above along with the questions/answers below.
 \item If you are including theoretical results...
 \begin{enumerate}
   \item Did you state the full set of assumptions of all theoretical results?
-    \answerTODO{}
+    \answerNo{Not applicable}
 	\item Did you include complete proofs of all theoretical results?
-    \answerTODO{}
+    \answerNo{Not applicable}
 \end{enumerate}
 
 \item If you ran experiments...
 \begin{enumerate}
   \item Did you include the code, data, and instructions needed to reproduce the main experimental results (either in the supplemental material or as a URL)?
-    \answerTODO{}
+    \answerTODO{\ref{sec:code}}
   \item Did you specify all the training details (e.g., data splits, hyperparameters, how they were chosen)?
-    \answerTODO{}
+    \answerYes{See \ref{sec:experiments} }
 	\item Did you report error bars (e.g., with respect to the random seed after running experiments multiple times)?
-    \answerTODO{}
+    \answerTODO{\ref{si:fig:convergence}}
 	\item Did you include the total amount of compute and the type of resources used (e.g., type of GPUs, internal cluster, or cloud provider)?
-    \answerTODO{}
+    \answerYes{\ref{sec:training}}
 \end{enumerate}
 
 \item If you are using existing assets (e.g., code, data, models) or curating/releasing new assets...
 \begin{enumerate}
   \item If your work uses existing assets, did you cite the creators?
-    \answerTODO{}
+    \answerYes{\ref{sec:datasets}}
   \item Did you mention the license of the assets?
-    \answerTODO{}
+    \answerNo{No licence was found along with the datasets, but they are made publicly available by the authors}
   \item Did you include any new assets either in the supplemental material or as a URL?
-    \answerTODO{}
+    \answerYes{\ref{sec:code}}
   \item Did you discuss whether and how consent was obtained from people whose data you're using/curating?
-    \answerTODO{}
+    \answerYes{Datasets are made publicly available by the authors}
   \item Did you discuss whether the data you are using/curating contains personally identifiable information or offensive content?
-    \answerTODO{}
+    \answerNo{Not applicable}
 \end{enumerate}
 
 \item If you used crowdsourcing or conducted research with human subjects...
 \begin{enumerate}
   \item Did you include the full text of instructions given to participants and screenshots, if applicable?
-    \answerTODO{}
+    \answerNo{Not applicable}
   \item Did you describe any potential participant risks, with links to Institutional Review Board (IRB) approvals, if applicable?
-    \answerTODO{}
+    \answerNo{Not applicable}
   \item Did you include the estimated hourly wage paid to participants and the total amount spent on participant compensation?
-    \answerTODO{}
+    \answerNo{Not applicable}
 \end{enumerate}
 
 \end{enumerate}
@@ -603,10 +581,10 @@ The same applies for SSIM computation.
 
 \subsection{Impact of N-Net}
 \begin{figure}[ht]
-\label{si:fig:convergence}
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_convergence_1col.pdf}}
 \caption{PSNR at each epoch on the test set for N-net (G1) or D-net only (L2). A: training on real noise. B, C: training on different models/levels of synthetic noise added to ground truth image. B: \textit{Gaussian} and \textit{Speckle} correspond to noises presented in 5.1, that have no and high signal dependency respectively. C: \textit{Speckle} with variance multiplied by 0.5, 2 and 4. D: Mean and SEM over 5 runs.}
+\label{si:fig:convergence}
 \end{center}
 \vskip -0.2in
 \end{figure}
@@ -632,7 +610,7 @@ W2S-3 & $20.39$ / $0.2232$ & $\underline{36.56}$ / $\underline{0.9263}$ & $\unde
 \end{sc}
 \end{center}
 \end{table}
-
+\FloatBarrier
 \subsection{Noise estimation}
 \label{si:skewness}
 \begin{figure}[ht]
@@ -678,6 +656,12 @@ W2S-3 & $20.39$ / $0.2232$ & $\underline{36.56}$ / $\underline{0.9263}$ & $\unde
 \end{center}
 \vskip -0.2in
 \end{figure}
+\FloatBarrier
+\subsection{Code}
+\label{sec:code}
+Source code can be found at this url: \url{https://github.com/code-ssbd/ssbd}.
+A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/9cbdeb6f4b9912514b5b8afb962e9276} by clicking on the \textit{open in colab} banner. To execute it a google account is required.
+
 
 % {\small
 % \bibliographystyle{acm}
