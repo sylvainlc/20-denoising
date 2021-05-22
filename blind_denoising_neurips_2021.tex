@@ -41,7 +41,8 @@
 \newcommand{\interval}[2]{\mathopen{[}#1\,;#2\mathclose{]}}
 
 \renewcommand{\floatpagefraction}{.95} %avoid big figure to get it's own float page
-\setlength{\belowcaptionskip}{-15pt}
+\setlength{\belowcaptionskip}{-18pt}  % reduce space below caption
+\usepackage[compact]{titlesec} % compact layout
 
 \title{Joint self-supervised blind denoising and noise estimation}
 
@@ -87,7 +88,6 @@ Finally, the described framework is simple, lightweight and computationally effi
 \label{sec:introduction}
 
 Image denoising is a well-known Computer Vision task designed to restore pictures taken in poor conditions. In scientific imagery (microscopy, astronomy, etc.) for instance,  the optical setting may produce very noisy images, which limits their interpretability or their automatic processing.
-
 Formally, image denoising is the process of recovering a clean signal $X$ given an observation $Y$ corrupted by an additive noise $\varepsilon$. Classical denoising approaches are model-driven in the sense that they rely on strong assumptions on the noise distribution or on the structure of the signal but are often limited by the relevance of these assumptions.
 Recently, efficient data-driven methods have emerged. Most of them assume that pairs made of noisy data $Y$ associated with a clean signal $X$ are available in a supervised learning framework, see for instance \cite{weigert2017content}. In \cite{lehtinen2018noise2noise}, the authors have demonstrated that it is possible to train an efficient denoising method using only pairs of independent noisy measurements $(Y^1, Y^2)$ of the same signal. Such assumptions have also been used to solve deconvolution problems with repeated measurements as in \cite{delaigle2008deconvolution}. However, obtaining independent observations of the same signal is often unrealistic in practice.
 
@@ -251,7 +251,6 @@ The loss function is then computed on each element of the grid.
 }
 \label{fig:plumbing}
 \end{center}
-% \vskip -0.2in
 \end{figure}
 
 \label{sec:experiments}
@@ -275,7 +274,6 @@ This allows to have access to an estimation of the noise $Y-X$, which we refer t
 
 The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V method \cite{krull2019probabilistic}, each is composed of several observations of one single FOV.
 For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see section~\ref{si:datasetxp} for details).
-
 The 3 last datasets are the 3 channels of the W2S dataset \cite{zhou2020w2s} referred to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see section~\ref{si:datasetxp} for more details).
 Following the authors, for each FOV, only one observation is used for training and for evaluation, which better corresponds to a real setting where only one observation per FOV is available.
@@ -298,7 +296,7 @@ Networks are trained using Adam optimizer with a learning rate of $4\cdot10^{-4}
 Training time is about 2 min per epoch on a NVIDIA Tesla P4.
 We obtain better and more reproducible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibly because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
 Batch size is set to 1, and each batch is split into 100 (overlapping) tiles of 96x96 pixels.
-Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$\footnote{For the datasets with axial noise correlation, data-augmentation is only composed of combinations of flips to avoid axes transposition.}.
+Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$, except for datasets with axial noise correlation where axes transpositions are avoided.
 
 \subsection{Evaluation}
 We compared denoised image to ground truth with the classical Peak Signal-to-Noise Ratio (PSNR) metric.
@@ -309,6 +307,12 @@ To address this shortcoming, we used Structural Similarity (SSIM) that take text
 \label{sec:results}
 \subsection{Noise estimation}
 
+\paragraph{Estimation on synthetic noise.}
+To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
+We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see section~\ref{si:synthetic} for details).
+Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
+One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the known theoretical standard deviation.
+It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
 \begin{figure}[!htbp]
 \vskip -0.1in
 \begin{center}
@@ -320,17 +324,18 @@ The empirical distribution of $Y$ is displayed in blue, in logarithmic scale.
 Examples of noisy images and the corresponding predicted denoised images are displayed in columns \textit{Noisy} and \textit{Denoised}.}
 \label{fig:noisestd}
 \end{center}
-% \vskip -0.2in
 \end{figure}
-\paragraph{Estimation on synthetic noise.}
-To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
-We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see section~\ref{si:synthetic} for details).
-Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
-One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the known theoretical standard deviation.
-It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
-
 
 \label{sec:exp:real:noise}
+\paragraph{Improving estimation on real noise.}
+We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
+In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
+This applies for all datasets and the equivalent figures can be found in section~\ref{si:skewness}.
+In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a unimodal distribution.
+This supports the use of our flexible N-net to capture a large variety of noise distributions (with multimodality and/or skewness) which can be observed in experimental datasets.
+This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
+Such approaches have been proposed in more simple cases using for instance penalized maximum likelihood based algorithms.
+This remains an open problem in our framework and we leave this topic for future research.
 \begin{figure}[!htbp]
 \vskip -0.1in
 \begin{center}
@@ -344,21 +349,12 @@ The probability density is normalized for each signal value bin.
 }
 \label{fig:skewness}
 \end{center}
-% \vskip -0.2in
 \end{figure}
-\paragraph{Improving estimation on real noise.}
-We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
-In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
-This applies for all datasets and the equivalent figures can be found in section~\ref{si:skewness}.
-In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a unimodal distribution.
-This supports the use of our flexible N-net to capture a large variety of noise distributions (with multimodality and/or skewness) which can be observed in experimental datasets.
-This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
-Such approaches have been proposed in more simple cases using for instance penalized maximum likelihood based algorithms.
-This remains an open problem in our framework and we leave this topic for future research.
 
 \subsection{Denoising performances}
 \label{sec:perf}
 \begin{table}[!htbp]
+\vskip -0.15in
 \caption{Evaluation of our method on 6 datasets with PSNR/SSIM metrics.
 SSIM estimates structural similarity (sharpness).
 Metrics computed on noisy images are displayed in the \textit{Noisy} columns.
@@ -366,7 +362,6 @@ The supervised version of our method was not trained for PN2V datasets as they c
 For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors (using no positivity constraint, and removing the convolution for N2V).
 \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}. For each dataset the best of our method predicting a Gaussian model, a 2 or 3-component-GMM is shown (see Table~\ref{si:table:results} for details).}
 \label{table:results}
-\vskip -0.15in
 \begin{center}
 \begin{small}
 \begin{sc}
@@ -406,7 +401,6 @@ This could be explained by the fact that self-supervised training induces a lowe
 \includegraphics[width=\columnwidth]{fig_images.pdf}
 \caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. Training of DecoNoising and N2V is described in Table~\ref{table:results}. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
 \label{fig:images}
-% \vskip -0.2in
 \end{figure}
 
 To better understand the contribution of the N-Net, we compared our method to the D-Net trained with L2 objective as in \cite{batson2019noise2self, krull2018noise2void}. Table~\ref{si:table:results} shows that adding shows that N-net always improves performances, although not always significantly. Moreover, the addition of the N-net greatly stabilizes the training and improves convergence speed (see Fig.~\ref{si:fig:convergence}), which enables easier hyperparameters and architecture optimization.
@@ -548,6 +542,8 @@ $$
 The \emph{PN2V-C} and \emph{PN2V-MA} datasets are acquired on a spinning disc confocal microscope and \emph{PN2V-MN} dataset is acquired with a point scanning confocal microscope.
 Datasets can be downloaded from: \url{https://github.com/juglab/pn2v}
 
+We observed that datasets acquired with a spinning disc confocal microscope display axial noise correlation (see \ref{sec:datasets}).
+
 \paragraph{Datasets published in \cite{zhou2020w2s}.}
 
 We used the 16-bit raw images kindly provided by the authors.
@@ -608,7 +604,7 @@ W2S-3 & $20.39$ / $0.2232$ & $\underline{36.56}$ / $\underline{0.9263}$ & $\unde
 \FloatBarrier
 \subsection{Noise estimation}
 \label{si:skewness}
-These graphs are equivalent to Fig~\ref{fig:skewness} for each dataset.
+This section contains the figures corresponding to Fig~\ref{fig:skewness} for each dataset.
 Note that they are computed using regular signal value bins and excluding signal values greater to the $99.5\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.
 
 \begin{figure}[ht]
