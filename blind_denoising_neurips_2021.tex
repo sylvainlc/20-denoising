@@ -363,7 +363,7 @@ The supervised version of our method was not trained for PN2V datasets as they c
 For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors (using no positivity constraint, and removing the convolution for N2V).
 \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.
 Results for our method predicting a Gaussian model are shown in column \textit{Ours (G1)} (see Table~\ref{si:table:results} for 2/3-component GMM).
-Method with best PSNR $\pm0.1dB$ / best SSIM $\pm1\permille$ are underlined.}
+Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
 \label{table:results}
 \begin{center}
 \begin{small}
@@ -407,10 +407,12 @@ This could be explained by the fact that self-supervised training induces a lowe
 \end{figure}
 
 To better understand the contribution of the N-Net, we compared our method to the D-Net trained with L2 objective as in \cite{batson2019noise2self, krull2018noise2void}. Table~\ref{si:table:results} shows that adding shows that N-net always improves performances, although not always significantly. Moreover, the addition of the N-net greatly stabilizes the training and improves convergence speed (see Fig.~\ref{si:fig:convergence}), which enables easier hyperparameters and architecture optimization.
-From the perspective of our framework, the L2 loss (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in ig.~\ref{si:fig:convergence}B).
+From the perspective of our framework, the L2 loss (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig.~\ref{si:fig:convergence}B).
 From a statistical perspective, it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
 It is worth noting that considering mixture models improves the PSNR in two datasets out of six (Table~\ref{si:table:results}).
 As mentioned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
+
+We also ran ablation experiment to better understand the contribution of other aspects of our method, presented in Table~\ref{si:table:ablation}.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -525,7 +527,7 @@ In the case where the N-net predicts a GMM with N components with weights $(\alp
 \begin{itemize}
   \item N channels, followed by an exponential activation function to predict $\sigma_{i}$.
   \item N channels, followed by a softmax activation to predict $\alpha_{i}.$\footnote{When $N=2$, only one channel is used and followed by a sigmoid activation function.}
-  \item N-1 channels to predict the ditribution means $\mu_{i}$.
+  \item N-1 channels to predict the distribution means $\mu_{i}$.
 \end{itemize}
 To ensure that the distribution is centered, the center of the last distribution is computed as
 $$
@@ -570,7 +572,7 @@ The same applies for SSIM computation.
 \subsubsection{Synthetic noise datasets}
 \label{si:synthetic}
 \begin{itemize}
-  \item Additive gaussian: $Y = X + \varepsilon$ with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=20$.
+  \item Additive Gaussian: $Y = X + \varepsilon$ with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=20$.
   \item Poisson-Gaussian: $Y = X + (\alpha * (X-\underline{X}) + \eta^2 )^{1/2}\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, 1)$, $\alpha=5, \eta=12$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
@@ -585,8 +587,8 @@ The same applies for SSIM computation.
 \end{figure}
 
 \begin{table}[ht]
-\caption{Impact of N-Net on performances. Comparison between our method predicting a GMM with 1, 2, or 3 components (respectively G1, G2, G3) and D-Net only trained with L2 loss (with training and prediction scheme unchanged).
-Method with best PSNR $\pm0.1dB$ / best SSIM $\pm1\permille$ are underlined.}
+\caption{Evaluation of the impact of N-Net on performances with PSNR/SSIM metrics. Comparison between our method predicting a GMM with 1, 2, or 3 components (respectively G1, G2, G3) and D-Net only trained with L2 loss (with training and prediction scheme unchanged).
+Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
 \label{si:table:results}
 \begin{center}
 \begin{sc}
@@ -605,6 +607,28 @@ W2S-3 & $20.39$ / $0.2232$ & $\underline{36.56}$ / $\underline{0.9263}$ & $\unde
 \end{sc}
 \end{center}
 \end{table}
+\FloatBarrier
+
+\subsection{Ablation experiments}
+To better understand the contribution of different aspects of our method, we ran ablation experiment, presented in Table~\ref{si:table:ablation}
+\begin{table}[ht]
+\caption{Ablation experiment on dataset W2S-1, with PSNR/SSIM metrics.
+\textit{No Invariance}: removed averaging with flipped and transposed images.
+\textit{N2V Masking}: masking scheme used in N2V (random points and replacement by a random neighbor). \textit{Transpose Convolution}: D-Net architecture is modified: nearest-neighbor upsampling and 2x2 convolution are replaced by a transpose convolution. }
+\label{si:table:ablation}
+\begin{center}
+\begin{sc}
+\begin{tabular}{lccccc}
+\toprule
+Ours (G1) & No Invariance & N2V Masking & Transpose Convolution \\
+\midrule
+$35.33$ / $0.9619$ & $35.28$ / $0.9608$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{center}
+\end{table}
+
 \FloatBarrier
 \subsection{Noise estimation}
 \label{si:skewness}
