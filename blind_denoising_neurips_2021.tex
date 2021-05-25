@@ -95,16 +95,15 @@ Recently, efficient data-driven methods have emerged. Most of them assume that p
 Recent self-supervised methods have overcome this limitation \cite{batson2019noise2self,krull2018noise2void,quan2020self} for instance by training a neural network to predict the value of a (corrupted) pixel $Y$ only using the noisy observations of the surrounding pixels. In such frameworks, the trained network extracts some local structure in the signal and therefore can be used as a denoiser. Such approaches are referred to as \textit{blind-denoising} as they only assume that the noises associated with different observations are independent and centered.
 This is well suited to typical microscopy settings, in which the clean image is unavailable and the noise process is complex and not known.
 
-These methods rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually implemented as a convolutional neural network. Using only the noisy observations and a binary mask $M$, the objective is to minimize a self-supervision loss of the form $\theta\mapsto \sum_{i=1}^N \|f_\theta(Y^{masked}_i) - Y_i\|_2^2$,
-where $Y^{masked}_i$ is an image in which the pixel $Y_i$ has been masked using $M$. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
+These methods rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually implemented as a convolutional neural network. Using only the noisy observations and a binary mask $M$, the objective is to minimize a self-supervision loss of the form $\theta\mapsto \sum_{i=1}^N \|f_\theta(Y^{masked})_i - Y_i\|_2^2$,
+where $Y^{masked}$ is an image in which pixels has been masked using $M$. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
 
 While these methods are appealing in practice and result in efficient denoising functions, they suffer from several drawbacks:
 1) it is not well understood why they are so effective in practice, i.e. what type of noise they are able to remove, and how sensible they are to the masking scheme for instance;
 2) they often suffer from high frequency denoising artifacts known as \textit{checkerboard pattern}.
 
-To address these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training.
-Our main contribution is to add a flexible N-net which recovers precisely the noise distribution during training, even for complex asymmetric noises.
-We derive this method from a novel mathematical modeling of the denoising problem, which may open avenues for better understanding of why self-supervised methods achieve remarkable results.
+To address these issues, we introduce a novel self-supervised method, based on the joint training of two neural networks referred to as D-net (denoiser net) and N-net (noise net). Similar to previous works, the denoiser is a convolutional neural network and receives a masked input during training. The flexible N-net recovers precisely the noise distribution during training, even for complex asymmetric noises.
+We derive this method from a different mathematical modeling of the denoising problem, which may open avenues for better understanding of why self-supervised methods achieve remarkable results.
 
 The contribution of this work can be summarized as follows:
 \begin{itemize}
@@ -230,7 +229,7 @@ Combining this with the additive model  \eqref{eq:def:Y} yields the following lo
 $$
 \ell_{\theta}: (Y_1,\ldots,Y_n) \mapsto \frac{1}{n}\sum_{i=1}^n \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
 $$
-where $\theta = (\theta_n,\theta_d)$ and with $\mu^i_{\theta_d} = \mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))$, 
+where $\theta = (\theta_n,\theta_d)$ and with $\mu^i_{\theta_d} = \mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))$,
 %\begin{multline*}
 $$
 \ell_{\theta}(Y_i|\Omega_{Y_i}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\mu^i_{\theta_d})}{\sqrt{2\pi }\sigma_{\theta_n}(\mu^i_{\theta_d})}\exp\left\{-\frac{1}{2}\left(\frac{Y_i-\mu^i_{\theta_d} -  \mu_{k,\theta_n}(\mu^i_{\theta_d})}{\sigma_{k,\theta_n}(\mu^i_{\theta_d})}\right)^2\right\}\right)\,.
