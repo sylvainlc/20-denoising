@@ -450,24 +450,11 @@ Second, more theoretical works could explore the model proposed in this work  (i
 
 Finally, it would also be interesting to understand the role of the central pixel at test time, as it has a significative impact on performance: it depends on the  masking procedure and the convolutional architecture, but the network is not trained explicitly to use it. Our mathematical modeling could be a good basis to study this specific dependency on the central pixel.
 
-\section{Broader Impact}
-In this paper, we introduce Noise2Same, a self-supervised framework for deep image denoising. As
-Noise2Same does not need paired clean data, paired noisy data, nor the noise model, its application
-scenarios could be much broader than both traditional supervised and existing self-supervised
-denoising frameworks. The most direct application of Noise2Same is to perform denoising on digital
-images captured under poor conditions. Individuals and corporations related to photography may
-benefit from our work. Besides, Noise2Same could be applied as a pre-processing step for computer
-vision tasks such as object detection and segmentation [18], making the downstream algorithms more
-robust to noisy images. Also, specific research communities could benefit from the development of
-Noise2Same as well. For example, the capture of high-quality microscopy data of live cells, tissue,
-or nanomaterials is expensive in terms of budget and time [27]. Proper denoising algorithms allow
-researchers to obtain high-quality data from low-quality data and hence remove the need to capture
-high-quality data directly. In addition to image denoising applications, the self-supervised denoising
-framework could be extended to other domains such as audio noise reduction and single-cell [1]. On
-the negative aspect, as many imaging-based research tasks and computer vision applications may be
-9
-built upon the denoising algorithms, the failure of Noise2Same could potentially lead to biases or
-failures in these tasks and applications.
+\section{Possible negative impacts}
+Deep image denoising, without the need of paired clean data, enables the denoising of digital and scientific
+images captured under poor conditions. It could also be applied as a pre-processing step before any
+computer vision task. The failure of our network could lead to artifacts resulting in failure and biases in the
+downstream tasks.
 
 % \begin{ack}
 % acknowledgments
