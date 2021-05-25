@@ -227,7 +227,7 @@ In the experiments below, we provide empirical evaluations that choosing $g(\Ome
 %This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}.
 Combining this estimation with the additive model  \eqref{eq:def:Y} suggests the following loss function associated with one observation
 $$
-\ell_{\theta}(Y|\Omega_{Y}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sqrt{2\pi }\sigma_{\theta_n}(\tilde\mu_{\theta_d})}\exp\left\{-\frac{1}{2}\left(\frac{Y-\tilde\mu_{\theta_d} -  \mu_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right)^2\right\}\right)\,,
+\ell_{\theta}(Y|\Omega_{Y}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sqrt{2\pi }\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\exp\left\{-\frac{1}{2}\left(\frac{Y-\tilde\mu_{\theta_d} -  \mu_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right)^2\right\}\right)\,,
 $$
 where $\tilde \mu_{\theta_d} = \mu_{\theta_d}(\Omega_{Y},g(\Omega_{Y}))$.
 %
