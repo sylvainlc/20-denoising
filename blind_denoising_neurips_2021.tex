@@ -181,7 +181,7 @@ Y = X + \varepsilon\,,
 %where $\varepsilon$ is a centered noise  independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
 %This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 %As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
-where $\varepsilon$ is a centered noise. In this paper, it is assumed that $\varepsilon$ has a mixture distribution with signal-dependent weights, means and variance:
+where $\varepsilon$ is a centered noise. In this paper, it is assumed that $\varepsilon$ has a mixture distribution with signal-dependent weights, means and variances:
 $$
 \varepsilon \sim \sum_{k=1}^N \alpha_{k,\theta_n}(X)\varphi_{\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X)}\,,
 $$
