@@ -186,9 +186,12 @@ where $\varepsilon$ is a centered noise. In this paper, it is assumed that $\var
 %$$
 %\varepsilon \sim \sum_{k=1}^N \alpha_{k,\theta_n}(X)\varphi_{\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X)}\,,
 %$$
-The nonnegative mixture weights $(\alpha_{k,\theta_n}(X))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$. Note that our model encompasses the case of additive Gaussian noise when $N=1$ and in this case, we denote by $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ the function describing the local standard deviation of the noise distribution.
-This models contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and with a variance which is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
-As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances. We display in Section~\ref{sec:results} the benefit of our mixture model  to account for positive skewness which cannot be modeled with a single Gaussian distribution. The results provided in Section~\ref{sec:results} illustrate how such models improve denoising performance for asymmetrical noise distributions.
+The nonnegative mixture weights $(\alpha_{k,\theta_n}(X))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
+Note that our model encompasses the case of additive Gaussian noise when $N=1$ and in this case, we denote by $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ the function describing the local standard deviation of the noise distribution.
+This model contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and with a variance which is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
+As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
+We display in Section~\ref{sec:results} the benefit of our mixture model  to account for positive skewness which cannot be modeled with a single Gaussian distribution.
+The results provided in Section~\ref{sec:results} illustrate how such models improve denoising performance for asymmetrical noise distributions.
 
 
 
@@ -428,7 +431,7 @@ Our method significantly outperforms the baselines both in terms of PSNR and SSI
 For the version predicting a simple Gaussian distribution, the average PSNR gain over DecoNoisng is $+1.42$dB.
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artifacts.
 Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (from PSNR values reported in \cite{goncharova2020}).
-Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{si:table:results}).
+Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{table:results}).
 This could be explained by the fact that self-supervised training induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
 
 \begin{figure}[!htbp]
@@ -438,9 +441,10 @@ This could be explained by the fact that self-supervised training induces a lowe
 \label{fig:images}
 \end{figure}
 
+\subsection{Ablation experiments}
 To better understand the contribution of the N-net, we compared our method to the D-net trained with L2 objective as in \cite{batson2019noise2self, krull2018noise2void, goncharova2020}. We observed that adding the N-net always improves performances, although not always significantly.
 Moreover, the addition of the N-net greatly stabilizes the training and improves convergence speed (see Fig.~\ref{si:fig:convergence}), which enables easier hyperparameters and architecture optimization.
-As a consequence, N-net has a greater impact on performances when training is short, as in \cite{krull2018noise2void, goncharova2020} (see Table~\ref{si:table:ablation}).
+As a consequence, the N-net has a greater impact on performances when training is short (e.g. as in \cite{krull2018noise2void, goncharova2020}) as shown in Table~\ref{si:table:ablation}.
 As an illustration of the excellent training stability, we measured a SEM of $6\cdot10^{-3}$ for the PSNR on dataset W2S-1 over 5 runs.
 
 From the perspective of our framework, the L2 objective (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig.~\ref{si:fig:convergence}B).
@@ -448,7 +452,7 @@ From a statistical perspective, it is known that considering a sufficiently rich
 It is worth noting that considering mixture models improves the PSNR in two datasets out of six (Table~\ref{si:table:results}).
 As mentioned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
 
-We also ran ablation experiment to better understand the contribution of other aspects of our method, presented in Table~\ref{si:table:ablation}. They show that besides the N-net, masking scheme and training hyperparameters have an important impact on the performances.
+We also ran other ablation experiment to better understand the contribution of other aspects of our method, presented in Table~\ref{si:table:ablation}. They show that besides the N-net, masking scheme and training hyperparameters have an important impact on the performances.
 
 \section{Discussion}
 \label{sec:discussion}
