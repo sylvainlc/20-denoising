@@ -183,9 +183,9 @@ Y = X + \varepsilon\,,
 %As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
 where $\varepsilon$ is a centered noise. In this paper, it is assumed that $\varepsilon$ has a mixture distribution with signal-dependent weights, means and variance:
 $$
-\varepsilon \sim \sum_{k=1}^N \alpha_k(X)\varphi_{\mu_k(X),\sigma_k^2(X)}\,,
+\varepsilon \sim \sum_{k=1}^N \alpha_{k,\theta_n}(X)\varphi_{\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X)}\,,
 $$
-where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with mean $\mu$ and variance $\sigma^2$, $(\alpha_k(X))_{1\leqslant k\leqslant N}$ are nonnegative real numbers with $\sum_{k=1}^N\alpha_k(X) = 1$, and $\{(\mu_i(X),\sigma_i^2(X))\}_{1\leqslant k\leqslant N}$ are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
+where $\varphi_{\mu,\sigma^2}$ is the Gaussian probability density function with mean $\mu$ and variance $\sigma^2$, $(\alpha_{k,\theta_n}(X))_{1\leqslant k\leqslant N}$ are nonnegative real numbers with $\sum_{k=1}^N\alpha_{k,\theta_n}(X) = 1$, and $\{(\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X))\}_{1\leqslant k\leqslant N}$ are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
 This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and with a variance which is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
 
@@ -229,11 +229,12 @@ $$
 \ell_{\theta}: (Y_1,\ldots,Y_n) \mapsto \frac{1}{n}\sum_{i=1}^n \ell_{\theta}(Y_i|\Omega_{Y_i})\,,
 $$
 where $\theta = (\theta_n,\theta_d)$ and
-$$
-\ell_{\theta}(Y_i|\Omega_{Y_i}) = \log\left(\sum_{k=1}^N\frac{\alpha_k(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i})))}{\sqrt{2\pi }\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\exp\left\{-\frac{1}{2}\left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\right\}\right)\,.
+\begin{multline*}
+\ell_{\theta}(Y_i|\Omega_{Y_i}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i})))}{\sqrt{2\pi }\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right. \\
+\times \left.\exp\left\{-\frac{1}{2}\left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))-  \mu_{k,\theta_n}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{k,\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\right\}\right)\,.
 %\log(\sigma_{\theta_n}( \mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i})))^2) \\
 %+ \left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\,. %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
-$$
+\end{multline*}
 
 An interesting  feature of our approach is that it can be extended straightforwardly to more complex noise distributions. As detailed above, model \eqref{eq:def:Y} is an extension of the model considered in \cite{gassiat:lecorff:lehericy:2021} where the authors establish that the noise distribution can be identified without any assumption. Full identifiability of model \eqref{eq:def:Y} remains an open question but we display in Section~\ref{sec:experiments} an example of non-Gaussian noises, and we propose an application with mixture models  to account for positive skewness which cannot be modeled with a single Gaussian distribution. In this context, each component of the mixture describing the distribution of $\varepsilon$ is a Gaussian distribution with signal-dependent standard deviation. The results provided in Section~\ref{sec:experiments} illustrate how such models improve denoising performance for asymmetrical noise distributions.
 %The random variable $U$ being  $\Omega_X$-measurable, there exists a measurable function $g$ such that $U = g(\Omega_X)$
