@@ -146,7 +146,7 @@ In these works, noise models are approximated using 2D histograms of denoised an
 In the latter variant, the noise distribution is parametrized with a centered Gaussian mixture model with empirically designed constraints.
 This increases the complexity of the method, as it requires several training procedures and calibration.
 % The denoising network is then trained to predict a whole distribution of $800$ possible noisy values instead of a single point estimate of each pixel, approximating the previously defined noise distribution at each pixel.
-\cite{2020DivNoising} used the Variational Auto\-Encoder formalism, adding a noise model in their architecture.
+In \cite{2020DivNoising}, the authors use the Variational Auto\-Encoder formalism, adding a noise model in their architecture.
 This provides new interesting possibilities, as it can generate a diversity of denoised results, possibly interesting in creative processes.
 In the case of scientific images such as microscopy, the possible presence of visual artifacts or blurry results makes it less appropriate.
 The authors address the co-learning of a noise model by constraining noise variance to scale linearly with the signal value, which corresponds to assuming a Poisson-Gaussian noise distribution, restricting the family of noises which can be approximated.
@@ -160,7 +160,7 @@ We also build upon the work of \cite{laine2019high, krull2019probabilistic} by d
 \section{Model}
 \label{sec:model}
 
-Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind}, in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this work where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
+Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind} and in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this work where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
 In this work, it is assumed that the observation $Y$ associated with $X$  is given by
 %\begin{equation}
@@ -228,7 +228,8 @@ In the experiments below, we provide empirical evaluations that choosing $g(\Ome
 %+ \left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\,. %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
 %\end{multline*}
 %This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}.
-Combining this with the additive model  \eqref{eq:def:Y} suggests the following approximate loglikelihood function to maximize
+Combining this with the additive model  \eqref{eq:def:Y} suggests the following approximate loglikelihood function to be maximized during training:
+
 $$
 \ell_{\theta}(Y|\Omega_{Y}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sqrt{2\pi }\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\exp\left\{-\frac{1}{2}\left(\frac{Y-\tilde\mu_{\theta_d} -  \mu_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right)^2\right\}\right)\,,
 $$
@@ -299,7 +300,7 @@ At test-time, we averaged the prediction of the image with the predictions of it
 
 \paragraph{N-net.}
 In the Gaussian Mixture Model (GMM) case, the network has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means (the last mean is computed to ensure that the resulting distribution is centered) and $N$ mixture weights parametrized by the N-net.
-In the case where $N=1$, the function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. The full architecture detail for both models are available in section~\ref{si:implementation}.
+In the case where $N=1$, the function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. The full architecture details for both models are available in section~\ref{si:implementation}.
 
 %This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
 %The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
@@ -579,7 +580,7 @@ In the case where the N-net predicts a GMM with N components with weights $(\alp
 \end{itemize}
 To ensure that the distribution is centered, the center of the last distribution is computed as
 $$
-\mu_{N,\theta_n} = - \frac{1}{\alpha_{N}} \sum_{k=1}^{N-1}\alpha_{k,\theta_n}\cdot\mu_{k,\theta_n}\,.
+\mu_{N,\theta_n} = - \frac{1}{\alpha_{N,\theta_n}} \sum_{k=1}^{N-1}\alpha_{k,\theta_n}\cdot\mu_{k,\theta_n}\,.
 $$
 
 \subsection{Datasets}
