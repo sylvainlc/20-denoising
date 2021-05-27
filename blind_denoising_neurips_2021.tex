@@ -131,29 +131,26 @@ Finally, \cite{broaddus2020removing} showed that when the noise has local correl
 \paragraph{J-invariance without masking.}
 Instead of masking specific pixels, it is possible to design specific convolutional operators to limit the receptive field, ensuring that the resulting function is \textit{J-invariant} by design. This was achieved in \cite{laine2019high} by introducing directional convolution kernels, each kernel has its receptive field restricted to a half-plane that does not contain the central pixel. The associated function then takes values which only depend on pixels in specific directions, ensuring that it does not depend on pixels in the opposite direction. One drawback is that the inference has to be performed four times, one in each direction.
 
-More recently, \cite{lee2020noise2kernel} introduced a combination of specific convolution operators with dilation and strides, guaranteeing that the function is independent of the central pixel by design, therefore \textit{J-invariant}. It is interesting to note that with standard convolutions, a two layered network already cannot be made independent of the central pixel, which is why the authors had to rely on very specific convolutions.
+More recently, \cite{lee2020noise2kernel} introduced a combination of specific convolution operators\footnote{It is interesting to note that with standard convolutions, a two layered network already cannot be made independent of the central pixel, which is why the authors had to rely on very specific convolutions.} with dilation and strides, guaranteeing that the function is independent of the central pixel by design, therefore \textit{J-invariant}.
 
 The benefit of these architectures compared to the masking-based training is that all output pixels can contribute to the loss function as in conventional training, rather than just the masked pixels; and they do not require a carefully tuned masking procedure. However, they strongly constrain the network architecture, which can hinder the denoising performance or result in more expensive inference schemes. Moreover, recent work show that fully \textit{J-invariant} models lead to suboptimal performance \cite{xie2020noise2same}.
 
 \paragraph{Contribution of a noise model.}
 The denoising literature includes few works which explicitly model the noise distribution, either by choosing \textit{a priori} a  family of distributions (e.g. a Gaussian noise), or by selecting a more flexible class of distributions.
 
-The former is illustrated in \cite{laine2019high}, in which three types of corrupting noise are considered: Gaussian noise independent of the signal; Poisson-Gaussian noise, i.e. a Gaussian noise with variance scaling linearly with the signal value; finally impulse noise, i.e. a uniform noise. In each case, the noise parameters are either known or estimated with an auxiliary neural network. As the signal distribution and the noise distribution belong to a known parametric family, the noisy central pixel can be included at test time in order to improve performances. However, as the noise type has to be chosen \textit{a priori}, the method is restricted to known and synthetic noise types and therefore falls under the category of \textit{non-blind denoising} methods.
+The former is illustrated in \cite{laine2019high}, in which three types of corrupting noise are considered: Gaussian noise independent of the signal; Poisson-Gaussian noise, i.e. a Gaussian noise with variance scaling linearly with the signal value; finally impulse noise, i.e. a uniform noise. In each case, the noise parameters are either known or estimated with an auxiliary neural network. As the signal distribution and the noise distribution belong to a known parametric family, the noisy central pixel can be included at test time to improve performances. However, as the noise type has to be chosen \textit{a priori}, the method is restricted to known and synthetic noise types and therefore is a \textit{non-blind denoising} method.
 
 In \cite{krull2019probabilistic,prakash2020fully}, the authors make use of a more flexible noise model, which is a generic modelisation of the conditional distribution of the noise given the signal intensity and thus can better model real noises.
 %: $p(y|x) = N(x): \mathbb{R} \to \mathbb{R}$,
-In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}.
+In these works, noise models are approximated using 2D histograms of denoised and noisy observed values, either using additional calibration data (in that case the method is not fully self-supervised) or using a previously trained denoising function \cite{prakash2020fully}. This increases the complexity of the method, as it requires several training procedures and calibration.
 In the latter variant, the noise distribution is parametrized with a centered Gaussian mixture model with empirically designed constraints.
-This increases the complexity of the method, as it requires several training procedures and calibration.
-% The denoising network is then trained to predict a whole distribution of $800$ possible noisy values instead of a single point estimate of each pixel, approximating the previously defined noise distribution at each pixel.
+
 In \cite{2020DivNoising}, the authors use the Variational Auto\-Encoder formalism, adding a noise model in their architecture.
-This provides new interesting possibilities, as it can generate a diversity of denoised results, possibly interesting in creative processes.
-In the case of scientific images such as microscopy, the possible presence of visual artifacts or blurry results makes it less appropriate.
-The authors address the co-learning of a noise model by constraining noise variance to scale linearly with the signal value, which corresponds to assuming a Poisson-Gaussian noise distribution, restricting the family of noises which can be approximated.
+This provides new interesting possibilities, as it can generate a diversity of denoised results, but sometimes resulting in visual artifacts or blurry results. When co-learning the noise model, the noise variance is an affine function of the signal value, which corresponds to assuming a Poisson-Gaussian noise distribution.
 
-It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise models, such as \cite{zhang2017beyond,yue2019variational}, which explicitly used large neural networks to model a complex noise, with even less assumptions (it can be slightly structured). Even though the algorithm proposed in \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting, which does not apply in our setting.
+It is worth noting that supervised \textit{blind denoising} methods have used parametrized noise models, such as \cite{zhang2017beyond,yue2019variational}, which explicitly used large neural networks to model a complex noise, with even less assumptions (it can be slightly structured). Even though the algorithm proposed in \cite{yue2019variational} is able to train jointly a noise network and a denoiser, their modeling only works in a supervised setting.
 
-\paragraph{Chosen approach.} The work of Laine et al. \cite{laine2019high} gave the intuition that a strictly J-invariant function lacks the information of the central pixel at test-time. On the contrary, methods such as N2V or N2S use the central pixel at test-time, but the dependency on the central pixel is not explicit and unknown. Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approach rather emphasizes on designing an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time.
+\paragraph{Chosen approach.} Instead of focusing on finding new strictly \textit{J-invariant} functions at test time, our approach rather emphasizes on designing an efficient masking procedure only at train-time. Our mathematical formulation enables the use of the central pixel at test time.
 This also gives the flexibility to tune the masking to match structured noises, which we observed in 2 of the 6 considered datasets (see section~\ref{sec:masking}).
 We also build upon the work of \cite{laine2019high, krull2019probabilistic} by designing a noise model which can be jointly trained alongside the denoiser (see Fig.~\ref{fig:plumbing}), and only requiring a single prediction per pixel: this results in a training and inference procedures that are simpler, more efficient and more stable.
 
@@ -434,9 +431,9 @@ For the version predicting a simple Gaussian distribution, the average PSNR gain
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artifacts.
 Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (from PSNR values reported in \cite{goncharova2020}).
 Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{table:results}).
-This could be explained by the fact that self-supervised training induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
+This could be explained by the fact that training with masking induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
 
-\begin{figure}[!htbp]
+\begin{figure}[!hbp]
 \vskip -0.1in
 \includegraphics[width=\columnwidth]{fig_images.pdf}
 \caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. Training of DecoNoising and N2V is described in Table~\ref{table:results}. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
@@ -444,17 +441,39 @@ This could be explained by the fact that self-supervised training induces a lowe
 \end{figure}
 
 \subsection{Ablation experiments}
-To better understand the contribution of the N-net, we compared our method to the D-net trained with L2 objective as in \cite{batson2019noise2self, krull2018noise2void, goncharova2020}. We observed that adding the N-net always improves performances, although not always significantly.
-Moreover, the addition of the N-net greatly stabilizes the training and improves convergence speed (see Fig.~\ref{si:fig:convergence}), which enables easier hyperparameters and architecture optimization.
-As a consequence, the N-net has a very significant impact on performances when training is short (e.g. as in \cite{krull2018noise2void, goncharova2020}) as shown in Table~\ref{si:table:ablation}.
-As an illustration of the excellent training stability, we measured a SEM of $6\cdot10^{-3}$ for the PSNR on dataset W2S-1 over 5 runs.
 
-From the perspective of our framework, the L2 objective (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig.~\ref{si:fig:convergence}B).
+To better understand the contribution of the N-net and other hyperparameters, we ran ablation experiments in Table~\ref{table:ablation}. The N-net has a very significant impact on performances, in particular when training is short (e.g. as in N2V, N2S \cite{krull2018noise2void, goncharova2020}). We observe that the N-net greatly stabilizes the training\footnote{As an illustration of the excellent training stability, we measured a SEM of $6\cdot10^{-3}$ for the PSNR on dataset W2S-1 over 5 runs.} and improves convergence speed (see Appendix Fig. ~\ref{si:fig:convergence}). We also observe that in all our hyperparameter settings that adding the N-net always improves performances over L2 objective, although not always significantly.
+
+From the perspective of our framework, the L2 objective (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig. ~\ref{si:fig:convergence}B).
 From a statistical perspective, it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
 It is worth noting that considering mixture models improves the PSNR in two datasets out of six (Table~\ref{si:table:results}).
 As mentioned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
 
-We also ran other ablation experiment to better understand the contribution of other aspects of our method (masking scheme and training hyperparameters), presented in Table~\ref{si:table:ablation}.
+\begin{table}[ht]
+\caption{Ablation experiment on dataset W2S-1.
+\textit{N2V}: Noise2Void (L2).
++ \textit{N-net (G1)}: N-net with a single Gaussian component.
++ \textit{LT}: Longer training, see ~\ref{sec:training}.
+\textit{Ours} as described in ~\ref{sec:experiments}.
+}
+\label{table:ablation}
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcc}
+\toprule
+Condition & PSNR & SSIM \\
+\midrule
+N2V & $33.76$ & $0.9026$\\
+ + N-net (G1) & $34.99$ & $0.9572$\\
+ + N-net (G1) + LT & $35.22$ & $0.9608$\\
+Ours with N-net (G1)& $\underline{35.33}$ & $\underline{0.9619}$\\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\end{table}
 
 \section{Discussion and Limitations}
 \label{sec:discussion}
@@ -500,7 +519,7 @@ Finally, it would also be interesting to understand the role of the central pixe
   \item Did you describe the limitations of your work?
     \answerYes{Section \ref{sec:discussion}}
   \item Did you discuss any potential negative societal impacts of your work?
-    \answerYes{Not applicable}
+    \answerNo{Not applicable}
   \item Have you read the ethics review guidelines and ensured that your paper conforms to them?
     \answerYes{}
 \end{enumerate}
@@ -660,29 +679,6 @@ W2S-3 & $20.39$ / $0.2232$ & $\underline{36.57}$ / $\underline{0.9263}$ & $\unde
 
 \subsection{Ablation experiments}
 To better understand the contribution of different aspects of our method, we ran ablation experiment, presented in Table~\ref{si:table:ablation}
-\begin{table}[ht]
-\caption{Ablation experiment on dataset W2S-1, with PSNR/SSIM metrics.
-\textit{N2V}: Noise2Void, with their masking scheme, training hyperparameters and L2 objective.
-\textit{N-net (G1)}: Add a N-net predicting a Gaussian distribution and replace the L2 objective.
-\textit{LT (Long Training)}: Longer training, as described in ~\ref{sec:training}
-\textit{Ours}: Our final architecture, with N-net (G1), averaging flipped and transposed images step, and our masking scheme.
-}
-\label{si:table:ablation}
-\begin{center}
-\begin{sc}
-\begin{tabular}{lcc}
-\toprule
-Condition & PSNR & SSIM \\
-\midrule
-N2V & $33.76$ & $0.9026$\\
- + N-net (G1) & $34.99$ & $0.9572$\\
- + N-net (G1) + LT & $35.22$ & $0.9608$\\
-Ours & $\underline{35.33}$ & $\underline{0.9619}$\\
-\bottomrule
-\end{tabular}
-\end{sc}
-\end{center}
-\end{table}
 
 \FloatBarrier
 \subsection{Noise estimation}
