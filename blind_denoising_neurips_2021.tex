@@ -292,7 +292,7 @@ The loss function is then computed on each element of the grid.
 The function $\mu_{\theta_d}$ is parametrized by a U-net, with slight architecture modifications.
 Architecture and training information can be found in appendix~\ref{si:implementation}.
 The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighborhood that are masked.
-At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances (see Table~\ref{si:table:ablation}).
+At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances.
 
 \paragraph{N-net.}
 In the Gaussian Mixture Model (GMM) case, the network has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means (the last mean is computed to ensure that the resulting distribution is centered) and $N$ mixture weights parametrized by the N-net.
