@@ -96,7 +96,7 @@ Recent self-supervised methods have overcome this limitation \cite{batson2019noi
 This is well suited to typical microscopy settings, in which the clean image is unavailable and the noise process is complex and not known.
 
 These methods rely on training a function $f_\theta$ depending on an unknown parameter $\theta$, usually implemented as a convolutional neural network. Using only the noisy observations and a binary mask $M$, the objective is to minimize a self-supervision loss of the form $\theta\mapsto \sum_{i=1}^N \|f_\theta(Y^{masked})_i - Y_i\|_2^2$,
-where $Y^{masked}$ is an image in which pixels has been masked using $M$. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
+where $Y^{masked}$ is an image in which pixels have been masked using $M$. This masking step is crucial to foster learning of local structure in the signal to predict the masked values.
 
 While these methods are appealing in practice and result in efficient denoising functions, they suffer from several drawbacks:
 1) it is not well understood why they are so effective in practice, i.e. what type of noise they are able to remove, and how sensible they are to the masking scheme for instance;
