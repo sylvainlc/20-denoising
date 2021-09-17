@@ -539,14 +539,14 @@ We also build upon the work of \cite{laine2019high, krull2019probabilistic} by d
 
 Estimating a signal corrupted by additive noise  is a challenging statistical problem. In such frameworks, the received observation $Y$ is given by $Y = X + \varepsilon$,  where $X$ is the signal and $\varepsilon$ is the noise. A lot of works have been devoted to deconvolution where the aim is to recover the distribution of the signal based on the observations. It has been for instance applied in a large variety of disciplines and has stimulated a great research interest in signal processing \cite{moulines1997maximum,attias1998blind} and in image reconstruction \cite{kundur1996blind,campisi2017blind}, see also  \cite{meister:2009}. Recently, \cite{gassiat:lecorff:lehericy:2021} proved that it is possible to recover the signal distribution when $X$ has at least two dimensions and may be decomposed into two subsets of random variables which satisfy some weak dependency assumption. This identifiability result does not require any assumption on the noise distribution but illustrates that the components of the signal must be dependent to allow its identification. %The results proposed in \cite{gassiat:lecorff:lehericy:2021} motivate the denoising approach introduced in this work where several classes of noises are considered to describe the observations received from the target signal.  %The signal $X$ is modeled as a function of the noisy observation $Y$ and its neighborhood $\Omega_Y$: $X =  \mu_{\theta_p}(\Omega_Y;Y)$.
 
-In this work, it is assumed that the observation $Y$ associated with $X$  is given by
+Let $\mathsf{S}\subset \mathbb{N}^2$ be a finite set corresponding to the pixel location of an image. In this work, for all $s\in\mathsf{S}$, $X_s$ denotes the signal value at location $s$ and $Y_s$ its noisy observation.  For all $s\in \mathsf{S}$, write %the conditional distribution of $X_s$ given $\{X_u\,;\, u\in \mathsf{S}\,,\, u\neq s\}$ that the observation $Y$ associated with $X$  is given by
 %\begin{equation}
 %\label{eq:def:Y}
 %Y = X + \sigma_{\theta_n}(X)\varepsilon\,,
 %\end{equation}
 \begin{equation}
 \label{eq:def:Y}
-Y = X + \varepsilon\,,
+Y_s = X_s + \varepsilon_s\,,
 \end{equation}
 %which means that
 %$$
@@ -559,11 +559,45 @@ Y = X + \varepsilon\,,
 %where $\varepsilon$ is a centered noise  independent of $X$ and $\sigma^2_{\theta_n}$ is parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
 %This contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and  $x\mapsto \sigma^2_{\theta_n}(x)$ is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 %As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
-where $\varepsilon$ is a centered noise. In this paper, it is assumed that $\varepsilon$ follows a Gaussian mixture model (GMM) with signal-dependent weights, means and variances.
-%$$
-%\varepsilon \sim \sum_{k=1}^N \alpha_{k,\theta_n}(X)\varphi_{\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X)}\,,
-%$$
-The nonnegative mixture weights $(\alpha_{k,\theta_n}(X))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$.
+where  $(\varepsilon_s)_{s\in \mathsf{S}}$ are signal-dependent random variables. In this paper, we consider the following assumptions.
+\begin{itemize}
+\item The noise  $(\varepsilon_s)_{s\in \mathsf{S}}$ are independent conditionally to $(X_s)_{s\in \mathsf{S}}$ and the conditional distribution of $\varepsilon_s$ depends on $X_s$ only.
+\item For all $s\in \mathsf{S}$, $\varepsilon_s$ is centered.
+\item For all $s\in \mathsf{S}$, conditionally to $X_s $, $\varepsilon_s$ follows a Gaussian mixture model (GMM) with signal-dependent weights $(\alpha_{k,\theta_n}(X_s))_{1\leqslant k\leqslant N}$, means and variances $\{(\mu_{k,\theta_n}(X_s),\sigma_{k,\theta_n}^2(X_s))\}_{1\leqslant k\leqslant N}$.
+\end{itemize}
+%
+%it is assumed that
+%%$$
+%%\varepsilon \sim \sum_{k=1}^N \alpha_{k,\theta_n}(X)\varphi_{\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X)}\,,
+%%$$
+The nonnegative mixture weights $(\alpha_{k,\theta_n}(X_s))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X_s) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X_s),\sigma_{k,\theta_n}^2(X_s))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$. 
+
+
+The aim of this paper is to propose an estimator of the signal value without introducing a prior model on $(X_s)_{s\in \mathsf{S}}$. Our approach is motivated by recent data-driven solutions which allow to avoid using too restrictive prior models with poor predictive performance. For all $s\in \mathsf{S}$, let $\Omega_s$ be a neighborhood of $s$, i.e. a set of pixel locations around $s$. In the following, for any finite set $A \subset \mathsf{S}$, $X_A = \{X_s\,;\, s\in A\}$ and $Y_A = \{Y_s\,;\, s\in A\}$. We then propose to estimate the conditional mean of $X_s$ given $(Y_s,Y_{\Omega_s})$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X_s|Y_s,Y_{\Omega_s}]$ is estimated by $\mu_{\theta_d}(Y_{\Omega_s},Y_s)$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called D-net and with unknown weights $\theta_d$.
+
+For all $s\in \mathsf{S}$, the conditional likelihood of a the central pixel given its neighborhood is given by
+$$
+p_{\theta}(Y_s|Y_{\Omega_s}) = \int p_{\theta}(x,Y_s|Y_{\Omega_s}) \mathrm{d}x= \int p_{\theta}(x|Y_{\Omega_s})p_{\theta}(Y_s|x) \mathrm{d}x\,,
+$$
+where the last inequality comes from \eqref{eq:def:Y} which states that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\cdot|Y_{\Omega_s})$ is a peaked distribution, it may be approximated by the Dirac mass at $\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))$, i.e. 
+$$
+p_{\theta}(\mathrm{d} x_s|Y_{\Omega_s})\simeq \delta_{\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))}(\mathrm{d} x_s)\,,
+$$ 
+which yields the following approximate likelihood:
+$$
+\hat{p}_\theta(Y|\Omega_Y)  = p_{\theta}(Y|\mu_{\theta_d}(\Omega_Y,g(\Omega_Y)))\,.
+$$
+
+
+A natural estimator of $X$ given the noisy observations is $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$.
+During training this predictor cannot be used to estimate $\theta_d$ and $\theta_n$ as $\mu_{\theta_d}$ would learn to output the noisy observation $Y$ if it is not masked in the input data.
+This is the reason why we adopt a masking approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator.
+In this framework, a genuine prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
+In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust solution while other choices can be made straightforwardly.
+
+
+
+
 Note that our model encompasses the case of additive Gaussian noise when $N=1$ and in this case, we denote by $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ the function describing the local standard deviation of the noise distribution.
 This model contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and with a variance which is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
 As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
@@ -581,20 +615,7 @@ In \cite{gassiat:lecorff:lehericy:2021}, the variance of the noise is assumed to
 %We also propose an extension of this setting in which $\varepsilon$ is a mixture of Gaussian random variables with state-dependent variances to account for skewness.
 In \eqref{eq:def:Y}, we extend the model  proposed by \cite{gassiat:lecorff:lehericy:2021} by considering mixture models with  state-dependent standard deviations and identifiability remains an open problem. However, we assume in this work that $X$ is dependent with the signal in the neighbooring pixels $\Omega_X$ so that heteroscedasticity is the main challenge to obtain identifiability of \eqref{eq:def:Y}. We assume that $(X,\Omega_X)$ is a random vector with dependent variables and we propose to model the conditional mean of $X$ given $(Y,\Omega_Y)$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X|Y,\Omega_Y] = \mu_{\theta_d}(\Omega_Y,Y)$ where $\Omega_Y$ are the noisy observations of the signals in the neighborhood of $X$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called D-net and with unknown weights $\theta_d$.
 
-A natural estimator of $X$ given the noisy observations is $\widehat X = \mu_{\theta_d}(\Omega_Y,Y)$.
-During training this predictor cannot be used to estimate $\theta_d$ and $\theta_n$ as $\mu_{\theta_d}$ would learn to output the noisy observation $Y$ if it is not masked in the input data.
-This is the reason why we adopt a masking approach and assume during training that $\mu_{\theta_d}$ cannot use $Y$ as an input which must be replaced by an estimator.
-In this framework, a genuine prediction of $Y$ is given by $\mathbb{E}[Y|\Omega_Y]$ which we estimate by $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ where $g$ is a known function. %In the experiments below, we chose to set $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$.
-In the experiments below, we provide empirical evaluations that choosing $g(\Omega_Y)$ as the empirical mean of the noisy pixels in $\Omega_Y$ is a robust solution while other choices can be made straightforwardly.
 
-Note that the conditional likelihood of a the central pixel given its neighborhood is given by
-$$
-p_{\theta}(Y|\Omega_Y) = \int p_{\theta}(x,Y|\Omega_Y) \mathrm{d}x= \int p_{\theta}(x|\Omega_Y)p_{\theta}(Y|x) \mathrm{d}x\,,
-$$
-where the last inequality comes from \eqref{eq:def:Y} which states that $Y$ is independent of $\Omega_Y$ given $X$. Assuming that $p_{\theta}(\cdot|\Omega_Y)$ is a peaked distribution, it may be approximated by the Dirac mass at $\mu_{\theta_d}(\Omega_Y,g(\Omega_Y))$ which yields the following approximate likelihood:
-$$
-\hat{p}_\theta(Y|\Omega_Y)  = p_{\theta}(Y|\mu_{\theta_d}(\Omega_Y,g(\Omega_Y)))\,.
-$$
 %The signal $X$ is then modeled as
 %\begin{equation}
 %\label{eq:def:X}
