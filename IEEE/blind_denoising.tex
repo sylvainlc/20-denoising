@@ -580,7 +580,7 @@ For all $s\in \mathsf{S}$, the conditional likelihood of a the central pixel giv
 p_{\theta}(Y_s|Y_{\Omega_s}) &= \int p_{\theta}(x,Y_s|Y_{\Omega_s}) \mathrm{d}x\,,\\
 &= \int p_{\theta}(x|Y_{\Omega_s})p_{\theta}(Y_s|x) \mathrm{d}x\,,
 \end{align*}
-where the last inequality comes from \eqref{eq:def:Y} which states that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\cdot|Y_{\Omega_s})$ is a peaked distribution, we propose to approximate it by the Dirac mass at $\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))$, i.e. 
+where the last inequality comes from the fact that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\cdot|Y_{\Omega_s})$ is a peaked distribution, we propose to approximate it by the Dirac mass at $\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))$, i.e. 
 $$
 p_{\theta}(\mathrm{d} x_s|Y_{\Omega_s})\simeq \delta_{\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))}(\mathrm{d} x_s)\,.
 $$ 
@@ -617,7 +617,7 @@ where $g$ is a known function. In the experiments below, we chose to set $g(Y_{\
 %+ \left(\frac{Y_i-\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}{\sigma_{\theta_n}(\mu_{\theta_d}(\Omega_{Y_i},g(\Omega_{Y_i}))}\right)^2\,. %\frac{(Y_i-\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2}{\sigma_{\theta_n}(\mu_{\theta_p}(\Omega_{Y_i};\overline{\Omega_{Y_i}}))^2} \,,
 %\end{multline*}
 %This loss is obtained by computing the conditional loglikelihood of $Y$ given $X$ evaluated at the predictor of $Y$ obtained by replacing $\Omega_{X}$ by the observed values $\Omega(Y)$ in \eqref{eq:def:X}.
-Considering now a set of pixel locations $(s_i)_{1\leqslant i\leqslant p}$ in $\mathsf{S}$ with non-overlapping set of neighborhoods $(\Omega_{s_i})_{1\leqslant i\leqslant p}$ we therefore propose the following pseudo-loglikelihood function to be maximized during training to estimate $\theta_n$ and $\theta_d$:
+Considering now a set of pixel locations $(s_i)_{1\leqslant i\leqslant p}$ in $\mathsf{S}$ with non-overlapping set of neighborhoods $(\Omega_{s_i})_{1\leqslant i\leqslant p}$, we therefore propose the following pseudo-loglikelihood function to be maximized during training to estimate $\theta_n$ and $\theta_d$:
 $$
 \ell_p(\theta_n,\theta_d) = \frac{1}{p}\sum_{i=1}^{p}\ell_{\theta}(Y_{s_i}|Y_{\Omega_{s_i}})\,,
 $$
