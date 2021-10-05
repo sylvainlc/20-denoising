@@ -20,7 +20,7 @@
 %% Legal Notice:
 %% This code is offered as-is without any warranty either expressed or
 %% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% FITNESS FOR A PARTICULAR PURPOSE!
 %% User assumes all risk.
 %% In no event shall the IEEE or any contributor to this code be liable for
 %% any damages or losses, including, but not limited to, incidental,
@@ -89,7 +89,7 @@
 
 % *** CITATION PACKAGES ***
 %
-%\usepackage{cite}
+\usepackage{cite}
 % cite.sty was written by Donald Arseneau
 % V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
 % \cite{} output to follow that of the IEEE. Loading the cite package will
@@ -134,7 +134,7 @@
 % graphicx was written by David Carlisle and Sebastian Rahtz. It is
 % required if you want graphics, photos, etc. graphicx.sty is already
 % installed on most LaTeX systems. The latest version and documentation
-% can be obtained at: 
+% can be obtained at:
 % http://www.ctan.org/pkg/graphicx
 % Another good source of documentation is "Using Imported Graphics in
 % LaTeX2e" by Keith Reckdahl which can be found at:
@@ -215,11 +215,11 @@
 
 
 % *** SUBFIGURE PACKAGES ***
-%\ifCLASSOPTIONcompsoc
-%  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
-%\else
-%  \usepackage[caption=false,font=footnotesize]{subfig}
-%\fi
+\ifCLASSOPTIONcompsoc
+ \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\else
+ \usepackage[caption=false,font=footnotesize]{subfig}
+\fi
 % subfig.sty, written by Steven Douglas Cochran, is the modern replacement
 % for subfigure.sty, the latter of which is no longer maintained and is
 % incompatible with some LaTeX packages including fixltx2e. However,
@@ -292,8 +292,8 @@
 % \let\MYoriglatexcaption\caption
 % \renewcommand{\caption}[2][\relax]{\MYoriglatexcaption[#2]{#2}}
 %\fi
-% endfloat.sty was written by James Darrell McCauley, Jeff Goldberg and 
-% Axel Sommerfeldt. This package may be useful when used in conjunction with 
+% endfloat.sty was written by James Darrell McCauley, Jeff Goldberg and
+% Axel Sommerfeldt. This package may be useful when used in conjunction with
 % IEEEtran.cls'  captionsoff option. Some IEEE journals/societies require that
 % submissions have lists of figures/tables at the end of the paper and that
 % figures/tables without any captions are placed on a page by themselves at
@@ -322,7 +322,7 @@
 % http://www.ctan.org/pkg/endfloat
 %
 % The IEEEtran \ifCLASSOPTIONcaptionsoff conditional can also be used
-% later in the document, say, to conditionally put the References on a 
+% later in the document, say, to conditionally put the References on a
 % page by themselves.
 
 
@@ -330,7 +330,7 @@
 
 % *** PDF, URL AND HYPERLINK PACKAGES ***
 %
-%\usepackage{url}
+\usepackage{url}
 % url.sty was written by Donald Arseneau. It provides better support for
 % handling and breaking URLs. url.sty is already installed on most LaTeX
 % systems. The latest version and documentation can be obtained at:
@@ -347,7 +347,7 @@
 % to submit to, of course. )
 
 \usepackage{booktabs}
-\usepackage{url,xcolor}     
+\usepackage{url,xcolor}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -384,10 +384,10 @@
 %\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
 %\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
 
-% note the % following the last \IEEEmembership and also \thanks - 
+% note the % following the last \IEEEmembership and also \thanks -
 % these prevent an unwanted space from occurring between the last author name
 % and the end of the author line. i.e., if you had this:
-% 
+%
 % \author{....lastname \thanks{...} \thanks{...} }
 %                     ^------------^------------^----Do not want these spaces!
 %
@@ -410,7 +410,7 @@
 
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
-% 
+%
 % *** Note that you probably will NOT want to include the author's ***
 % *** name in the headers of peer review papers.                   ***
 % You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
@@ -570,7 +570,7 @@ where  $(\varepsilon_s)_{s\in \mathsf{S}}$ are signal-dependent random variables
 %%$$
 %%\varepsilon \sim \sum_{k=1}^N \alpha_{k,\theta_n}(X)\varphi_{\mu_{k,\theta_n}(X),\sigma_{k,\theta_n}^2(X)}\,,
 %%$$
-The nonnegative mixture weights $(\alpha_{k,\theta_n}(X_s))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X_s) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X_s),\sigma_{k,\theta_n}^2(X_s))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$, see Section~\ref{sec:architectures}. 
+The nonnegative mixture weights $(\alpha_{k,\theta_n}(X_s))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X_s) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X_s),\sigma_{k,\theta_n}^2(X_s))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$, see Section~\ref{sec:architectures}.
 
 
 The aim of this paper is to propose an estimator of the signal value without introducing a prior model on $(X_s)_{s\in \mathsf{S}}$. Our approach is motivated by recent data-driven solutions which allow to avoid using too restrictive prior models with poor predictive performance. For all $s\in \mathsf{S}$, let $\Omega_s$ be a neighborhood of $s$, i.e. a set of pixel locations around $s$. In the following, for any finite set $A \subset \mathsf{S}$, $X_A = \{X_s\,;\, s\in A\}$ and $Y_A = \{Y_s\,;\, s\in A\}$. We propose to estimate the conditional mean of $X_s$ given $(Y_s,Y_{\Omega_s})$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X_s|Y_s,Y_{\Omega_s}]$ is estimated by $\mu_{\theta_d}(Y_{\Omega_s},Y_s)$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called D-net and with unknown weights $\theta_d$, see Section~\ref{sec:architectures}.
@@ -580,10 +580,10 @@ For all $s\in \mathsf{S}$, the conditional likelihood of a the central pixel giv
 p_{\theta}(Y_s|Y_{\Omega_s}) &= \int p_{\theta}(x,Y_s|Y_{\Omega_s}) \mathrm{d}x\,,\\
 &= \int p_{\theta}(x|Y_{\Omega_s})p_{\theta}(Y_s|x) \mathrm{d}x\,,
 \end{align*}
-where the last inequality comes from the fact that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\cdot|Y_{\Omega_s})$ is a peaked distribution, we propose to approximate it by the Dirac mass at $\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))$, i.e. 
+where the last inequality comes from the fact that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\cdot|Y_{\Omega_s})$ is a peaked distribution, we propose to approximate it by the Dirac mass at $\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))$, i.e.
 $$
 p_{\theta}(\mathrm{d} x_s|Y_{\Omega_s})\simeq \delta_{\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))}(\mathrm{d} x_s)\,.
-$$ 
+$$
 where $g$ is a known function. In the experiments below, we chose to set $g(Y_{\Omega_s})$ as the empirical mean of the noisy pixels in $Y_{\Omega_s}$.
 %which yields the following approximate likelihood:
 %$$
@@ -626,12 +626,12 @@ $$
 \ell_{\theta}(Y_s|Y_{\Omega_{s}}) \\
 = \log\left(\sum_{k=1}^N\alpha_{k,\theta_n}(\tilde\mu^s_{\theta_d})\varphi_{\check \mu^s_{\theta_d},\sigma_{k,\theta_n}(\tilde\mu^s_{\theta_d})}(Y_s)\right)\,,
 $$
-where $\tilde \mu^s_{\theta_d} = \mu_{\theta_d}(Y_{\Omega_s},Y_s)$, $\check \mu^s_{\theta_d} = \tilde\mu^s_{\theta_d} +  \mu_{k,\theta_n}(\tilde\mu^s_{\theta_d})$ and $\varphi_{\mu,\sigma}$ is the Gaussian probability density function with mean $\mu$ and standard deviation $\sigma$. 
+where $\tilde \mu^s_{\theta_d} = \mu_{\theta_d}(Y_{\Omega_s},Y_s)$, $\check \mu^s_{\theta_d} = \tilde\mu^s_{\theta_d} +  \mu_{k,\theta_n}(\tilde\mu^s_{\theta_d})$ and $\varphi_{\mu,\sigma}$ is the Gaussian probability density function with mean $\mu$ and standard deviation $\sigma$.
 %\begin{multline*}
 %\ell_{\theta}(Y|\Omega_{Y}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sqrt{2\pi }\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right.\\
 %\left.\times \exp\left\{-\frac{1}{2}\left(\frac{Y-\tilde\mu_{\theta_d} -  \mu_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right)^2\right\}\right)\,,
 %\end{multline*}
-%where $\tilde \mu_{\theta_d} = \mu_{\theta_d}(\Omega_{Y},g(\Omega_{Y}))$. 
+%where $\tilde \mu_{\theta_d} = \mu_{\theta_d}(\Omega_{Y},g(\Omega_{Y}))$.
 
 Note that our model encompasses the case of additive Gaussian noise when $N=1$ and in this case, we denote by $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ the function describing the local standard deviation of the noise distribution.
 This model contrasts with most common denoising algorithms where $\varepsilon$ is assumed to be a centered Gaussian random variable and with a variance which is either known and constant or has a Poisson-Gaussian shape i.e., scales with $\alpha x + \eta^2$.
@@ -689,15 +689,11 @@ In \eqref{eq:def:Y}, we extend the model  proposed by \cite{gassiat:lecorff:lehe
 %&\sim \partial_2\mu_{\theta_p}(\Omega_Y;Y)[\overline{\Omega_Y}-Y]
 %\end{align*}
 
-
-
-
-
 \section{Experiments}
 \begin{figure}[!htbp]
 \vskip -0.1in
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_plomberie_1col.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_plomberie.pdf}}
 \caption{Training setup.
 For each mini-batch, a random grid is drawn.
 The masking function $x\mapsto g(x)$ is applied on each element of the grid, replacing the original pixels in the masked image.
@@ -770,10 +766,10 @@ We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is 
 Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
 One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the known theoretical standard deviation.
 It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
-\begin{figure*}[!htbp]
+\begin{figure}[!htbp]
 \vskip -0.1in
 \begin{center}
-\centerline{\includegraphics[width=\textwidth]{fig_noise_std_1col.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_noise_std.pdf}}
 \caption[Noise estimation]{Noise estimation.
 For 3 models of synthetic noise as well as the real noise, the plots display the empirical standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by the N-net as a function of $X$ (Note that display range was shrinked in Y-axis for visualization purposes.).
 Theoretical standard deviation of the noise is displayed for the 3 models of synthetic noise.
@@ -781,7 +777,7 @@ The empirical distribution of $Y$ is displayed in blue, in logarithmic scale.
 Examples of noisy images corrupted with the corresponding noise model and the predicted denoised images are displayed above each graph.}
 \label{fig:noisestd}
 \end{center}
-\end{figure*}
+\end{figure}
 
 \label{sec:exp:real:noise}
 \paragraph{Improving estimation on real noise.}
@@ -793,10 +789,10 @@ This supports the use of our flexible N-net to capture a large variety of noise 
 This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
 Such approaches have been proposed in more simple cases using for instance penalized maximum likelihood based algorithms.
 This remains an open problem in our framework and we leave this topic for future research.
-\begin{figure*}[!htbp]
+\begin{figure}[!htbp]
 \vskip -0.1in
 \begin{center}
-\centerline{\includegraphics[width=\textwidth]{fig_skewness_1col_w2s-1.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_w2s-1.pdf}}
 \caption{Real noise estimation for dataset \textit{W2S-1}.
 The two left graphs represent the empirical distribution of the noise $Y - X$ as a function of $X$ and the corresponding predicted noise distribution for a 3-component-GMM.
 The probability density is normalized for each signal value bin.
@@ -806,7 +802,7 @@ Kullback–Leibler divergence between real noise distribution and predicted dist
 }
 \label{fig:skewness}
 \end{center}
-\end{figure*}
+\end{figure}
 
 \subsection{Denoising performances}
 \label{sec:perf}
@@ -816,7 +812,7 @@ Kullback–Leibler divergence between real noise distribution and predicted dist
 SSIM estimates structural similarity (sharpness).
 Metrics computed on noisy images are displayed in the \textit{Noisy} column.
 The supervised version of our method was not trained for PN2V datasets as they cannot be split into independent train/evaluation sets.
-For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks trained using the source code provided by the authors (using no positivity constraint, and removing the convolution for N2V).
+For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks we trained (see section~\ref{si:baselines}).
 \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.
 Results for our method predicting a Gaussian model are shown in column \textit{Ours (G1)} (see appendix Table~\ref{si:table:results} for 2/3-component GMM).
 Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
@@ -827,14 +823,17 @@ Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccc}
 \toprule
-Dataset & Noisy & Gaussian & Supervised & N2V & DecoNoising & Ours (G1) \\
+Method/Dataset & PN2V-C & PN2V-MN & PN2V-MA & W2S-1 & W2S-2 & W2S-3 \\
 \midrule
-PN2V-C & $28.98$ / $0.7713$ & $34.92$ / $0.9409$ & $NA$ / $NA$ & $35.85$ / $0.9404$ & $36.39$ / $0.9483$ & $\underline{38.33}$ / $\underline{0.9754}$ \\
-PN2V-MN & $28.10$ / $0.6836$ & $35.53$ / $0.9392$ & $NA$ / $NA$ & $35.86$ / $0.9419$ & $36.34$ / $0.9489$ & $\underline{39.08}$ / $\underline{0.9776}$\\
-PN2V-MA & $23.71$ / $0.3731$ & $34.07$ / $0.8739$ & $NA$ / $NA$ & $33.35$ / $0.8384$ & $34.04$ / $0.8633$ & $\underline{34.79}$ / $\underline{0.8905}$\\
-W2S-1 & $21.85$ / $0.3490$ & $33.87$ / $0.9326$ & $35.22$ / $0.9608$ & $34.30$ / $0.9026$ & $34.90$ / $0.9169$ & $\underline{35.33}$ / $\underline{0.9619}$\\
-W2S-2 & $19.33$ / $0.2256$ & $32.27$ / $0.8531$ & $33.24$ / $0.8828$ & $31.80$ / $0.8311$ & $32.31$ / $0.8524$ & $\underline{33.46}$ / $\underline{0.8867}$\\
-W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $36.31$ / $0.9252$ & $34.65$ / $0.8637$ & $35.09$ / $0.9051$ & $\underline{36.57}$ / $\underline{0.9263}$\\
+Noisy & $28.98$ / $0.7713$ & $28.10$ / $0.6836$ & $23.71$ / $0.3731$ & $21.85$ / $0.3490$ & $19.33$ / $0.2256$ & $20.39$ / $0.2232$ \\
+Gaussian & $34.92$ / $0.9409$ & $35.53$ / $0.9392$ & $34.07$ / $0.8739$ & $33.87$ / $0.9326$ & $32.27$ / $0.8531$ & $34.66$ / $0.9013$\\
+Supervised & $NA$ / $NA$ & $NA$ / $NA$ & $NA$ / $NA$ & $35.22$ / $0.9608$ & $33.24$ / $0.8828$ & $36.31$ / $0.9252$\\
+N2V & $35.85$ / $0.9404$ & $35.86$ / $0.9419$ & $33.35$ / $0.8384$ & $34.30$ / $0.9026$ & $31.80$ / $0.8311$ & $34.65$ / $0.8637$\\
+DecoNoising & $36.39$ / $0.9483$ & $36.34$ / $0.9489$ & $34.04$ / $0.8633$ & $34.90$ / $0.9169$ & $32.31$ / $0.8524$ & $35.09$ / $0.9051$\\
+Neigh2Neigh & $34.42$ / $0.9519$ & $34.01$ / $0.9070$ & $32.70$ / $0.8521$ & $34.74$ / $0.9552$ & $32.96$ / $0.8739$ & $36.14$ / $0.9216$\\
+FBI-Denoiser & $36.23$ / $0.9556$ & $36.85$ / $0.9609$ & $32.89$ / $0.8344$ & $34.40$ / $0.9500$ & $32.26$ / $0.8452$ & $34.94$ / $0.8910$\\
+Ours (G1) & $\underline{38.33}$ / $\underline{0.9754}$ & $\underline{39.08}$ / $\underline{0.9776}$ & $\underline{34.79}$ / $\underline{0.8905}$ & $\underline{35.33}$ / $\underline{0.9619}$ & $\underline{33.46}$ / $\underline{0.8867}$ & $\underline{36.57}$ / $\underline{0.9263}$\\
+
 \bottomrule
 \end{tabular}
 }
@@ -844,23 +843,26 @@ W2S-3 & $20.39$ / $0.2232$ & $34.66$ / $0.9013$ & $36.31$ / $0.9252$ & $34.65$ /
 \vskip -0.1in
 \end{table*}
 
-We compared our method to 4 baselines: D-net trained in a supervised setup with L2 objective (with all other training and prediction hyperparameters unchanged), N2V, DecoNoising, which is the self-supervised blind denoising method that has shown best results on the datasets we considered, as well as one of the most simple denoising method: convolution by a Gaussian, whose standard deviation is chosen to maximize the PSNR on the evaluation dataset.
-We believe the latter makes a good reference, as it is one of the simplest denoising methods, and it removes noise efficiently but also other high-frequency information such as local contrasts.
+We compared our method to 6 baselines: D-net trained in a supervised setup with L2 objective (with all other training and prediction hyperparameters unchanged), N2V, DecoNoising, which is the self-supervised blind denoising method that has shown best results on the datasets we considered, Neighbor2Neighbor and FBI-Denoiser, as well as one of the most simple denoising method: convolution by a Gaussian, whose standard deviation is chosen to maximize the PSNR on the evaluation dataset.
+We believe the latter makes a good reference, as it is one of the simplest denoising methods, and it removes noise efficiently but also other high-frequency information such as local contrasts. Training procedure is detailed in \ref{si:baselines}.
 
 The considered metrics are summarized in Table~\ref{table:results}.
 Our method significantly outperforms the baselines both in terms of PSNR and SSIM on all datasets.
+Note that datasets PN2V-C and PN2V-MA have horizontally-correlated noise (that we take into account: see Section~\ref{sec:datasets}), but significantly lower the performances of methods that are sensitive to it, such as FBI-Denoiser or N2V.
 For the version predicting a simple Gaussian distribution, the average PSNR gain over DecoNoisng is $+1.42$dB.
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artifacts.
 Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (from PSNR values reported in \cite{goncharova2020}).
 Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{table:results}).
 This could be explained by the fact that training with masking induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
 
-\begin{figure}[!hbp]
-\vskip -0.1in
-\includegraphics[width=\columnwidth]{fig_images.pdf}
-\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. Training of DecoNoising and N2V is described in Table~\ref{table:results}. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
+We also report evaluation on additional datasets (including a natural images dataset) and compare to other baselines in Table~\ref{si:table:datasetsup}.
+
+\begin{figure*}[!hbp]
+% \vskip -0.1in
+\includegraphics[width=\textwidth]{fig_images.pdf}
+\caption{Visual comparison of denoising on the considered datasets. For each dataset a $256$x$256$ portion of an evaluation image is displayed, on which metrics are computed and displayed below. Training of baselines is described in section~\ref{si:baselines}. \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.}
 \label{fig:images}
-\end{figure}
+\end{figure*}
 
 \subsection{Ablation experiments}
 
@@ -927,7 +929,7 @@ Finally, it would also be interesting to understand the role of the central pixe
 %\begin{figure}[!t]
 %\centering
 %\includegraphics[width=2.5in]{myfigure}
-% where an .eps filename suffix will be assumed under latex, 
+% where an .eps filename suffix will be assumed under latex,
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
 %\caption{Simulation results for the network.}
@@ -943,7 +945,7 @@ Finally, it would also be interesting to understand the role of the central pixe
 % The subfigure \label commands are set within each subfloat command,
 % and the \label for the overall figure must come after \caption.
 % \hfil is used as a separator to get equal spacing.
-% Watch out that the combined width of all the subfigures on a 
+% Watch out that the combined width of all the subfigures on a
 % line do not exceed the text width or a line break will occur.
 %
 %\begin{figure*}[!t]
@@ -1000,7 +1002,7 @@ Finally, it would also be interesting to understand the role of the central pixe
 % in-text middle ("here") positioning is typically not used, but it
 % is allowed and encouraged for Computer Society conferences (but
 % not Computer Society journals). Most IEEE journals/conferences use
-% top floats exclusively. 
+% top floats exclusively.
 % Note that, LaTeX2e, unlike IEEE journals/conferences, places
 % footnotes above bottom floats. This can be corrected via the
 % \fnbelowfloat command of the stfloats package.
@@ -1057,6 +1059,14 @@ $$
 \mu_{N,\theta_n} = - \frac{1}{\alpha_{N,\theta_n}} \sum_{k=1}^{N-1}\alpha_{k,\theta_n}\cdot\mu_{k,\theta_n}\,.
 $$
 
+\subsection{Baselines}
+\label{si:baselines}
+\begin{itemize}
+  \item N2V and DecoNoisng were trained using the source code provided by the authors, using no positivity constraint, and removing the convolution for N2V: \url{https://github.com/juglab/DecoNoising}
+  \item FBI-Denoiser was trained using the code provided by authors: \url{https://github.com/csm9493/FBI-Denoiser/tree/de86420934a2416d4052dfa1298334af0d2ca49f}. We used same training options as for FMD datasets that are also fluorescence microscopy datasets. We tried to double the number of epochs without improvement.
+  \item Neighbor2Neighbor was trained using the code provided by the authors: \url{https://github.com/TaoHuang2018/Neighbor2Neighbor/tree/e66389ebef1e64d306d8fcb95f096cf427243452}. As this method was not trained on fluorescence datasets, we tried to optimise hyperparameters as best as we could on dataset W2S-1 and used the same hyperparameters for all datasets. More precisely we tested $\gamma=1$ and $\gamma=2$, an initial learning rate of $3\cdot10^{-4}$ or $1\cdot10^{-4}$ as suggested by the authors, we increased the number of epochs from 100 to 1000, and tried to decrease the learning rate to $1\cdot10^{-6}$ instead of $2\cdot10^{-5}$ (which surprisingly led to much lower performances). We used $\gamma=1$, an initial learning rate of $3\cdot10^{-4}$ and a minimal learning rate of $2\cdot10^{-5}$.
+\end{itemize}
+
 \subsection{Datasets}
 \subsubsection{Experimental Datasets}
 \label{si:datasetxp}
@@ -1068,7 +1078,7 @@ $$
 \end{itemize}
 
 The \emph{PN2V-C} and \emph{PN2V-MA} datasets are acquired on a spinning disc confocal microscope and \emph{PN2V-MN} dataset is acquired with a point scanning confocal microscope.
-Datasets can be downloaded from: \url{https://github.com/juglab/pn2v}
+Datasets can be downloaded at: \url{https://doi.org/10.5281/zenodo.5156913}, \url{https://doi.org/10.5281/zenodo.5156960} and \url{https://doi.org/10.5281/zenodo.5156937}
 
 We observed that datasets acquired with a spinning disc confocal microscope display axial noise correlation (see \ref{sec:datasets}).
 
@@ -1100,11 +1110,35 @@ The same applies for SSIM computation.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
+\subsection{Results on additional datasets}
+In table~\ref{si:table:datasetsup} we report performance on additional datasets, including a natural image dataset, and comparison with other methods.
+FMD datasets \cite{zhang2019poisson} are composed of fluorescence microscopy images. Same training and evaluation set as the original article are used.
+BSD68 \cite{martin2001database} is a natural image dataset; for this dataset, the training and validation set of BSD500 \cite{arbelaez2010contour} (400 images in total) is used for training. Images were corrupted with AWGN with $\sigma=25$.
+All the datasets used in this table are composed of 8-bit images, thus the range used for metric computation is set to 255.
+
+\begin{table*}[ht]
+\caption{Evaluation of the performances on additional datasets with PSNR/SSIM metrics. Metric for FBI-Denoiser are reported from \cite{byun2021fbi}, note that this method is not completely blind as it assumes a Gaussian-Poisson noise. Metrics for Laine et al. are reported from \cite{laine2019high}, note that this method is not blind as it requires the noise model. Metrics for Self2Self are reported from \cite{quan2020self2self}. Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
+\label{si:table:datasetsup}
+\begin{center}
+\begin{sc}
+\begin{tabular}{lcccccc}
+\toprule
+Dataset & Noisy & Ours (G1) & N2V & FBI-Denoiser & Laine et al. & Self2Self \\
+\midrule
+FMD Confocal-Fish & $22.81$ / $0.4416$ & $\underline{32.56}$ / $0.8822$ & $31.92$ / $0.8831$ & $32.22$ / $\underline{0.8853}$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+FMD Confocal-Mice & $29.38$ / $0.6657$ & $\underline{38.48}$ / $\underline{0.9655}$ & $37.54$ / $0.9611$ & $38.32$ / $0.9637$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+BSD68 (G25) & $20.17$ / $0.3819$ & $\underline{28.92}$ / $\underline{0.8217}$ & $27.72$ / $0.794$ & $NA$ / $NA$ & $\underline{28.84}$ / $0.814$ & $28.70$ / $0.803$ \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{center}
+\end{table*}
+
 \subsection{Impact of the N-net}
 \label{si:impactnnet}
 \begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_convergence_1col.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_convergence.pdf}}
 \caption{PSNR at each epoch on the test set for N-net (G1) or D-net only (L2). A: training on real noise. B, C: training on different models/levels of synthetic noise added to ground truth image. B: \textit{Gaussian} and \textit{Speckle} correspond to noises presented in 5.1, that have no and high signal dependency respectively. C: \textit{Speckle} with variance multiplied by 0.5, 2 and 4. D: Mean and SEM over 5 runs.}
 \label{si:fig:convergence}
 \end{center}
@@ -1139,45 +1173,45 @@ W2S-3 & $20.39$ / $0.2232$ & $\underline{36.57}$ / $\underline{0.9263}$ & $\unde
 This section contains the figures corresponding to Fig~\ref{fig:skewness} for each dataset.
 Note that they are computed using regular signal value bins and excluding signal values greater to the $99.5\%$ percentile of the dataset so that there are enough observed samples in each bin to compute statistically significant metrics.
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_skewness_1col_pn2v-C.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_pn2v-C.pdf}}
 \caption{Real noise estimation for dataset \textit{PN2V-C}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_skewness_1col_pn2v-MN.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_pn2v-MN.pdf}}
 \caption{Real noise estimation for dataset \textit{PN2V-MN}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_skewness_1col_pn2v-MA.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_pn2v-MA.pdf}}
 \caption{Real noise estimation for dataset \textit{PN2V-MA}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_skewness_1col_w2s-2.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_w2s-2.pdf}}
 \caption{Real noise estimation for dataset \textit{W2S-2}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 \begin{center}
-\centerline{\includegraphics[width=\columnwidth]{fig_skewness_1col_w2s-3.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{fig_skewness_w2s-3.pdf}}
 \caption{Real noise estimation for dataset \textit{W2S-3}. See main text Fig~\ref{fig:skewness}.
 }
 \end{center}
-\end{figure*}
+\end{figure}
 %\FloatBarrier
 \subsection{Code}
 \label{sec:code}
@@ -1194,10 +1228,10 @@ A ready-to-use google colab notebook that includes training and evaluation proce
 
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
-
+% \ifCLASSOPTIONcaptionsoff
+%   \newpage
+% \fi
+\newpage
 
 
 % trigger a \newpage just before the given reference
@@ -1231,7 +1265,7 @@ A ready-to-use google colab notebook that includes training and evaluation proce
 %\end{thebibliography}
 
 % biography section
-% 
+%
 % If you have an EPS/PDF photo (graphicx package needed) extra braces are
 % needed around the contents of the optional argument to biography to prevent
 % the LaTeX parser from getting confused when it sees the complicated
@@ -1274,5 +1308,3 @@ A ready-to-use google colab notebook that includes training and evaluation proce
 
 % that's all folks
 \end{document}
-
-
