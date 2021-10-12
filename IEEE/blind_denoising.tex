@@ -863,8 +863,6 @@ Remarkably, our method performs significantly better than the supervised method 
 Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{table:results}).
 This could be explained by the fact that training with masking induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
 
-We also report evaluation on additional datasets (including a natural images dataset) and compare to other baselines in Table~\ref{si:table:datasetsup}.
-
 \begin{figure*}[!hbp]
 % \vskip -0.1in
 \includegraphics[width=\textwidth]{fig_images.pdf}
@@ -1118,29 +1116,29 @@ The same applies for SSIM computation.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
-\subsection{Results on additional datasets}
-In table~\ref{si:table:datasetsup} we report performance on additional datasets, including a natural image dataset, and comparison with other methods.
-FMD datasets \cite{zhang2019poisson} are composed of fluorescence microscopy images. Same training and evaluation set as the original article are used.
-BSD68 \cite{martin2001database} is a natural image dataset; for this dataset, the training and validation set of BSD500 \cite{arbelaez2010contour} (400 images in total) is used for training. Images were corrupted with AWGN with $\sigma=25$.
-All the datasets used in this table are composed of 8-bit images, thus the range used for metric computation is set to 255.
+% \subsection{Results on additional datasets}
+% In table~\ref{si:table:datasetsup} we report performance on additional datasets, including a natural image dataset, and comparison with other methods.
+% FMD datasets \cite{zhang2019poisson} are composed of fluorescence microscopy images. Same training and evaluation set as the original article are used.
+% BSD68 \cite{martin2001database} is a natural image dataset; for this dataset, the training and validation set of BSD500 \cite{arbelaez2010contour} (400 images in total) is used for training. Images were corrupted with AWGN with $\sigma=25$.
+% All the datasets used in this table are composed of 8-bit images, thus the range used for metric computation is set to 255.
 
-\begin{table*}[ht]
-\caption{Evaluation of the performances on additional datasets with PSNR/SSIM metrics. Metric for FBI-Denoiser are reported from \cite{byun2021fbi}, note that this method is not completely blind as it assumes a Gaussian-Poisson noise. Metrics for Laine et al. are reported from \cite{laine2019high}, note that this method is not blind as it requires the noise model. Metrics for Self2Self are reported from \cite{quan2020self2self}. Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
-\label{si:table:datasetsup}
-\begin{center}
-\begin{sc}
-\begin{tabular}{lcccccc}
-\toprule
-Dataset & Noisy & Ours (G1) & N2V & FBI-Denoiser & Laine et al. & Self2Self \\
-\midrule
-FMD Confocal-Fish & $22.81$ / $0.4416$ & $\underline{32.56}$ / $0.8822$ & $31.92$ / $0.8831$ & $32.22$ / $\underline{0.8853}$ & $NA$ / $NA$ & $NA$ / $NA$ \\
-FMD Confocal-Mice & $29.38$ / $0.6657$ & $\underline{38.48}$ / $\underline{0.9655}$ & $37.54$ / $0.9611$ & $38.32$ / $0.9637$ & $NA$ / $NA$ & $NA$ / $NA$ \\
-BSD68 (G25) & $20.17$ / $0.3819$ & $\underline{28.92}$ / $\underline{0.8217}$ & $27.72$ / $0.794$ & $NA$ / $NA$ & $\underline{28.84}$ / $0.814$ & $28.70$ / $0.803$ \\
-\bottomrule
-\end{tabular}
-\end{sc}
-\end{center}
-\end{table*}
+% \begin{table*}[ht]
+% \caption{Evaluation of the performances on additional datasets with PSNR/SSIM metrics. Metric for FBI-Denoiser are reported from \cite{byun2021fbi}, note that this method is not completely blind as it assumes a Gaussian-Poisson noise. Metrics for Laine et al. are reported from \cite{laine2019high}, note that this method is not blind as it requires the noise model. Metrics for Self2Self are reported from \cite{quan2020self2self}. Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
+% \label{si:table:datasetsup}
+% \begin{center}
+% \begin{sc}
+% \begin{tabular}{lcccccc}
+% \toprule
+% Dataset & Noisy & Ours (G1) & N2V & FBI-Denoiser & Laine et al. & Self2Self \\
+% \midrule
+% FMD Confocal-Fish & $22.81$ / $0.4416$ & $\underline{32.56}$ / $0.8822$ & $31.92$ / $0.8831$ & $32.22$ / $\underline{0.8853}$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+% FMD Confocal-Mice & $29.38$ / $0.6657$ & $\underline{38.48}$ / $\underline{0.9655}$ & $37.54$ / $0.9611$ & $38.32$ / $0.9637$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+% BSD68 (G25) & $20.17$ / $0.3819$ & $\underline{28.92}$ / $\underline{0.8217}$ & $27.72$ / $0.794$ & $NA$ / $NA$ & $\underline{28.84}$ / $0.814$ & $28.70$ / $0.803$ \\
+% \bottomrule
+% \end{tabular}
+% \end{sc}
+% \end{center}
+% \end{table*}
 
 \subsection{Impact of the N-net}
 \label{si:impactnnet}
