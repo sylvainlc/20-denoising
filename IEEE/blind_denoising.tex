@@ -568,7 +568,7 @@ Y_s = X_s + \varepsilon_s\,,
 %As illustrated in Section~\ref{sec:results}, these assumptions do not usually hold, in particular when considering biomedical images, and they may have a severe impact on denoising performances.
 where  $(\varepsilon_s)_{s\in \mathsf{S}}$ are signal-dependent random variables. In this paper, we consider the following assumptions.
 \begin{itemize}
-\item The noise  $(\varepsilon_s)_{s\in \mathsf{S}}$ are independent conditionally to $(X_s)_{s\in \mathsf{S}}$ and the conditional distribution of $\varepsilon_s$ depends on $X_s$ only.
+\item The random variables  $(\varepsilon_s)_{s\in \mathsf{S}}$ are independent conditionally to $(X_s)_{s\in \mathsf{S}}$ and the conditional distribution of $\varepsilon_s$ depends on $X_s$ only.
 \item For all $s\in \mathsf{S}$, $\varepsilon_s$ is centered.
 \item For all $s\in \mathsf{S}$, conditionally to $X_s $, $\varepsilon_s$ follows a Gaussian mixture model (GMM) with signal-dependent weights $(\alpha_{k,\theta_n}(X_s))_{1\leqslant k\leqslant N}$, means and variances $\{(\mu_{k,\theta_n}(X_s),\sigma_{k,\theta_n}^2(X_s))\}_{1\leqslant k\leqslant N}$.
 \end{itemize}
@@ -580,16 +580,16 @@ where  $(\varepsilon_s)_{s\in \mathsf{S}}$ are signal-dependent random variables
 The nonnegative mixture weights $(\alpha_{k,\theta_n}(X_s))_{1\leqslant k\leqslant N}$ are such that $\sum_{k=1}^N\alpha_{k,\theta_n}(X_s) = 1$, and the means and variances $\{(\mu_{k,\theta_n}(X_s),\sigma_{k,\theta_n}^2(X_s))\}_{1\leqslant k\leqslant N}$ of the mixture model are  parameterized by a convolutional neural network, called N-net and with unknown weights $\theta_n$, see Section~\ref{sec:architectures}.
 
 
-The aim of this paper is to propose an estimator of the signal value without introducing a prior model on $(X_s)_{s\in \mathsf{S}}$. Our approach is motivated by recent data-driven solutions which allow to avoid using too restrictive prior models with poor predictive performance. For all $s\in \mathsf{S}$, let $\Omega_s$ be a neighborhood of $s$, i.e. a set of pixel locations around $s$. In the following, for any finite set $A \subset \mathsf{S}$, $X_A = \{X_s\,;\, s\in A\}$ and $Y_A = \{Y_s\,;\, s\in A\}$. We propose to estimate the conditional mean of $X_s$ given $(Y_s,Y_{\Omega_s})$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X_s|Y_s,Y_{\Omega_s}]$ is estimated by $\mu_{\theta_d}(Y_{\Omega_s},Y_s)$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called D-net and with unknown weights $\theta_d$, see Section~\ref{sec:architectures}.
+The aim of this paper is to propose an estimator of the signal value without introducing a prior model on $(X_s)_{s\in \mathsf{S}}$. Our approach is motivated by recent data-driven solutions which allow to avoid using too restrictive prior models with poor predictive performance. For all $s\in \mathsf{S}$, let $\Omega_s$ be a neighborhood of $s$, i.e. a set of pixel locations around $s$. In the following, for any finite set $A \subset \mathsf{S}$, $X_A = \{X_s\,;\, s\in A\}$ and $Y_A = \{Y_s\,;\, s\in A\}$. We propose to estimate the conditional mean of $X_s$ given $(Y_s,Y_{\Omega_s})$ by a parametric function denoted by $\mu_{\theta_d}$ so that $\mathbb{E}[X_s|Y_s,Y_{\Omega_s}]$ is estimated by $\mu_{\theta_d}(Y_s,Y_{\Omega_s})$. The function $ \mu_{\theta_d}$ is parameterized by a convolutional neural network, called D-net and with unknown weights $\theta_d$, see Section~\ref{sec:architectures}.
 
 For all $s\in \mathsf{S}$, the conditional likelihood of a the central pixel given its neighborhood is given by
 \begin{align*}
 p_{\theta}(Y_s|Y_{\Omega_s}) &= \int p_{\theta}(x,Y_s|Y_{\Omega_s}) \mathrm{d}x\,,\\
 &= \int p_{\theta}(x|Y_{\Omega_s})p_{\theta}(Y_s|x) \mathrm{d}x\,,
 \end{align*}
-where the last inequality comes from the fact that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\cdot|Y_{\Omega_s})$ is a peaked distribution, we propose to approximate it by the Dirac mass at $\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))$, i.e.
+where the last equality comes from the fact that $Y_s$ is independent of $Y_{\Omega_s}$ given $X_s$. Assuming that $p_{\theta}(\mathrm{d} x_s|Y_{\Omega_s})$ is a peaked distribution, we propose to approximate it by the Dirac mass at $\mu_{\theta_d}(g(Y_{\Omega_s}),Y_{\Omega_s})$, i.e.
 $$
-p_{\theta}(\mathrm{d} x_s|Y_{\Omega_s})\simeq \delta_{\mu_{\theta_d}(Y_{\Omega_s},g(Y_{\Omega_s}))}(\mathrm{d} x_s)\,,
+p_{\theta}(\mathrm{d} x_s|Y_{\Omega_s})\simeq \delta_{\mu_{\theta_d}(g(Y_{\Omega_s}),Y_{\Omega_s})}(\mathrm{d} x_s)\,,
 $$
 where $g$ is a known function. In the experiments below, we chose to set $g(Y_{\Omega_s})$ as the empirical mean of the noisy pixels in $Y_{\Omega_s}$.
 %which yields the following approximate likelihood:
@@ -633,7 +633,7 @@ $$
 \ell_{\theta}(Y_s|Y_{\Omega_{s}}) \\
 = \log\left(\sum_{k=1}^N\alpha_{k,\theta_n}(\tilde\mu^s_{\theta_d})\varphi_{\check \mu^s_{\theta_d},\sigma_{k,\theta_n}(\tilde\mu^s_{\theta_d})}(Y_s)\right)\,,
 $$
-where $\tilde \mu^s_{\theta_d} = \mu_{\theta_d}(Y_{\Omega_s},Y_s)$, $\check \mu^s_{\theta_d} = \tilde\mu^s_{\theta_d} +  \mu_{k,\theta_n}(\tilde\mu^s_{\theta_d})$ and $\varphi_{\mu,\sigma}$ is the Gaussian probability density function with mean $\mu$ and standard deviation $\sigma$.
+where $\tilde \mu^s_{\theta_d} = \mu_{\theta_d}(Y_s,Y_{\Omega_s})$, $\check \mu^s_{\theta_d} = \tilde\mu^s_{\theta_d} +  \mu_{k,\theta_n}(\tilde\mu^s_{\theta_d})$ and $\varphi_{\mu,\sigma}$ is the Gaussian probability density function with mean $\mu$ and standard deviation $\sigma$.
 %\begin{multline*}
 %\ell_{\theta}(Y|\Omega_{Y}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sqrt{2\pi }\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right.\\
 %\left.\times \exp\left\{-\frac{1}{2}\left(\frac{Y-\tilde\mu_{\theta_d} -  \mu_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right)^2\right\}\right)\,,
