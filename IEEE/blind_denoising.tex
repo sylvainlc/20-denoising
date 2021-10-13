@@ -821,6 +821,7 @@ Metrics computed on noisy images are displayed in the \textit{Noisy} column.
 The supervised version of our method was not trained for PN2V datasets as they cannot be split into independent train/evaluation sets.
 For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks we trained (see section~\ref{si:baselines}).
 \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.
+\textit{Neigh2Neigh} stands for Neighbor2Neighbor.
 Results for our method predicting a Gaussian model are shown in column \textit{Ours (G1)} (see appendix Table~\ref{si:table:results} for 2/3-component GMM).
 Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
 \label{table:results}
@@ -861,8 +862,6 @@ This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}:
 Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (from PSNR values reported in \cite{goncharova2020}).
 Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{table:results}).
 This could be explained by the fact that training with masking induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
-
-We also report evaluation on additional datasets (including a natural images dataset) and compare to other baselines in Table~\ref{si:table:datasetsup}.
 
 \begin{figure*}[!hbp]
 % \vskip -0.1in
@@ -1071,7 +1070,7 @@ $$
 \begin{itemize}
   \item N2V and DecoNoisng were trained using the source code provided by the authors, using no positivity constraint, and removing the convolution for N2V: \url{https://github.com/juglab/DecoNoising}
   \item FBI-Denoiser was trained using the code provided by authors: \url{https://github.com/csm9493/FBI-Denoiser/tree/de86420934a2416d4052dfa1298334af0d2ca49f}. We used same training options as for FMD datasets that are also fluorescence microscopy datasets. We tried to double the number of epochs without improvement.
-  \item Neighbor2Neighbor was trained using the code provided by the authors: \url{https://github.com/TaoHuang2018/Neighbor2Neighbor/tree/e66389ebef1e64d306d8fcb95f096cf427243452}. As this method was not trained on fluorescence datasets, we tried to optimise hyperparameters as best as we could on dataset W2S-1 and used the same hyperparameters for all datasets. More precisely we tested $\gamma=1$ and $\gamma=2$, an initial learning rate of $3\cdot10^{-4}$ or $1\cdot10^{-4}$ as suggested by the authors, we increased the number of epochs from 100 to 1000, and tried to decrease the learning rate to $1\cdot10^{-6}$ instead of $2\cdot10^{-5}$ (which surprisingly led to much lower performances). We used $\gamma=1$, an initial learning rate of $3\cdot10^{-4}$ and a minimal learning rate of $2\cdot10^{-5}$.
+  \item Neighbor2Neighbor was trained using the code provided by the authors: \url{https://github.com/TaoHuang2018/Neighbor2Neighbor/tree/e66389ebef1e64d306d8fcb95f096cf427243452}. As this method was not trained on fluorescence microscopy datasets, we tried to optimise hyperparameters as best as we could on dataset W2S-1 and used the same hyperparameters for all datasets. More precisely we tested $\gamma=1$ and $\gamma=2$, an initial learning rate of $3\cdot10^{-4}$ or $1\cdot10^{-4}$ as suggested by the authors, we increased the number of epochs from 100 to 1000, and tried to decrease the learning rate to $1\cdot10^{-6}$ instead of $2\cdot10^{-5}$ (which surprisingly led to much lower performances). We used $\gamma=1$, an initial learning rate of $3\cdot10^{-4}$, a minimal learning rate of $2\cdot10^{-5}$ and 1000 epochs.
 \end{itemize}
 
 \subsection{Datasets}
@@ -1105,7 +1104,7 @@ This is relevant in fluorescence microscopy data where signal is often less abun
 
 \paragraph{Metrics.}
 For the 6 chosen datasets, images are encoded in 16-bit.
-PSNR is defined as $PSNR = 10 \log_{10}(d/\mathrm{MSE})$, with $d$ the maximum possible pixel value of the image and $\mathrm{MSE}$ the mean squared error.
+PSNR is defined as $PSNR = 10 \log_{10}(d/\mathrm{MSE})$, with $d$ the maximum possible pixel value range of the image and $\mathrm{MSE}$ the mean squared error.
 For 8-bit encoded images d is simply $255$, and for 16-bit images it would be $65635$ but this does not correspond to the actual possible range of microscopy data, thus the actual range of values of each ground truth image is used. This is also what is done in \cite{goncharova2020} as we obtain the same PSNR values for raw images.
 The same applies for SSIM computation.
 
@@ -1117,29 +1116,29 @@ The same applies for SSIM computation.
   \item Speckle: $X = X + (X-\underline{X})\varepsilon$  with $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma=0.405$ and $\underline{X}$ being the minimal value of the ground truth on the whole dataset.
 \end{itemize}
 
-\subsection{Results on additional datasets}
-In table~\ref{si:table:datasetsup} we report performance on additional datasets, including a natural image dataset, and comparison with other methods.
-FMD datasets \cite{zhang2019poisson} are composed of fluorescence microscopy images. Same training and evaluation set as the original article are used.
-BSD68 \cite{martin2001database} is a natural image dataset; for this dataset, the training and validation set of BSD500 \cite{arbelaez2010contour} (400 images in total) is used for training. Images were corrupted with AWGN with $\sigma=25$.
-All the datasets used in this table are composed of 8-bit images, thus the range used for metric computation is set to 255.
+% \subsection{Results on additional datasets}
+% In table~\ref{si:table:datasetsup} we report performance on additional datasets, including a natural image dataset, and comparison with other methods.
+% FMD datasets \cite{zhang2019poisson} are composed of fluorescence microscopy images. Same training and evaluation set as the original article are used.
+% BSD68 \cite{martin2001database} is a natural image dataset; for this dataset, the training and validation set of BSD500 \cite{arbelaez2010contour} (400 images in total) is used for training. Images were corrupted with AWGN with $\sigma=25$.
+% All the datasets used in this table are composed of 8-bit images, thus the range used for metric computation is set to 255.
 
-\begin{table*}[ht]
-\caption{Evaluation of the performances on additional datasets with PSNR/SSIM metrics. Metric for FBI-Denoiser are reported from \cite{byun2021fbi}, note that this method is not completely blind as it assumes a Gaussian-Poisson noise. Metrics for Laine et al. are reported from \cite{laine2019high}, note that this method is not blind as it requires the noise model. Metrics for Self2Self are reported from \cite{quan2020self2self}. Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
-\label{si:table:datasetsup}
-\begin{center}
-\begin{sc}
-\begin{tabular}{lcccccc}
-\toprule
-Dataset & Noisy & Ours (G1) & N2V & FBI-Denoiser & Laine et al. & Self2Self \\
-\midrule
-FMD Confocal-Fish & $22.81$ / $0.4416$ & $\underline{32.56}$ / $0.8822$ & $31.92$ / $0.8831$ & $32.22$ / $\underline{0.8853}$ & $NA$ / $NA$ & $NA$ / $NA$ \\
-FMD Confocal-Mice & $29.38$ / $0.6657$ & $\underline{38.48}$ / $\underline{0.9655}$ & $37.54$ / $0.9611$ & $38.32$ / $0.9637$ & $NA$ / $NA$ & $NA$ / $NA$ \\
-BSD68 (G25) & $20.17$ / $0.3819$ & $\underline{28.92}$ / $\underline{0.8217}$ & $27.72$ / $0.794$ & $NA$ / $NA$ & $\underline{28.84}$ / $0.814$ & $28.70$ / $0.803$ \\
-\bottomrule
-\end{tabular}
-\end{sc}
-\end{center}
-\end{table*}
+% \begin{table*}[ht]
+% \caption{Evaluation of the performances on additional datasets with PSNR/SSIM metrics. Metric for FBI-Denoiser are reported from \cite{byun2021fbi}, note that this method is not completely blind as it assumes a Gaussian-Poisson noise. Metrics for Laine et al. are reported from \cite{laine2019high}, note that this method is not blind as it requires the noise model. Metrics for Self2Self are reported from \cite{quan2020self2self}. Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
+% \label{si:table:datasetsup}
+% \begin{center}
+% \begin{sc}
+% \begin{tabular}{lcccccc}
+% \toprule
+% Dataset & Noisy & Ours (G1) & N2V & FBI-Denoiser & Laine et al. & Self2Self \\
+% \midrule
+% FMD Confocal-Fish & $22.81$ / $0.4416$ & $\underline{32.56}$ / $0.8822$ & $31.92$ / $0.8831$ & $32.22$ / $\underline{0.8853}$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+% FMD Confocal-Mice & $29.38$ / $0.6657$ & $\underline{38.48}$ / $\underline{0.9655}$ & $37.54$ / $0.9611$ & $38.32$ / $0.9637$ & $NA$ / $NA$ & $NA$ / $NA$ \\
+% BSD68 (G25) & $20.17$ / $0.3819$ & $\underline{28.92}$ / $\underline{0.8217}$ & $27.72$ / $0.794$ & $NA$ / $NA$ & $\underline{28.84}$ / $0.814$ & $28.70$ / $0.803$ \\
+% \bottomrule
+% \end{tabular}
+% \end{sc}
+% \end{center}
+% \end{table*}
 
 \subsection{Impact of the N-net}
 \label{si:impactnnet}
@@ -1222,8 +1221,8 @@ Note that they are computed using regular signal value bins and excluding signal
 %\FloatBarrier
 \subsection{Code}
 \label{sec:code}
-Source code can be found at this url: \url{https://github.com/code-ssbd/ssbd}.
-A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/9cbdeb6f4b9912514b5b8afb962e9276} by clicking on the \textit{open in colab} banner. To execute it a google account is required.
+Source code can be found at this url: \url{https://github.com/code-ssbd/ieee}.
+A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/476fc09cc4efcbb834c482f0714a9d69} by clicking on the \textit{open in colab} banner. To execute it a google account is required.
 
 
 % use section* for acknowledgment
