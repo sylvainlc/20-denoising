@@ -633,7 +633,7 @@ $$
 \ell_{\theta}(Y_s|Y_{\Omega_{s}}) \\
 = \log\left(\sum_{k=1}^N\alpha_{k,\theta_n}(\tilde\mu^s_{\theta_d})\varphi_{\check \mu^s_{\theta_d},\sigma_{k,\theta_n}(\tilde\mu^s_{\theta_d})}(Y_s)\right)\,,
 $$
-where $\tilde \mu^s_{\theta_d} = \mu_{\theta_d}(Y_s,Y_{\Omega_s})$, $\check \mu^s_{\theta_d} = \tilde\mu^s_{\theta_d} +  \mu_{k,\theta_n}(\tilde\mu^s_{\theta_d})$ and $\varphi_{\mu,\sigma}$ is the Gaussian probability density function with mean $\mu$ and standard deviation $\sigma$.
+where $\tilde \mu^s_{\theta_d} = \mu_{\theta_d}(g(Y_{\Omega_s}),Y_{\Omega_s})$, $\check \mu^s_{\theta_d} = \tilde\mu^s_{\theta_d} +  \mu_{k,\theta_n}(\tilde\mu^s_{\theta_d})$ and $\varphi_{\mu,\sigma}$ is the Gaussian probability density function with mean $\mu$ and standard deviation $\sigma$.
 %\begin{multline*}
 %\ell_{\theta}(Y|\Omega_{Y}) = \log\left(\sum_{k=1}^N\frac{\alpha_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sqrt{2\pi }\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right.\\
 %\left.\times \exp\left\{-\frac{1}{2}\left(\frac{Y-\tilde\mu_{\theta_d} -  \mu_{k,\theta_n}(\tilde\mu_{\theta_d})}{\sigma_{k,\theta_n}(\tilde\mu_{\theta_d})}\right)^2\right\}\right)\,,
@@ -767,7 +767,7 @@ To address this shortcoming, we used Structural Similarity (SSIM) that take text
 \label{sec:results}
 \subsection{Noise estimation}
 
-\paragraph{Estimation on synthetic noise.}
+\paragraph{Estimation on synthetic noise}
 To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
 We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see appendix~\ref{si:synthetic} for details).
 Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
@@ -786,8 +786,9 @@ Examples of noisy images corrupted with the corresponding noise model and the pr
 \end{center}
 \end{figure}
 
+
+\paragraph{Improving estimation on real noise}
 \label{sec:exp:real:noise}
-\paragraph{Improving estimation on real noise.}
 We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
 This applies for all datasets and the equivalent figures can be found in appendix~\ref{si:skewness}.
@@ -852,7 +853,7 @@ Ours (G1) & $\underline{38.33}$ / $\underline{0.9754}$ & $\underline{39.08}$ / $
 \end{table*}
 
 We compared our method to 6 baselines: D-net trained in a supervised setup with L2 objective (with all other training and prediction hyperparameters unchanged), N2V, DecoNoising, which is the self-supervised blind denoising method that has shown best results on the datasets we considered, Neighbor2Neighbor and FBI-Denoiser, as well as one of the most simple denoising method: convolution by a Gaussian, whose standard deviation is chosen to maximize the PSNR on the evaluation dataset.
-We believe the latter makes a good reference, as it is one of the simplest denoising methods, and it removes noise efficiently but also other high-frequency information such as local contrasts. Training procedure is detailed in \ref{si:baselines}.
+We believe the latter makes a good reference, as it is one of the simplest denoising methods, and it removes noise efficiently but also other high-frequency information such as local contrasts. Training procedure is detailed in Appendix\ref{si:baselines}.
 
 The considered metrics are summarized in Table~\ref{table:results}.
 Our method significantly outperforms the baselines both in terms of PSNR and SSIM on all datasets.
@@ -877,7 +878,7 @@ To better understand the contribution of the N-net and other hyperparameters, we
 From the perspective of our framework, the L2 objective (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig. ~\ref{si:fig:convergence}B).
 From a statistical perspective, it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
 It is worth noting that considering mixture models improves the PSNR in two datasets out of six (Table~\ref{si:table:results}).
-As mentioned in Section~\ref{sec:exp:real:noise} an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
+As mentioned in Section V-A-b) an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
 
 \begin{table}[ht]
 \caption{Ablation experiment on dataset W2S-1.
