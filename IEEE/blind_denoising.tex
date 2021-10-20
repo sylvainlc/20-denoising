@@ -714,13 +714,13 @@ The loss function is then computed on each element of the grid.
 \label{sec:experiments}
 \subsection{Model Architecture}
 \label{sec:architectures}
-\paragraph{D-net.}
+\paragraph{D-net}
 The function $\mu_{\theta_d}$ is parametrized by a U-net, with slight architecture modifications.
 Architecture and training information can be found in Appendix\ref{si:implementation}.
 The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighborhood that are masked.
 At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances.
 
-\paragraph{N-net.}
+\paragraph{N-net}
 In the Gaussian Mixture Model (GMM) case, the network has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means (the last mean is computed to ensure that the resulting distribution is centered) and $N$ mixture weights parametrized by the N-net.
 In the case where $N=1$, the function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. The full architecture details for both models are available in Appendix\ref{si:implementation}.
 
@@ -778,7 +778,7 @@ It shows in particular that our method is able to capture the different noise di
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{fig_noise_std.pdf}}
 \caption[Noise estimation]{Noise estimation.
-For 3 models of synthetic noise as well as the real noise, the plots display the empirical standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by the N-net as a function of $X$ (Note that display range was shrinked in Y-axis for visualization purposes.).
+For 3 models of synthetic noise as well as the real noise, the plots display the empirical standard deviation of the noise $Y - X$, as well as the predicted standard deviation of the noise by the N-net as a function of $X$ (note that display range was shrinked in Y-axis for visualization purposes.).
 Theoretical standard deviation of the noise is displayed for the 3 models of synthetic noise.
 The empirical distribution of $Y$ is displayed in blue, in logarithmic scale.
 Examples of noisy images corrupted with the corresponding noise model and the predicted denoised images are displayed above each graph.}
@@ -857,10 +857,10 @@ We believe the latter makes a good reference, as it is one of the simplest denoi
 
 The considered metrics are summarized in Table~\ref{table:results}.
 Our method significantly outperforms the baselines both in terms of PSNR and SSIM on all datasets.
-Note that datasets PN2V-C and PN2V-MA have horizontally-correlated noise (that we take into account: see Section~\ref{sec:datasets}), but significantly lower the performances of methods that are sensitive to it, such as FBI-Denoiser or N2V.
+Note that datasets PN2V-C and PN2V-MA have horizontally-correlated noise (that we take into account: see Section~\ref{sec:datasets}), which significantly lower the performances of methods that are sensitive to it, such as FBI-Denoiser or N2V.
 For the version predicting a simple Gaussian distribution, the average PSNR gain over DecoNoisng is $+1.42$dB.
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artifacts.
-Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (from PSNR values reported in \cite{goncharova2020}).
+Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (compared to PSNR values reported in \cite{goncharova2020}).
 Moreover, our method also performs better than its supervised counterpart with an average gain of $+0.21$dB (see Table~\ref{table:results}).
 This could be explained by the fact that training with masking induces a lower dependency to central pixel compared to supervised training, and thus pushes the network to make better use of the neighborhood.
 
@@ -1047,12 +1047,12 @@ Finally, it would also be interesting to understand the role of the central pixe
 \subsection{Additional Implementation details}
 \label{si:implementation}
 \subsubsection{Networks and training}
-\paragraph{D-net architecture details.}
+\paragraph{D-net architecture details}
 The architecture is based on U-net \cite{ronneberger2015u}.
 We propose several changes from the original version: we do not crop the image and use zero-padding instead, we use 2 levels of contractions/expansions with 64 filters, expansions are performed by an upsampling layer with nearest-neighbor approximation directly followed by 2x2 convolution.
 We also add two layers of 1x1 convolution with 64 filters and ReLU activation at the end of the network, and set no activation function at the output layer.
 
-\paragraph{N-net architecture details.}
+\paragraph{N-net architecture details}
 In the case of a Gaussian noise, the N-net is composed 3 successive blocks, each block being composed of two 1x1 convolutions layers of 64 filters, each followed by a non-linear activation layer (alternatively tanh and leaky ReLU with alpha parameter set to $0.1$). A convolution 1x1 with a single channel followed by an exponential activation function is placed after the last block (to ensure that the predicted $\sigma$ is positive).
 
 In the case where the N-net predicts a GMM with N components with weights $(\alpha_{k,\theta_n})_{1\leqslant k\leqslant N}$, means $(\mu_k)_{1\leqslant k\leqslant N}$ and variances $(\sigma^2_{k,\theta_n})_{1\leqslant k\leqslant N}$, the second block is connected to three distinct blocks, each connected to a convolution 1x1 with:
@@ -1069,15 +1069,15 @@ $$
 \subsection{Baselines}
 \label{si:baselines}
 \begin{itemize}
-  \item N2V and DecoNoisng were trained using the source code provided by the authors, using no positivity constraint, and removing the convolution for N2V: \url{https://github.com/juglab/DecoNoising}
+  \item DecoNoisng was trained using the source code provided by the authors, using no positivity constraint: \url{https://github.com/juglab/DecoNoising}. For N2V we used the same code without the convolution.
   \item FBI-Denoiser was trained using the code provided by authors: \url{https://github.com/csm9493/FBI-Denoiser/tree/de86420934a2416d4052dfa1298334af0d2ca49f}. We used same training options as for FMD datasets that are also fluorescence microscopy datasets. We tried to double the number of epochs without improvement.
-  \item Neighbor2Neighbor was trained using the code provided by the authors: \url{https://github.com/TaoHuang2018/Neighbor2Neighbor/tree/e66389ebef1e64d306d8fcb95f096cf427243452}. As this method was not trained on fluorescence microscopy datasets, we tried to optimise hyperparameters as best as we could on dataset W2S-1 and used the same hyperparameters for all datasets. More precisely we tested $\gamma=1$ and $\gamma=2$, an initial learning rate of $3\cdot10^{-4}$ or $1\cdot10^{-4}$ as suggested by the authors, we increased the number of epochs from 100 to 1000, and tried to decrease the learning rate to $1\cdot10^{-6}$ instead of $2\cdot10^{-5}$ (which surprisingly led to much lower performances). We used $\gamma=1$, an initial learning rate of $3\cdot10^{-4}$, a minimal learning rate of $2\cdot10^{-5}$ and 1000 epochs.
+  \item Neighbor2Neighbor was trained using the code provided by the authors: \url{https://github.com/TaoHuang2018/Neighbor2Neighbor/tree/e66389ebef1e64d306d8fcb95f096cf427243452}. As this method was not trained on fluorescence microscopy datasets, we tried to optimise hyperparameters as best as we could on dataset W2S-1 and used the same hyperparameters for all datasets. More precisely we tested $\gamma=1$ and $\gamma=2$, an initial learning rate of $3\cdot10^{-4}$ or $1\cdot10^{-4}$ as suggested by the authors. Moreover, we also increased the number of epochs from 100 to 1000, and tried to decrease the learning rate to $1\cdot10^{-6}$ instead of $2\cdot10^{-5}$ (which surprisingly led to much lower performances). In the end, we used $\gamma=1$, an initial learning rate of $3\cdot10^{-4}$, a minimal learning rate of $2\cdot10^{-5}$ and 1000 epochs.
 \end{itemize}
 
 \subsection{Datasets}
 \subsubsection{Experimental Datasets}
 \label{si:datasetxp}
-\paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}.}
+\paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}}
 \begin{itemize}
   \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{512}$.
   \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{256}$.
@@ -1085,25 +1085,25 @@ $$
 \end{itemize}
 
 The \emph{PN2V-C} and \emph{PN2V-MA} datasets are acquired on a spinning disc confocal microscope and \emph{PN2V-MN} dataset is acquired with a point scanning confocal microscope.
-Datasets can be downloaded at: \url{https://doi.org/10.5281/zenodo.5156913}, \url{https://doi.org/10.5281/zenodo.5156960} and \url{https://doi.org/10.5281/zenodo.5156937}
+Datasets can be respectively downloaded at: \url{https://doi.org/10.5281/zenodo.5156913}, \url{https://doi.org/10.5281/zenodo.5156960} and \url{https://doi.org/10.5281/zenodo.5156937}
 
 We observed that datasets acquired with a spinning disc confocal microscope display axial noise correlation (see \ref{sec:datasets}).
 
-\paragraph{Datasets published in \cite{zhou2020w2s}.}
+\paragraph{Datasets published in \cite{zhou2020w2s}}
 
 We used the 16-bit raw images kindly provided by the authors.
 The dataset is composed of 120 FOV of 400 observations of size $512$x$512$ pixels.
 The first 80 are used for training and the last 40 for evaluation.
 Following the authors, for each FOV, only the observation of index 249 is used for training and evaluation
 images are acquired with a electron-multiplying charge-coupled device camera on a wide-field microscope.
-It can be downloaded here: \url{https://datasets.epfl.ch/w2s/W2S_raw.zip}
+It can be downloaded at: \url{https://datasets.epfl.ch/w2s/W2S_raw.zip}
 
-\paragraph{Normalization.}
+\paragraph{Normalization}
 
-For both datasets images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.
+Images were normalized using the modal value as center and the difference between modal value and $95\%$ percentile as scale factor, computed on the whole dataset.
 This is relevant in fluorescence microscopy data where signal is often less abundant than background with proportion that vary among images and signal distribution often has a heavy tail towards high values.
 
-\paragraph{Metrics.}
+\paragraph{Metrics}
 For the 6 chosen datasets, images are encoded in 16-bit.
 PSNR is defined as $PSNR = 10 \log_{10}(d/\mathrm{MSE})$, with $d$ the maximum possible pixel value range of the image and $\mathrm{MSE}$ the mean squared error.
 For 8-bit encoded images d is simply $255$, and for 16-bit images it would be $65635$ but this does not correspond to the actual possible range of microscopy data, thus the actual range of values of each ground truth image is used. This is also what is done in \cite{goncharova2020} as we obtain the same PSNR values for raw images.
@@ -1223,7 +1223,7 @@ Note that they are computed using regular signal value bins and excluding signal
 \subsection{Code}
 \label{sec:code}
 Source code can be found at this url: \url{https://github.com/code-ssbd/ieee}.
-A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/476fc09cc4efcbb834c482f0714a9d69} by clicking on the \textit{open in colab} banner. To execute it a google account is required.
+A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/476fc09cc4efcbb834c482f0714a9d69} by clicking on the \textit{open in colab} banner. It can be executed directly through Google Colab, which only requires a google account.
 
 
 % use section* for acknowledgment
