@@ -716,13 +716,13 @@ The loss function is then computed on each element of the grid.
 \label{sec:architectures}
 \paragraph{D-net.}
 The function $\mu_{\theta_d}$ is parametrized by a U-net, with slight architecture modifications.
-Architecture and training information can be found in appendix~\ref{si:implementation}.
+Architecture and training information can be found in Appendix\ref{si:implementation}.
 The receptive field of this network is 35x35 pixels, which means that the network may use pixels from the neighborhood that are masked.
 At test-time, we averaged the prediction of the image with the predictions of its transposed and flipped versions on each axis, which improves performances.
 
 \paragraph{N-net.}
 In the Gaussian Mixture Model (GMM) case, the network has several outputs: for a mixture of $N$ Gaussian distributions, there are $N$ variances, $N-1$ means (the last mean is computed to ensure that the resulting distribution is centered) and $N$ mixture weights parametrized by the N-net.
-In the case where $N=1$, the function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. The full architecture details for both models are available in appendix~\ref{si:implementation}.
+In the case where $N=1$, the function $\sigma_{\theta_n}: \mathbb{R} \to \mathbb{R}$ describing the local variance of the noise distribution is a fully-connected deep neural network with several hidden layers. This choice is motivated by the large expressivity of such a network, necessary to approximate complex noise distributions. In practice, it is applied to each pixel, so it is implemented efficiently as a fully convolutional network using only 1x1 convolutional layers. The full architecture details for both models are available in Appendix\ref{si:implementation}.
 
 %This choice is motivated by the fact that such networks can be trained in a supervised way with a clean image $X$ as input and the following cost function, where $Y$ is a corrupted observation of $X$ \textcolor{red}{il faut l'llustrer dans les supplementary non ?}:$y\mapsto\varphi_{0,\sigma_n^2}(x)$.
 %The essential aspect of the architecture is that the network contain no spatial convolution (only 1x1 convolutions), otherwise the noise distribution is not well described by the network. This is consistent with our model, in which the noise is independent of the neighborhood.
@@ -733,9 +733,9 @@ We train and evaluate our method on 6 publicly available datasets of microscopy 
 This allows to have access to an estimation of the noise $Y-X$, which we refer to as \textit{real noise} in this article.
 
 The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V method \cite{krull2019probabilistic}, each is composed of several observations of one single FOV.
-For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see appendix~\ref{si:datasetxp} for details).
+For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see Appendix\ref{si:datasetxp} for details).
 The 3 last datasets are the 3 channels of the W2S dataset \cite{zhou2020w2s} referred to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
-The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see appendix~\ref{si:datasetxp} for more details).
+The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see Appendix\ref{si:datasetxp} for more details).
 Following the authors, for each FOV, only one observation is used for training and for evaluation, which better corresponds to a real setting where only one observation per FOV is available.
 
 \subsection{Masking procedure}
@@ -766,10 +766,10 @@ To address this shortcoming, we used Structural Similarity (SSIM) that take text
 \section{Results}
 \label{sec:results}
 \subsection{Noise estimation}
-
+\label{sec:results:noise}
 \paragraph{Estimation on synthetic noise}
 To evaluate the capacity of the N-net to capture blindly different noise distributions, we generated 3 datasets by adding synthetic noise to the ground truth of dataset \textit{W2S-1}, and we chose the parameters of the noise models so that PSNR of noisy images match the one of the original dataset (in a range of $\pm0.1$dB).
-We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see appendix~\ref{si:synthetic} for details).
+We used 3 classical noise models: additive Gaussian, Poisson-Gaussian (which is a good model for shot noise) and speckle (see Appendix\ref{si:synthetic} for details).
 Empirical and predicted distributions of the noise standard deviation are illustrated in Fig.~\ref{fig:noisestd}.
 One of the most striking result of this experiment is that for the 3 cases of synthetic noise, the predicted standard deviation provided by the N-net is a very sharp approximation of the known theoretical standard deviation.
 It shows in particular that our method is able to capture the different noise distributions even in areas where signal is rare.
@@ -791,7 +791,7 @@ Examples of noisy images corrupted with the corresponding noise model and the pr
 \label{sec:exp:real:noise}
 We observed that contrary to the classical noise models considered in the denoising literature, real noise often displays a certain amount of skewness, as illustrated in Fig.~\ref{fig:skewness}.
 In order to be able to capture this aspect, we predict a Gaussian mixture model (GMM) instead of a simple Gaussian model as described in Section~\ref{sec:model}. Fig.~\ref{fig:skewness} shows that noise skewness is well described by the predicted model, and the noise distribution is better described by a GMM than by a single Gaussian.
-This applies for all datasets and the equivalent figures can be found in appendix~\ref{si:skewness}.
+This applies for all datasets and the equivalent figures can be found in Appendix\ref{si:skewness}.
 In this example, it is interesting to note that the Kullback–Leibler divergence between the empirical noise distribution and the predicted distribution (as a function of the signal value) is improved by considering a GMM instead of a unimodal distribution.
 This supports the use of our flexible N-net to capture a large variety of noise distributions (with multimodality and/or skewness) which can be observed in experimental datasets.
 This comment paves the way to several perspectives for our work such as the design of statistically consistent model selection procedures to choose automatically the number of mixing components.
@@ -823,7 +823,7 @@ The supervised version of our method was not trained for PN2V datasets as they c
 For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks we trained (see section~\ref{si:baselines}).
 \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.
 \textit{Neigh2Neigh} stands for Neighbor2Neighbor.
-Results for our method predicting a Gaussian model are shown in column \textit{Ours (G1)} (see appendix Table~\ref{si:table:results} for 2/3-component GMM).
+Results for our method predicting a Gaussian model are shown in column \textit{Ours (G1)} (see Appendix~Table~\ref{si:table:results} for 2/3-component GMM).
 Best PSNR $\pm0.1dB$ / SSIM $\pm1\permille$ scores are underlined.}
 \label{table:results}
 \begin{center}
@@ -878,7 +878,7 @@ To better understand the contribution of the N-net and other hyperparameters, we
 From the perspective of our framework, the L2 objective (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig. ~\ref{si:fig:convergence}B).
 From a statistical perspective, it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
 It is worth noting that considering mixture models improves the PSNR in two datasets out of six (Table~\ref{si:table:results}).
-As mentioned in Section V-A-b) an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
+As mentioned in Section~\ref{sec:results:noise}-b) an optimal and data-driven choice of the number of components remains an open (and challenging) statistical problem but we believe that such experiments support future research in this direction.
 
 \begin{table}[ht]
 \caption{Ablation experiment on dataset W2S-1.
