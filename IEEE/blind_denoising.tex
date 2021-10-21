@@ -760,7 +760,7 @@ Tiles are augmented with random horizontal and/or vertical flip and/or a random 
 
 \subsection{Evaluation}
 We compared denoised image to ground truth with the classical Peak Signal-to-Noise Ratio (PSNR) metric.
-However, PSNR is not highly indicative of perceived similarity, in particular it does not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that them into account.
+However, PSNR is not highly indicative of perceived similarity, in particular it does not reflect similarity of high frequency information such as textures and local contrasts \cite{wang2004image}, that denoising methods tend to reduce. It is thus essential to have other metrics that take them into account.
 To address this shortcoming, we used Structural Similarity (SSIM) that take textures and edges into account \cite{wang2004image}, computed as in the original work.
 
 \section{Results}
@@ -857,7 +857,7 @@ We believe the latter makes a good reference, as it is one of the simplest denoi
 
 The considered metrics are summarized in Table~\ref{table:results}.
 Our method significantly outperforms the baselines both in terms of PSNR and SSIM on all datasets.
-Note that datasets PN2V-C and PN2V-MA have horizontally-correlated noise (that we take into account: see Section~\ref{sec:datasets}), which significantly lower the performances of methods that are sensitive to it, such as FBI-Denoiser or N2V.
+Note that datasets PN2V-C and PN2V-MA have horizontally-correlated noise (that we take into account: see Section~\ref{sec:datasets}), which significantly lowers the performances of methods that are sensitive to it, such as FBI-Denoiser or N2V.
 For the version predicting a simple Gaussian distribution, the average PSNR gain over DecoNoisng is $+1.42$dB.
 This is also confirmed by the visual aspect, displayed in Fig.~\ref{fig:images}: our method produces images closer to the ground truth, smoother, sharper, more detailed and without visual artifacts.
 Remarkably, our method performs significantly better than the supervised method CARE \cite{weigert2017content}, with an average PSNR gain of $+1.49$dB (compared to PSNR values reported in \cite{goncharova2020}).
@@ -1223,7 +1223,7 @@ Note that they are computed using regular signal value bins and excluding signal
 \subsection{Code}
 \label{sec:code}
 Source code can be found at this url: \url{https://github.com/code-ssbd/ieee}.
-A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/476fc09cc4efcbb834c482f0714a9d69} by clicking on the \textit{open in colab} banner. It can be executed directly through Google Colab, which only requires a google account.
+A ready-to-use google colab notebook that includes training and evaluation procedures can be found at this address: \url{https://gist.github.com/code-ssbd/476fc09cc4efcbb834c482f0714a9d69} by clicking on the \textit{open in colab} banner. It can be executed directly through Google Colab, which only requires a Google account.
 
 
 % use section* for acknowledgment
