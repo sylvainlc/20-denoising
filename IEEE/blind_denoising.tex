@@ -587,9 +587,7 @@ The aim of this paper is to propose an estimator of the signal value without int
   %\vskip -0.1in
   \begin{center}\includegraphics[width=0.8\textwidth]{fig_plomberie.pdf}
   \caption{Training setup.
-For each mini-batch, a random grid is drawn.
-The masking function $x\mapsto g(x)$ is applied on each element of the grid, replacing the original pixels in the masked image.
-The denoised image predicted by the D-net is fed to the N-net that predicts a noise distribution for each pixel.
+The Noisy input image (on the left) is masked at certain grid points using a Masking Function $g(x)$. The D-net produces the Denoised image, which is fed to the N-net, predicting a noise distribution for each pixel.
 The loss function is then computed on each element of the grid.
 }
 \label{fig:plumbing}
