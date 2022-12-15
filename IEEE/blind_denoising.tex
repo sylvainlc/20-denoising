@@ -824,6 +824,7 @@ SSIM estimates structural similarity (sharpness).
 Metrics computed on noisy images are displayed in the \textit{Noisy} column.
 The supervised version of our method was not trained for PN2V datasets as they cannot be split into independent train/evaluation sets.
 For DecoNoising and N2V, PSNR are taken from \cite{goncharova2020} and SSIM are computed on prediction made by networks we trained (see section~\ref{si:baselines}).
+PPN2V-GMM refers to fully unsupervised version of the method with bootstrapped GMM noise model as in \cite{prakash2020fully}. PSNR and SSIM values are taken from the article for PN2V-C, PN2V-MN, PN2V-MA. For the other datasets the training do not converge, which was already observed by the authors in \cite{2020DivNoising}.
 \textit{Gaussian} corresponds to the optimal Gaussian baseline defined in section~\ref{sec:perf}.
 \textit{Neigh2Neigh} stands for Neighbor2Neighbor.
 Results for our method predicting a Gaussian model are shown in column \textit{Ours (G1)} (see Appendix~Table~\ref{si:table:results} for 2/3-component GMM).
@@ -841,6 +842,7 @@ Noisy & $28.98$ / $0.7713$ & $28.10$ / $0.6836$ & $23.71$ / $0.3731$ & $21.85$ /
 Gaussian & $34.92$ / $0.9409$ & $35.53$ / $0.9392$ & $34.07$ / $0.8739$ & $33.87$ / $0.9326$ & $32.27$ / $0.8531$ & $34.66$ / $0.9013$\\
 Supervised & $NA$ / $NA$ & $NA$ / $NA$ & $NA$ / $NA$ & $35.22$ / $0.9608$ & $33.24$ / $0.8828$ & $36.31$ / $0.9252$\\
 N2V & $35.85$ / $0.9404$ & $35.86$ / $0.9419$ & $33.35$ / $0.8384$ & $34.30$ / $0.9026$ & $31.80$ / $0.8311$ & $34.65$ / $0.8637$\\
+PPN2V-GMM & $36.70$ / $0.9640$ & $36.43$ / $0.9568$ & $33.74$ / $0.8627$ & $NA$ / $NA$ & $NA$ / $NA$ & $NA$ / $NA$\\
 DecoNoising & $36.39$ / $0.9483$ & $36.34$ / $0.9489$ & $34.04$ / $0.8633$ & $34.90$ / $0.9169$ & $32.31$ / $0.8524$ & $35.09$ / $0.9051$\\
 Neigh2Neigh & $34.42$ / $0.9519$ & $34.01$ / $0.9070$ & $32.70$ / $0.8521$ & $34.74$ / $0.9552$ & $32.96$ / $0.8739$ & $36.14$ / $0.9216$\\
 FBI-Denoiser & $36.23$ / $0.9556$ & $36.85$ / $0.9609$ & $32.89$ / $0.8344$ & $34.40$ / $0.9500$ & $32.26$ / $0.8452$ & $34.94$ / $0.8910$\\
