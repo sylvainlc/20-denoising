@@ -7,9 +7,9 @@
    viewBox="0 0 82.55 44.450001"
    version="1.1"
    id="svg8"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01, custom)"
-   sodipodi:docname="fig_plomberie.svg"
-   inkscape:export-filename="/home/jollion/Documents/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie.png"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="fig_plomberie_loss.svg"
+   inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -482,7 +482,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="213.8998"
+     inkscape:cx="113.64216"
      inkscape:cy="54.800775"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -518,41 +518,62 @@
        inkscape:connector-curvature="0"
        id="path1164"
        d="m 5.2027446,259.65458 4.4982731,0.0569"
-       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path8455"
        d="m 12.318416,273.78588 0.0039,-9.51802"
-       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path8457"
        d="m 74.923802,277.49943 0.01339,10.1769"
-       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 9.244255,273.70754 H 70.873"
        id="path1705"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <path
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path6988"
        d="m 5.3666774,281.09495 v 9.08878 l 71.2354866,-0.0174"
-       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <rect
        style="opacity:0.99599998;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.38002309;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect954"
        width="9.4415474"
        height="8.8349657"
        x="70.209717"
-       y="269.29007" />
+       y="269.29007"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <g
        id="g969"
-       transform="matrix(0.57472875,0,0,0.57472875,-15.846249,128.35722)">
+       transform="matrix(0.57472875,0,0,0.57472875,-15.846249,128.35722)"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
       <g
          id="g977"
          transform="translate(-19.443858,-2.0045215)">
@@ -576,7 +597,10 @@
        width="9.4176025"
        height="11.188147"
        x="56.209709"
-       y="268.11346" />
+       y="268.11346"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        xlink:href="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/mask.png"
        width="10.561305"
@@ -584,7 +608,10 @@
        preserveAspectRatio="none"
        id="image834"
        x="7.0397186"
-       y="254.74164" />
+       y="254.74164"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        xlink:href="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/noise.png"
        width="10.561305"
@@ -592,7 +619,10 @@
        preserveAspectRatio="none"
        id="image867"
        x="50.754997"
-       y="285.08289" />
+       y="285.08289"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        xlink:href="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/raw.png"
        width="10.561305"
@@ -600,7 +630,10 @@
        preserveAspectRatio="none"
        id="image889"
        x="0.0091671208"
-       y="268.76614" />
+       y="268.76614"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        xlink:href="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/masked.png"
        width="10.561305"
@@ -608,13 +641,19 @@
        preserveAspectRatio="none"
        id="image900"
        x="14.070269"
-       y="268.76614" />
+       y="268.76614"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
        x="2.4030464"
        y="280.64975"
-       id="text905"><tspan
+       id="text905"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          sodipodi:role="line"
          id="tspan903"
          x="2.4030464"
@@ -625,7 +664,10 @@
        y="254.28957"
        x="9.5755863"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
-       xml:space="preserve"><tspan
+       xml:space="preserve"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          style="font-size:2.46944px;stroke-width:0.137874"
          y="254.28957"
          x="9.5755863"
@@ -636,7 +678,10 @@
        y="280.65964"
        x="15.482547"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
-       xml:space="preserve"><tspan
+       xml:space="preserve"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          style="font-size:2.46944px;stroke-width:0.137874"
          y="280.65964"
          x="15.482547"
@@ -647,7 +692,10 @@
        y="268.16037"
        x="42.386776"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
-       xml:space="preserve"><tspan
+       xml:space="preserve"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          style="font-size:2.46944px;stroke-width:0.137874"
          y="268.16037"
          x="42.386776"
@@ -658,7 +706,10 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.137874"
        x="74.915672"
        y="265.33871"
-       id="text1000"><tspan
+       id="text1000"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          sodipodi:role="line"
          x="75.22435"
          y="265.33871"
@@ -674,7 +725,10 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.75748px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
        x="53.190857"
        y="296.97488"
-       id="text1004"><tspan
+       id="text1004"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          sodipodi:role="line"
          id="tspan1002"
          x="53.190857"
@@ -685,7 +739,10 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
        x="0.21104205"
        y="264.29523"
-       id="text1733"><tspan
+       id="text1733"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          sodipodi:role="line"
          id="tspan1731"
          x="0.21104205"
@@ -695,7 +752,10 @@
        xml:space="preserve"
        id="flowRoot925"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.9109px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px"
-       transform="matrix(0.13787422,0,0,0.13787422,4.8876817,287.70668)"><flowRegion
+       transform="matrix(0.13787422,0,0,0.13787422,4.8876817,287.70668)"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><flowRegion
          id="flowRegion927"
          style="font-size:17.9109px"><rect
            id="rect929"
@@ -709,7 +769,10 @@
        transform="matrix(0.13787422,0,0,0.13787422,32.635208,287.70668)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.9109px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px"
        id="flowRoot950"
-       xml:space="preserve"><flowRegion
+       xml:space="preserve"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><flowRegion
          id="flowRegion946"
          style="font-size:17.9109px"><rect
            y="-55.142857"
@@ -724,29 +787,44 @@
        inkscape:connector-curvature="0"
        id="path6990"
        d="m 47.080062,277.39918 -0.0016,0.65276 -0.03317,12.16407"
-       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.17638889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <circle
        style="opacity:0.99599998;fill:#ffffff;fill-opacity:1;stroke:#000004;stroke-width:0.35277778;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path6992"
        cx="47.06266"
        cy="290.02429"
-       r="1.175624" />
+       r="1.175624"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path6994"
        d="m 46.432886,290.02429 h 1.259531"
-       style="fill:none;stroke:#000000;stroke-width:0.49988611;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.49988611;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <rect
        y="268.11346"
        x="28.49799"
        height="11.188148"
        width="9.4176016"
        id="rect942"
-       style="opacity:0.99599998;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="opacity:0.99599998;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <g
        id="g8515"
-       transform="matrix(0.52109943,0,0,0.52109943,1.3489309,142.29295)">
+       transform="matrix(0.52109943,0,0,0.52109943,1.3489309,142.29295)"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
       <rect
          y="243.09099"
          x="53.988441"
@@ -788,10 +866,16 @@
        d="m 59.987029,272.3529 -1.14485,1.3418 1.163313,1.28642"
        id="path8597"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccc" />
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <g
        id="g8622"
-       transform="matrix(0.52109943,0,0,0.52109943,-0.29601358,142.29295)">
+       transform="matrix(0.52109943,0,0,0.52109943,-0.29601358,142.29295)"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
       <circle
          style="opacity:0.99599998;fill:#ffffff;fill-opacity:1;stroke:#000004;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="circle8531"
@@ -876,174 +960,33 @@
        preserveAspectRatio="none"
        id="image823"
        x="41.782001"
-       y="268.76614" />
+       y="268.76614"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <rect
-       style="opacity:0.99599998;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.996;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.352778;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect986"
-       width="18.685282"
+       width="18.684999"
        height="4.9208069"
        x="63.695644"
-       y="287.56393" />
-    <g
-       id="g1430"
-       transform="matrix(0.54697418,0,0,0.54697418,-29.068582,181.12885)">
-      <g
-         id="g1122"
-         transform="matrix(1.1450695,0,0,1.1450695,-29.333735,-29.190157)">
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1262"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph0-1-7"
-             x="148.71201"
-             y="127.293"
-             id="use1260" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1266"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph1-1-3"
-             x="159.228"
-             y="137.754"
-             id="use1264" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1274"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph1-2-5"
-             x="167.57146"
-             y="137.754"
-             id="use1268" />
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph1-3-6"
-             x="171.89311"
-             y="137.754"
-             id="use1270" />
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph1-4-2"
-             x="175.6534"
-             y="137.754"
-             id="use1272" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1278"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph2-1-2"
-             x="182.217"
-             y="134.765"
-             id="use1276" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1282"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph1-5-9"
-             x="188.998"
-             y="136.259"
-             id="use1280" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1286"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph3-1-9"
-             x="193.505"
-             y="134.765"
-             id="use1284" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1290"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph2-2-7"
-             x="197.379"
-             y="134.765"
-             id="use1288" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1300"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph2-3"
-             x="206.46988"
-             y="134.765"
-             id="use1292" />
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph2-4"
-             x="211.29875"
-             y="134.765"
-             id="use1294" />
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph2-5"
-             x="214.73087"
-             y="134.765"
-             id="use1296" />
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph2-6"
-             x="219.40132"
-             y="134.765"
-             id="use1298" />
-        </g>
-        <g
-           style="fill:#000000;fill-opacity:1"
-           id="g1304"
-           transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-          <use
-             height="100%"
-             width="100%"
-             xlink:href="#glyph3-2-3"
-             x="224.03999"
-             y="134.765"
-             id="use1302" />
-        </g>
-      </g>
-    </g>
+       y="287.56393"
+       ry="2.4604034"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <text
        id="text1436"
-       y="295.13928"
-       x="66.198387"
+       y="290.85532"
+       x="66.281921"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.75748px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.137874"
-       xml:space="preserve"><tspan
+       xml:space="preserve"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          style="font-size:2.46944px;stroke-width:0.137874"
-         y="295.13928"
-         x="66.198387"
+         y="290.85532"
+         x="66.281921"
          id="tspan1434"
          sodipodi:role="line">Loss function</tspan></text>
     <path
@@ -1051,6 +994,9 @@
        d="m 5.2878696,269.21086 0.0039,-9.53426"
        id="path1162"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_loss.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
   </g>
 </svg>
