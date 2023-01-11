@@ -749,7 +749,7 @@ Figure \ref{fig:plumbing} summarizes the full training process with the two netw
 We train and evaluate our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth ($X$) is estimated by averaging several observations ($Y$) of the same field-of-view (FOV).
 This allows to have access to an estimation of the noise $Y-X$, which we refer to as \textit{real noise} in this article.
 
-The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V and PPN2V methods \cite{krull2019probabilistic, prakash2020fully}, each is composed of several observations of one single FOV.
+The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V and PPN2V methods \cite{krull2019probabilistic,prakash2020fully}, each is composed of several observations of one single FOV.
 For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see Appendix\ref{si:datasetxp} for details).
 The 3 last datasets are the 3 channels of the W2S dataset \cite{zhou2020w2s} referred to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see Appendix\ref{si:datasetxp} for more details).
@@ -892,7 +892,7 @@ This could be explained by the fact that training with masking induces a lower d
 
 \subsection{Ablation experiments}
 
-To better understand the contribution of the N-net and other hyperparameters, we ran ablation experiments in Table~\ref{table:ablation}. The N-net has a very significant impact on performances, in particular when training is short (e.g. as in N2V, N2S \cite{krull2018noise2void, goncharova2020}). We observe that the N-net greatly stabilizes the training\footnote{As an illustration of the excellent training stability, we measured a SEM of $6\cdot10^{-3}$ for the PSNR on dataset W2S-1 over 5 runs.} and improves convergence speed (see Fig. ~\ref{si:fig:convergence}). We also observe that in all our hyperparameter settings that adding the N-net always improves performances over L2 objective, although not always significantly.
+To better understand the contribution of the N-net and other hyperparameters, we ran ablation experiments in Table~\ref{table:ablation}. The N-net has a very significant impact on performances, in particular when training is short (e.g. as in N2V, N2S \cite{krull2018noise2void,goncharova2020}). We observe that the N-net greatly stabilizes the training\footnote{As an illustration of the excellent training stability, we measured a SEM of $6\cdot10^{-3}$ for the PSNR on dataset W2S-1 over 5 runs.} and improves convergence speed (see Fig. ~\ref{si:fig:convergence}). We also observe that in all our hyperparameter settings that adding the N-net always improves performances over L2 objective, although not always significantly.
 
 From the perspective of our framework, the L2 objective (as used in N2V, N2S) can be understood as a particular case of the N-net predicting a constant unit Gaussian noise. When the actual noise is significantly different from it, the N-net has a stronger impact (e.g. \textit{Speckle} in Fig. ~\ref{si:fig:convergence}B).
 From a statistical perspective, it is known that considering a sufficiently rich noise model is crucial in deconvolution problem for signal estimation (misspecifying the noise density can lead to very poor deconvolution estimators for instance). This was a motivation to introduce the N-net.
@@ -1096,7 +1096,7 @@ $$
 \subsection{Datasets}
 \subsubsection{Experimental Datasets}
 \label{si:datasetxp}
-\paragraph{Datasets published along with the PN2V and PPN2V methods \cite{krull2019probabilistic, prakash2020fully}}
+\paragraph{Datasets published along with the PN2V and PPN2V methods \cite{krull2019probabilistic,prakash2020fully}}
 \begin{itemize}
   \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{512}$.
   \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{256}$.
