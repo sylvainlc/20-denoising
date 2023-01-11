@@ -608,7 +608,7 @@ where $g$ is a known function. In the experiments below, we chose to set $g(Y_{\
 
 \begin{figure*}[!htbp]
   %\vskip -0.1in
-  \begin{center}\includegraphics[width=0.8\textwidth]{fig_plomberie_loss.pdf}
+  \begin{center}\includegraphics[width=0.8\textwidth]{fig_plomberie_1col_loss.pdf}
   \caption{Training setup.
 The Noisy input image (on the left) is masked at certain grid points using a Masking Function $g(x)$. The D-net produces the Denoised image, which is fed to the N-net, predicting a noise distribution for each pixel.
 The loss function is then computed on each element of the grid.
@@ -749,7 +749,7 @@ Figure \ref{fig:plumbing} summarizes the full training process with the two netw
 We train and evaluate our method on 6 publicly available datasets of microscopy images. In those datasets, ground truth ($X$) is estimated by averaging several observations ($Y$) of the same field-of-view (FOV).
 This allows to have access to an estimation of the noise $Y-X$, which we refer to as \textit{real noise} in this article.
 
-The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V method \cite{krull2019probabilistic}, each is composed of several observations of one single FOV.
+The 3 first datasets (\emph{PN2V-C}, \emph{PN2V-MN}, \emph{PN2V-MA}) have been published along with the PN2V and PPN2V methods \cite{krull2019probabilistic, prakash2020fully}, each is composed of several observations of one single FOV.
 For a fair comparison, we use the same training and evaluation sets as the authors: for each sample type the whole dataset is used for training, and only a subset of the FOV is used for evaluation (see Appendix\ref{si:datasetxp} for details).
 The 3 last datasets are the 3 channels of the W2S dataset \cite{zhou2020w2s} referred to as \emph{W2S-1}, \emph{W2S-2} and \emph{W2S-3}.
 The dataset is composed of 120 FOV, the first 80 are used for training and the last 40 for evaluation (see Appendix\ref{si:datasetxp} for more details).
@@ -770,7 +770,7 @@ Furthermore, we observed that datasets \emph{PN2V-C} and \emph{PN2V-MA} display 
 \subsection{Training}
 \label{sec:training}
 Networks are trained using Adam optimizer with a learning rate of $4\cdot10^{-4}$, decreased by $1/2$ on plateau of 30 epochs until $10^{-6}$. We train networks for 400 epochs of 200 steps.
-Training time is about 2 min per epoch on a NVIDIA Tesla P4.
+On a NVIDIA RTX-A5000 training time is 97s, 116s and 118s per epoch for N=1, 2 and 3 respectively.
 We obtain better and more reproducible results using the weights of the trained model at the last epoch instead of the weights of the model with the best validation loss, possibly because the loss is a bad proxy for the denoising performances. For that reason, we do not use a validation step.
 Batch size is set to 1, and each batch is split into 100 (overlapping) tiles of 96x96 pixels.
 Tiles are augmented with random horizontal and/or vertical flip and/or a random rotation with an angle chosen within $(90^\circ, 180^\circ, 270^\circ)$, except for datasets with axial noise correlation where axes transpositions are avoided.
@@ -1096,7 +1096,7 @@ $$
 \subsection{Datasets}
 \subsubsection{Experimental Datasets}
 \label{si:datasetxp}
-\paragraph{Datasets published along with the PN2V \cite{krull2019probabilistic}}
+\paragraph{Datasets published along with the PN2V and PPN2V methods \cite{krull2019probabilistic, prakash2020fully}}
 \begin{itemize}
   \item \emph{Convallaria} dataset, referred to as \emph{PN2V-C} is composed of 100 images of size $1024$x$1024$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{512}$.
   \item \emph{Mouse skull nuclei} referred to as \emph{PN2V-MN} is composed 200 images of size $512$x$512$. Evaluation subset is: $Y\in\interval{0}{512}, X\in\interval{0}{256}$.

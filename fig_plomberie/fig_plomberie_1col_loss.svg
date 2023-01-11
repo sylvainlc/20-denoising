@@ -6,8 +6,8 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="fig_plomberie_1col.svg"
-   inkscape:export-filename="/home/jollion/Documents/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie.png"
+   sodipodi:docname="fig_plomberie_1col_loss.svg"
+   inkscape:export-filename="/home/jollion/Documents/Work/AnalyseImageRecherche/Denoising/20-denoising/fig_plomberie/fig_plomberie_1col_loss.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -501,7 +501,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -574,7 +573,7 @@
     <image
        xlink:href="mask.png"
        y="259.6358"
-       x="20.788139"
+       x="20.788141"
        id="image834"
        preserveAspectRatio="none"
        height="11.65862"
@@ -677,14 +676,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.13972px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.162649"
-       x="15.824862"
+       x="14.044209"
        y="264.3497"
        id="text1733"><tspan
          sodipodi:role="line"
          id="tspan1731"
-         x="15.824862"
+         x="14.044209"
          y="264.3497"
-         style="font-size:3.13972px;stroke-width:0.162649">g</tspan></text>
+         style="font-size:3.13972px;stroke-width:0.162649">g(x)</tspan></text>
     <flowRoot
        xml:space="preserve"
        id="flowRoot925"
@@ -899,177 +898,23 @@
         </g>
       </g>
     </g>
-    <g
-       id="g243"
-       transform="matrix(1.1796903,0,0,1.1796903,24.344218,-44.939787)">
-      <rect
-         style="opacity:0.996;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.352778;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect986"
-         width="18.685282"
-         height="4.9208069"
-         x="79.041466"
-         y="276.98044" />
-      <g
-         id="g1430"
-         transform="matrix(0.54697418,0,0,0.54697418,-13.722739,170.54545)">
-        <g
-           id="g1122"
-           transform="matrix(1.1450695,0,0,1.1450695,-29.333735,-29.190157)">
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1262"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph0-1-7"
-               x="148.71201"
-               y="127.293"
-               id="use1260" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1266"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph1-1-3"
-               x="159.228"
-               y="137.754"
-               id="use1264" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1274"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph1-2-5"
-               x="167.57146"
-               y="137.754"
-               id="use1268" />
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph1-3-6"
-               x="171.89311"
-               y="137.754"
-               id="use1270" />
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph1-4-2"
-               x="175.6534"
-               y="137.754"
-               id="use1272" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1278"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph2-1-2"
-               x="182.217"
-               y="134.765"
-               id="use1276" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1282"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph1-5-9"
-               x="188.998"
-               y="136.259"
-               id="use1280" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1286"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph3-1-9"
-               x="193.505"
-               y="134.765"
-               id="use1284" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1290"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph2-2-7"
-               x="197.379"
-               y="134.765"
-               id="use1288" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1300"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph2-3"
-               x="206.46988"
-               y="134.765"
-               id="use1292" />
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph2-4"
-               x="211.29875"
-               y="134.765"
-               id="use1294" />
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph2-5"
-               x="214.73087"
-               y="134.765"
-               id="use1296" />
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph2-6"
-               x="219.40132"
-               y="134.765"
-               id="use1298" />
-          </g>
-          <g
-             style="fill:#000000;fill-opacity:1"
-             id="g1304"
-             transform="matrix(0.35277779,0,0,0.35277779,122.1542,152.59645)">
-            <use
-               height="100%"
-               width="100%"
-               xlink:href="#glyph3-2-3"
-               x="224.03999"
-               y="134.765"
-               id="use1302" />
-          </g>
-        </g>
-      </g>
-    </g>
+    <rect
+       style="opacity:0.996;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.416169;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect986"
+       width="22.042999"
+       height="5.805028"
+       x="117.58867"
+       y="281.81134"
+       ry="2.902514" />
     <text
        id="text1436"
-       y="291.2771"
-       x="120.61879"
+       y="285.78223"
+       x="119.92332"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1.25;font-family:Times;-inkscape-font-specification:Times;letter-spacing:0px;word-spacing:0px;stroke-width:0.162649"
        xml:space="preserve"><tspan
          style="font-size:3.175px;stroke-width:0.162649"
-         y="291.2771"
-         x="120.61879"
+         y="285.78223"
+         x="119.92332"
          id="tspan1434"
          sodipodi:role="line">Loss function</tspan></text>
     <path
